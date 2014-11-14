@@ -1,7 +1,7 @@
 [![EVENTA Logo](http://www.theeventagroup.com/images/logo.png)](http://epam-eventa.herokuapp.com)
 
-Build Status: https://travis-ci.org/freelook/eventa
-DEMO: http://eventa.herokuapp.com/
+* Build Status: https://travis-ci.org/freelook/eventa
+* Demo: http://eventa.herokuapp.com/
 
 ## Before You Begin 
 Before you begin we recommend you read about the basic building blocks that assemble a MEAN.JS application: 
