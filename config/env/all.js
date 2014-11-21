@@ -13,10 +13,14 @@ module.exports = {
 	assets: {
 		lib: {
 			css: [
+				'public/vendor/main.css',
 				'public/lib/bootstrap/dist/css/bootstrap.css',
 				'public/lib/bootstrap/dist/css/bootstrap-theme.css'
 			],
 			js: [
+				'public/lib/jquery/dist/jquery.js',
+				'public/vendor/default.js',
+				'public/vendor/scripts.js',
 				'public/lib/angular/angular.js',
 				'public/lib/angular-resource/angular-resource.js', 
 				'public/lib/angular-cookies/angular-cookies.js', 

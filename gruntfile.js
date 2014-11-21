@@ -180,7 +180,7 @@ module.exports = function (grunt) {
         var config = require('./config/config');
 
         grunt.config.set('applicationJavaScriptFiles', config.assets.js);
-        grunt.config.set('applicationCSSFiles', config.assets.css);
+        grunt.config.set('applicationCSSFiles', config.assets.lib.css.concat(config.assets.css));
     });
 
     // Default task(s).
