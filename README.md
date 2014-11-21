@@ -1,6 +1,7 @@
 [![EVENTA Logo](http://www.theeventagroup.com/images/logo.png)](http://epam-eventa.herokuapp.com)
 
-[![Build Status](https://travis-ci.org/)](https://travis-ci.org/meanjs/mean)
+* Build Status: https://travis-ci.org/freelook/eventa
+* Demo: http://eventa.herokuapp.com/
 
 ## Before You Begin 
 Before you begin we recommend you read about the basic building blocks that assemble a MEAN.JS application: 
@@ -65,7 +66,7 @@ In the docs we'll try to explain both general concepts of MEAN components and gi
 * Ping us on [Twitter](http://twitter.com/meanjsorg) and [Facebook](http://facebook.com/meanjs)
 
 ## Live Example
-Browse the live EVENTA example on [http://epam-eventa.herokuapp.com](http://epam-eventa.herokuapp.com).
+Browse the live EVENTA example on [http://eventa.herokuapp.com/](http://eventa.herokuapp.com/).
 
 ## License
 (The MIT License)
