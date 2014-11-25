@@ -1,6 +1,6 @@
 [![EVENTA Logo](http://www.theeventagroup.com/images/logo.png)](http://epam-eventa.herokuapp.com)
 
-* Build Status: https://travis-ci.org/freelook/eventa
+* Build Status: https://travis-ci.org/freelook/EVENTA
 * Demo: http://eventa.herokuapp.com/
 
 ## Before You Begin 
