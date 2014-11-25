@@ -3,104 +3,105 @@
 /**
  * Module dependencies.
  */
+
 var mongoose = require('mongoose'),
 	errorHandler = require('./errors'),
-	Article = mongoose.model('Article'),
+	Event = mongoose.model('Event'),
 	_ = require('lodash');
 
 /**
- * Create a article
+ * Create a event
  */
 exports.create = function(req, res) {
-	var article = new Article(req.body);
-	article.user = req.user;
+	var event = new Event(req.body);
+	event.user = req.user;
 
-	article.save(function(err) {
+	event.save(function(err) {
 		if (err) {
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
 			});
 		} else {
-			res.jsonp(article);
+			res.jsonp(event);
 		}
 	});
 };
 
 /**
- * Show the current article
+ * Show the current event
  */
 exports.read = function(req, res) {
-	res.jsonp(req.article);
+	res.jsonp(req.event);
 };
 
 /**
- * Update a article
+ * Update a event
  */
 exports.update = function(req, res) {
-	var article = req.article;
+	var event = req.event;
 
-	article = _.extend(article, req.body);
+	event = _.extend(event, req.body);
 
-	article.save(function(err) {
+	event.save(function(err) {
 		if (err) {
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
 			});
 		} else {
-			res.jsonp(article);
+			res.jsonp(event);
 		}
 	});
 };
 
 /**
- * Delete an article
+ * Delete an event
  */
 exports.delete = function(req, res) {
-	var article = req.article;
+	var event = req.event;
 
-	article.remove(function(err) {
+	event.remove(function(err) {
 		if (err) {
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
 			});
 		} else {
-			res.jsonp(article);
+			res.jsonp(event);
 		}
 	});
 };
 
 /**
- * List of Articles
+ * List of events
  */
 exports.list = function(req, res) {
-	Article.find().sort('-created').populate('user', 'displayName').exec(function(err, articles) {
+	Event.find().sort('-created').populate('user', 'displayName').exec(function(err, events) {
 		if (err) {
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
 			});
 		} else {
-			res.jsonp(articles);
+			res.jsonp(events);
 		}
 	});
 };
 
 /**
- * Article middleware
+ * event middleware
  */
-exports.articleByID = function(req, res, next, id) {
-	Article.findById(id).populate('user', 'displayName').exec(function(err, article) {
+exports.eventByID = function(req, res, next, id) {
+	Event.findById(id).populate('user', 'displayName').exec(function(err, event) {
 		if (err) return next(err);
-		if (!article) return next(new Error('Failed to load article ' + id));
-		req.article = article;
+		if (!event) return next(new Error('Failed to load event ' + id));
+		req.event = event;
 		next();
 	});
 };
 
 /**
- * Article authorization middleware
+ * event authorization middleware
  */
 exports.hasAuthorization = function(req, res, next) {
-	if (req.article.user.id !== req.user.id) {
+	if (req.event.user.id !== req.user.id) {
 		return res.status(403).send({
 			message: 'User is not authorized'
 		});

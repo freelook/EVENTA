@@ -45,11 +45,12 @@ angular.element(document).ready(function() {
 'use strict';
 
 // Use Applicaion configuration module to register a new module
-ApplicationConfiguration.registerModule('articles');
+ApplicationConfiguration.registerModule('core');
 'use strict';
 
 // Use Applicaion configuration module to register a new module
-ApplicationConfiguration.registerModule('core');
+ApplicationConfiguration.registerModule('events');
+
 'use strict';
 
 // Use Applicaion configuration module to register a new module
@@ -57,128 +58,21 @@ ApplicationConfiguration.registerModule('users');
 
 'use strict';
 
-// Configuring the Articles module
-angular.module('articles').run(['Menus',
-	function(Menus) {
-		// Set top bar menu items
-		Menus.addMenuItem('topbar', 'Articles', 'articles', 'dropdown', '/articles(/create)?');
-		Menus.addSubMenuItem('topbar', 'articles', 'List Articles', 'articles');
-		Menus.addSubMenuItem('topbar', 'articles', 'New Article', 'articles/create');
-	}
-]);
-'use strict';
-
-// Setting up route
-angular.module('articles').config(['$stateProvider',
-	function($stateProvider) {
-		// Articles state routing
-		$stateProvider.
-		state('listArticles', {
-			url: '/articles',
-			templateUrl: 'modules/articles/views/list-articles.client.view.html'
-		}).
-		state('createArticle', {
-			url: '/articles/create',
-			templateUrl: 'modules/articles/views/create-article.client.view.html'
-		}).
-		state('viewArticle', {
-			url: '/articles/:articleId',
-			templateUrl: 'modules/articles/views/view-article.client.view.html'
-		}).
-		state('editArticle', {
-			url: '/articles/:articleId/edit',
-			templateUrl: 'modules/articles/views/edit-article.client.view.html'
-		});
-	}
-]);
-'use strict';
-
-angular.module('articles').controller('ArticlesController', ['$scope', '$stateParams', '$location', 'Authentication', 'Articles',
-	function($scope, $stateParams, $location, Authentication, Articles) {
-		$scope.authentication = Authentication;
-
-		$scope.create = function() {
-			var article = new Articles({
-				title: this.title,
-				content: this.content
-			});
-			article.$save(function(response) {
-				$location.path('articles/' + response._id);
-
-				$scope.title = '';
-				$scope.content = '';
-			}, function(errorResponse) {
-				$scope.error = errorResponse.data.message;
-			});
-		};
-
-		$scope.remove = function(article) {
-			if (article) {
-				article.$remove();
-
-				for (var i in $scope.articles) {
-					if ($scope.articles[i] === article) {
-						$scope.articles.splice(i, 1);
-					}
-				}
-			} else {
-				$scope.article.$remove(function() {
-					$location.path('articles');
-				});
-			}
-		};
-
-		$scope.update = function() {
-			var article = $scope.article;
-
-			article.$update(function() {
-				$location.path('articles/' + article._id);
-			}, function(errorResponse) {
-				$scope.error = errorResponse.data.message;
-			});
-		};
-
-		$scope.find = function() {
-			$scope.articles = Articles.query();
-		};
-
-		$scope.findOne = function() {
-			$scope.article = Articles.get({
-				articleId: $stateParams.articleId
-			});
-		};
-	}
-]);
-'use strict';
-
-//Articles service used for communicating with the articles REST endpoints
-angular.module('articles').factory('Articles', ['$resource',
-	function($resource) {
-		return $resource('articles/:articleId', {
-			articleId: '@_id'
-		}, {
-			update: {
-				method: 'PUT'
-			}
-		});
-	}
-]);
-'use strict';
-
 // Setting up route
 angular.module('core').config(['$stateProvider', '$urlRouterProvider',
 	function($stateProvider, $urlRouterProvider) {
 		// Redirect to home view when route not found
-		$urlRouterProvider.otherwise('/');
+		$urlRouterProvider.otherwise('/events');
 
 		// Home state routing
 		$stateProvider.
 		state('home', {
-			url: '/',
+			url: '/home',
 			templateUrl: 'modules/core/views/home.client.view.html'
 		});
 	}
 ]);
+
 'use strict';
 
 angular.module('core').controller('HeaderController', ['$scope', 'Authentication', 'Menus',
@@ -206,60 +100,59 @@ angular.module('core')
         // This provides Authentication context.
         $scope.authentication = Authentication;
 // Example json
-        $scope.days = [
+        $scope.events = [
             {
-                date: "2014-10-24",
-                dateReadable: "October 24",
+                date: '2014-10-24',
+                dateReadable: 'October 24',
                 tracks: [
-                    {title: "Android", color: "#90be4e"},
-                    {title: "Web & Cloud", color: "#03a9f4"},
-                    {title: "Community", color: "#e91e63"}
+                    {title: 'Android', color: '#90be4e'},
+                    {title: 'Web & Cloud', color: '#03a9f4'},
+                    {title: 'Community', color: '#e91e63'}
                 ],
                 timeslots: [
                     {
-                        startTime: "10:00",
-                        endTime: "10:45",
+                        startTime: '10:00',
+                        endTime: '10:45',
                         sessionIds: ['002', '003', '004']
                     },
                     {
-                        startTime: "11:00",
-                        endTime: "11:45",
+                        startTime: '11:00',
+                        endTime: '11:45',
                         sessionIds: ['003', '404', '004']
                     },
                     {
-                        startTime: "12:00",
-                        endTime: "11:45",
+                        startTime: '12:00',
+                        endTime: '11:45',
                         sessionIds: ['307']
                     }
                 ]
-            }
-            ,
+            },
             {
-                date: "2014-10-25",
-                dateReadable: "October 25",
+                date: '2014-10-25',
+                dateReadable: 'October 25',
                 tracks: [
-                    {title: "Android", color: "#90be4e"},
-                    {title: "Web & Cloud", color: "#03a9f4"}
+                    {title: 'Android', color: '#90be4e'},
+                    {title: 'Web & Cloud', color: '#03a9f4'}
                 ],
                 timeslots: [
                     {
-                        startTime: "10:00",
-                        endTime: "10:45",
+                        startTime: '10:00',
+                        endTime: '10:45',
                         sessionIds: ['404', '002']
                     },
                     {
-                        startTime: "11:00",
-                        endTime: "11:45",
+                        startTime: '11:00',
+                        endTime: '11:45',
                         sessionIds: ['002', '003']
                     },
                     {
-                        startTime: "13:00",
-                        endTime: "13:45",
+                        startTime: '13:00',
+                        endTime: '13:45',
                         sessionIds: ['003']
                     },
                     {
-                        startTime: "14:00",
-                        endTime: "15:00",
+                        startTime: '14:00',
+                        endTime: '15:00',
                         sessionIds: ['503']
                     }
                 ]
@@ -432,6 +325,118 @@ angular.module('core').service('Menus', [
 		this.addMenu('topbar');
 	}
 ]);
+'use strict';
+
+// Configuring the Events module
+angular.module('events').run(['Menus',
+	function(Menus) {
+		// Set top bar menu items
+		Menus.addMenuItem('topbar', 'Events', 'events', 'dropdown', '/events(/create)?');
+		Menus.addSubMenuItem('topbar', 'events', 'List Events', 'events');
+		Menus.addSubMenuItem('topbar', 'events', 'New Event', 'events/create');
+	}
+]);
+
+'use strict';
+
+// Setting up route
+angular.module('events').config(['$stateProvider',
+	function($stateProvider) {
+		// Events state routing
+		$stateProvider.
+		state('listEvents', {
+			url: '/events',
+			templateUrl: 'modules/events/views/list-events.client.view.html'
+		}).
+		state('createEvent', {
+			url: '/events/create',
+			templateUrl: 'modules/events/views/create-event.client.view.html'
+		}).
+		state('viewEvent', {
+			url: '/events/:eventId',
+			templateUrl: 'modules/events/views/view-event.client.view.html'
+		}).
+		state('editEvent', {
+			url: '/events/:eventId/edit',
+			templateUrl: 'modules/events/views/edit-event.client.view.html'
+		});
+	}
+]);
+
+'use strict';
+
+angular.module('events').controller('EventsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Events',
+	function($scope, $stateParams, $location, Authentication, Events) {
+		$scope.authentication = Authentication;
+
+		$scope.create = function() {
+			var event = new Events({
+				title: this.title,
+				content: this.content
+			});
+			event.$save(function(response) {
+				$location.path('events/' + response._id);
+
+				$scope.title = '';
+				$scope.content = '';
+			}, function(errorResponse) {
+				$scope.error = errorResponse.data.message;
+			});
+		};
+
+		$scope.remove = function(event) {
+			if (event) {
+				event.$remove();
+
+				for (var i in $scope.events) {
+					if ($scope.events[i] === event) {
+						$scope.events.splice(i, 1);
+					}
+				}
+			} else {
+				$scope.event.$remove(function() {
+					$location.path('events');
+				});
+			}
+		};
+
+		$scope.update = function() {
+			var event = $scope.event;
+
+			event.$update(function() {
+				$location.path('events/' + event._id);
+			}, function(errorResponse) {
+				$scope.error = errorResponse.data.message;
+			});
+		};
+
+		$scope.find = function() {
+			$scope.events = Events.query();
+		};
+
+		$scope.findOne = function() {
+			$scope.event = Events.get({
+				eventId: $stateParams.eventId
+			});
+		};
+	}
+]);
+
+'use strict';
+
+//Events service used for communicating with the events REST endpoints
+angular.module('events').factory('Events', ['$resource',
+	function($resource) {
+		return $resource('events/:eventId', {
+			eventId: '@_id'
+		}, {
+			update: {
+				method: 'PUT'
+			}
+		});
+	}
+]);
+
 'use strict';
 
 // Config HTTP Error Handling
@@ -686,28 +691,28 @@ angular.module('users').factory('Users', ['$resource',
 ]);
 angular.module("app").run(["$templateCache", function($templateCache) {
 
-  $templateCache.put("modules/articles/views/create-article.client.view.html",
-    "<section data-ng-controller=\"ArticlesController\"><div class=\"page-header\"><h1>New Article</h1></div><div class=\"col-md-12\"><form name=\"articleForm\" class=\"form-horizontal\" data-ng-submit=\"create()\" novalidate=\"\"><fieldset><div class=\"form-group\" ng-class=\"{ 'has-error': articleForm.title.$dirty && articleForm.title.$invalid }\"><label class=\"control-label\" for=\"title\">Title</label><div class=\"controls\"><input name=\"title\" type=\"text\" data-ng-model=\"title\" id=\"title\" class=\"form-control\" placeholder=\"Title\" required=\"\"></div></div><div class=\"form-group\"><label class=\"control-label\" for=\"content\">Content</label><div class=\"controls\"><textarea name=\"content\" data-ng-model=\"content\" id=\"content\" class=\"form-control\" cols=\"30\" rows=\"10\" placeholder=\"Content\"></textarea></div></div><div class=\"form-group\"><input type=\"submit\" class=\"btn btn-default\"></div><div data-ng-show=\"error\" class=\"text-danger\"><strong data-ng-bind=\"error\"></strong></div></fieldset></form></div></section>"
-  );
-
-  $templateCache.put("modules/articles/views/edit-article.client.view.html",
-    "<section data-ng-controller=\"ArticlesController\" data-ng-init=\"findOne()\"><div class=\"page-header\"><h1>Edit Article</h1></div><div class=\"col-md-12\"><form name=\"articleForm\" class=\"form-horizontal\" data-ng-submit=\"update(articleForm.$valid)\" novalidate=\"\"><fieldset><div class=\"form-group\" ng-class=\"{ 'has-error' : submitted && articleForm.title.$invalid}\"><label class=\"control-label\" for=\"title\">Title</label><div class=\"controls\"><input name=\"title\" type=\"text\" data-ng-model=\"article.title\" id=\"title\" class=\"form-control\" placeholder=\"Title\" required=\"\"></div><div ng-show=\"submitted && articleForm.title.$invalid\" class=\"help-block\"><p ng-show=\"articleForm.title.$error.required\" class=\"text-danger\">Title is required</p></div></div><div class=\"form-group\" ng-class=\"{ 'has-error' : submitted && articleForm.content.$invalid}\"><label class=\"control-label\" for=\"content\">Content</label><div class=\"controls\"><textarea name=\"content\" data-ng-model=\"article.content\" id=\"content\" class=\"form-control\" cols=\"30\" rows=\"10\" placeholder=\"Content\" required=\"\"></textarea></div><div ng-show=\"submitted && articleForm.content.$invalid\" class=\"help-block\"><p ng-show=\"articleForm.content.$error.required\" class=\"text-danger\">Content is required</p></div></div><div class=\"form-group\"><input type=\"submit\" value=\"Update\" class=\"btn btn-default\"></div><div data-ng-show=\"error\" class=\"text-danger\"><strong data-ng-bind=\"error\"></strong></div></fieldset></form></div></section>"
-  );
-
-  $templateCache.put("modules/articles/views/list-articles.client.view.html",
-    "<section data-ng-controller=\"ArticlesController\" data-ng-init=\"find()\"><div class=\"page-header\"><h1>Articles</h1></div><div class=\"list-group\"><a data-ng-repeat=\"article in articles\" data-ng-href=\"#!/articles/{{article._id}}\" class=\"list-group-item\"><small class=\"list-group-item-text\">Posted on <span data-ng-bind=\"article.created | date:'mediumDate'\"></span> by <span data-ng-bind=\"article.user.displayName\"></span></small><h4 class=\"list-group-item-heading\" data-ng-bind=\"article.title\"></h4><p class=\"list-group-item-text\" data-ng-bind=\"article.content\"></p></a></div><div class=\"alert alert-warning text-center\" data-ng-if=\"articles.$resolved && !articles.length\">No articles yet, why don't you <a href=\"/#!/articles/create\">create one</a>?</div></section>"
-  );
-
-  $templateCache.put("modules/articles/views/view-article.client.view.html",
-    "<section data-ng-controller=\"ArticlesController\" data-ng-init=\"findOne()\"><div class=\"page-header\"><h1 data-ng-bind=\"article.title\"></h1></div><div class=\"pull-right\" data-ng-show=\"authentication.user._id == article.user._id\"><a class=\"btn btn-primary\" href=\"/#!/articles/{{article._id}}/edit\"><i class=\"glyphicon glyphicon-edit\"></i></a> <a class=\"btn btn-primary\" data-ng-click=\"remove();\"><i class=\"glyphicon glyphicon-trash\"></i></a></div><small><em class=\"text-muted\">Posted on <span data-ng-bind=\"article.created | date:'mediumDate'\"></span> by <span data-ng-bind=\"article.user.displayName\"></span></em></small><p class=\"lead\" data-ng-bind=\"article.content\"></p></section>"
-  );
-
   $templateCache.put("modules/core/views/header.client.view.html",
     "<div class=\"container\" data-ng-controller=\"HeaderController\"><div class=\"navbar-header\"><button class=\"navbar-toggle\" type=\"button\" data-ng-click=\"toggleCollapsibleMenu()\"><span class=\"sr-only\">Toggle navigation</span> <span class=\"icon-bar\"></span> <span class=\"icon-bar\"></span> <span class=\"icon-bar\"></span></button> <a href=\"/#!/\" class=\"navbar-brand\">EVENTA</a></div><nav class=\"collapse navbar-collapse\" collapse=\"!isCollapsed\" role=\"navigation\"><ul class=\"nav navbar-nav\" data-ng-if=\"menu.shouldRender(authentication.user);\"><li data-ng-repeat=\"item in menu.items | orderBy: 'position'\" data-ng-if=\"item.shouldRender(authentication.user);\" ng-switch=\"item.menuItemType\" ui-route=\"{{item.uiRoute}}\" class=\"{{item.menuItemClass}}\" ng-class=\"{active: ($uiRoute)}\" dropdown=\"item.menuItemType === 'dropdown'\"><a ng-switch-when=\"dropdown\" class=\"dropdown-toggle\"><span data-ng-bind=\"item.title\"></span> <b class=\"caret\"></b></a><ul ng-switch-when=\"dropdown\" class=\"dropdown-menu\"><li data-ng-repeat=\"subitem in item.items | orderBy: 'position'\" data-ng-if=\"subitem.shouldRender(authentication.user);\" ui-route=\"{{subitem.uiRoute}}\" ng-class=\"{active: $uiRoute}\"><a href=\"/#!/{{subitem.link}}\" data-ng-bind=\"subitem.title\"></a></li></ul><a ng-switch-default=\"\" href=\"/#!/{{item.link}}\" data-ng-bind=\"item.title\"></a></li></ul><ul class=\"nav navbar-nav navbar-right\" data-ng-hide=\"authentication.user\"><li ui-route=\"/signup\" ng-class=\"{active: $uiRoute}\"><a href=\"/#!/signup\">Sign Up</a></li><li class=\"divider-vertical\"></li><li ui-route=\"/signin\" ng-class=\"{active: $uiRoute}\"><a href=\"/#!/signin\">Sign In</a></li></ul><ul class=\"nav navbar-nav navbar-right\" data-ng-show=\"authentication.user\"><li class=\"dropdown\"><a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\"><span data-ng-bind=\"authentication.user.displayName\"></span> <b class=\"caret\"></b></a><ul class=\"dropdown-menu\"><li><a href=\"/#!/settings/profile\">Edit Profile</a></li><li><a href=\"/#!/settings/accounts\">Manage Social Accounts</a></li><li data-ng-show=\"authentication.user.provider === 'local'\"><a href=\"/#!/settings/password\">Change Password</a></li><li class=\"divider\"></li><li><a href=\"/auth/signout\">Signout</a></li></ul></li></ul></nav></div>"
   );
 
   $templateCache.put("modules/core/views/home.client.view.html",
     "<section id=\"schedule\" class=\"schedule\" ng-controller=\"HomeController\"><div class=\"content-wrapper\"><div ng-repeat=\"day in days\" class=\"schedule-table col-lg-8 col-md-10 col-md-offset-1\"><h4 class=\"schedule-table-heading\">{{day.dateReadable}}</h4><div class=\"timeslot track-header stick-header\"><div class=\"track-header-label\">Day {{day.$index}}</div><div class=\"timeslot-elements flexbox-wrapper\"><div ng-repeat=\"track in day.tracks\" class=\"track-header-slot col-md-{{12/day.tracks.length}} flexbox-item-height hidden-xs\"><h5 class=\"track-header-title\">{{track.title}}</h5></div><div class=\"track-header-slot col-xs-12 visible-xs\"><h5 class=\"slot-detail track-header-title\"></h5></div></div></div><div ng-repeat=\"timeslot in day.timeslots\" class=\"timeslot\" itemtype=\"http://schema.org/subEvent\"><div class=\"timeslot-label\"><time class=\"start-time\" itemprop=\"startDate\" datetime=\"{{day.dateReadable}}T{{timeslot.startTime}}\"><span>{{timeslot.startTime}}</span></time> <time class=\"end-time\" itemprop=\"endDate\" datetime=\"{{day.dateReadable}}T{{timeslot.endTime}}\"><span>{{timeslot.endTime}}</span></time></div></div></div></div></section>"
+  );
+
+  $templateCache.put("modules/events/views/create-event.client.view.html",
+    "<section data-ng-controller=\"EventsController\"><div class=\"page-header\"><h1>New Event</h1></div><div class=\"col-md-12\"><form name=\"eventForm\" class=\"form-horizontal\" data-ng-submit=\"create()\" novalidate=\"\"><fieldset><div class=\"form-group\" ng-class=\"{ 'has-error': eventForm.title.$dirty && eventForm.title.$invalid }\"><label class=\"control-label\" for=\"title\">Title</label><div class=\"controls\"><input name=\"title\" type=\"text\" data-ng-model=\"title\" id=\"title\" class=\"form-control\" placeholder=\"Title\" required=\"\"></div></div><div class=\"form-group\"><label class=\"control-label\" for=\"content\">Content</label><div class=\"controls\"><textarea name=\"content\" data-ng-model=\"content\" id=\"content\" class=\"form-control\" cols=\"30\" rows=\"10\" placeholder=\"Content\"></textarea></div></div><div class=\"form-group\"><input type=\"submit\" class=\"btn btn-default\"></div><div data-ng-show=\"error\" class=\"text-danger\"><strong data-ng-bind=\"error\"></strong></div></fieldset></form></div></section>"
+  );
+
+  $templateCache.put("modules/events/views/edit-event.client.view.html",
+    "<section data-ng-controller=\"EventsController\" data-ng-init=\"findOne()\"><div class=\"page-header\"><h1>Edit Event</h1></div><div class=\"col-md-12\"><form name=\"eventForm\" class=\"form-horizontal\" data-ng-submit=\"update(eventForm.$valid)\" novalidate=\"\"><fieldset><div class=\"form-group\" ng-class=\"{ 'has-error' : submitted && eventForm.title.$invalid}\"><label class=\"control-label\" for=\"title\">Title</label><div class=\"controls\"><input name=\"title\" type=\"text\" data-ng-model=\"event.title\" id=\"title\" class=\"form-control\" placeholder=\"Title\" required=\"\"></div><div ng-show=\"submitted && eventForm.title.$invalid\" class=\"help-block\"><p ng-show=\"eventForm.title.$error.required\" class=\"text-danger\">Title is required</p></div></div><div class=\"form-group\" ng-class=\"{ 'has-error' : submitted && eventForm.content.$invalid}\"><label class=\"control-label\" for=\"content\">Content</label><div class=\"controls\"><textarea name=\"content\" data-ng-model=\"event.content\" id=\"content\" class=\"form-control\" cols=\"30\" rows=\"10\" placeholder=\"Content\" required=\"\"></textarea></div><div ng-show=\"submitted && eventForm.content.$invalid\" class=\"help-block\"><p ng-show=\"eventForm.content.$error.required\" class=\"text-danger\">Content is required</p></div></div><div class=\"form-group\"><input type=\"submit\" value=\"Update\" class=\"btn btn-default\"></div><div data-ng-show=\"error\" class=\"text-danger\"><strong data-ng-bind=\"error\"></strong></div></fieldset></form></div></section>"
+  );
+
+  $templateCache.put("modules/events/views/list-events.client.view.html",
+    "<section data-ng-controller=\"EventsController\" data-ng-init=\"find()\"><div class=\"page-header\"><h1>Events</h1></div><div class=\"list-group\"><a data-ng-repeat=\"event in events\" data-ng-href=\"#!/events/{{event._id}}\" class=\"list-group-item\"><small class=\"list-group-item-text\">Posted on <span data-ng-bind=\"event.created | date:'mediumDate'\"></span> by <span data-ng-bind=\"event.user.displayName\"></span></small><h4 class=\"list-group-item-heading\" data-ng-bind=\"event.title\"></h4><p class=\"list-group-item-text\" data-ng-bind=\"event.content\"></p></a></div><div class=\"alert alert-warning text-center\" data-ng-if=\"events.$resolved && !events.length\">No events yet, why don't you <a href=\"/#!/events/create\">create one</a>?</div></section>"
+  );
+
+  $templateCache.put("modules/events/views/view-event.client.view.html",
+    "<section data-ng-controller=\"EventsController\" data-ng-init=\"findOne()\"><div class=\"page-header\"><h1 data-ng-bind=\"event.title\"></h1></div><div class=\"pull-right\" data-ng-show=\"authentication.user._id == event.user._id\"><a class=\"btn btn-primary\" href=\"/#!/events/{{event._id}}/edit\"><i class=\"glyphicon glyphicon-edit\"></i></a> <a class=\"btn btn-primary\" data-ng-click=\"remove();\"><i class=\"glyphicon glyphicon-trash\"></i></a></div><small><em class=\"text-muted\">Posted on <span data-ng-bind=\"event.created | date:'mediumDate'\"></span> by <span data-ng-bind=\"event.user.displayName\"></span></em></small><p class=\"lead\" data-ng-bind=\"event.content\"></p></section>"
   );
 
   $templateCache.put("modules/users/views/authentication/signin.client.view.html",

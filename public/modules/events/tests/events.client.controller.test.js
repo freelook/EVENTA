@@ -1,10 +1,10 @@
 'use strict';
 
 (function() {
-	// Articles Controller Spec
-	describe('ArticlesController', function() {
+	// Events Controller Spec
+	describe('EventsController', function() {
 		// Initialize global variables
-		var ArticlesController,
+		var EventsController,
 			scope,
 			$httpBackend,
 			$stateParams,
@@ -44,74 +44,74 @@
 			$httpBackend = _$httpBackend_;
 			$location = _$location_;
 
-			// Initialize the Articles controller.
-			ArticlesController = $controller('ArticlesController', {
+			// Initialize the Events controller.
+			EventsController = $controller('EventsController', {
 				$scope: scope
 			});
 		}));
 
-		it('$scope.find() should create an array with at least one article object fetched from XHR', inject(function(Articles) {
-			// Create sample article using the Articles service
-			var sampleArticle = new Articles({
-				title: 'An Article about MEAN',
+		it('$scope.find() should create an array with at least one event object fetched from XHR', inject(function(Events) {
+			// Create sample event using the Events service
+			var sampleEvent = new Events({
+				title: 'An Event about MEAN',
 				content: 'MEAN rocks!'
 			});
 
-			// Create a sample articles array that includes the new article
-			var sampleArticles = [sampleArticle];
+			// Create a sample events array that includes the new event
+			var sampleEvents = [sampleEvent];
 
 			// Set GET response
-			$httpBackend.expectGET('articles').respond(sampleArticles);
+			$httpBackend.expectGET('events').respond(sampleEvents);
 
 			// Run controller functionality
 			scope.find();
 			$httpBackend.flush();
 
 			// Test scope value
-			expect(scope.articles).toEqualData(sampleArticles);
+			expect(scope.events).toEqualData(sampleEvents);
 		}));
 
-		it('$scope.findOne() should create an array with one article object fetched from XHR using a articleId URL parameter', inject(function(Articles) {
-			// Define a sample article object
-			var sampleArticle = new Articles({
-				title: 'An Article about MEAN',
+		it('$scope.findOne() should create an array with one event object fetched from XHR using a eventId URL parameter', inject(function(Events) {
+			// Define a sample event object
+			var sampleEvent = new Events({
+				title: 'An Event about MEAN',
 				content: 'MEAN rocks!'
 			});
 
 			// Set the URL parameter
-			$stateParams.articleId = '525a8422f6d0f87f0e407a33';
+			$stateParams.eventId = '525a8422f6d0f87f0e407a33';
 
 			// Set GET response
-			$httpBackend.expectGET(/articles\/([0-9a-fA-F]{24})$/).respond(sampleArticle);
+			$httpBackend.expectGET(/events\/([0-9a-fA-F]{24})$/).respond(sampleEvent);
 
 			// Run controller functionality
 			scope.findOne();
 			$httpBackend.flush();
 
 			// Test scope value
-			expect(scope.article).toEqualData(sampleArticle);
+			expect(scope.event).toEqualData(sampleEvent);
 		}));
 
-		it('$scope.create() with valid form data should send a POST request with the form input values and then locate to new object URL', inject(function(Articles) {
-			// Create a sample article object
-			var sampleArticlePostData = new Articles({
-				title: 'An Article about MEAN',
+		it('$scope.create() with valid form data should send a POST request with the form input values and then locate to new object URL', inject(function(Events) {
+			// Create a sample event object
+			var sampleEventPostData = new Events({
+				title: 'An Event about MEAN',
 				content: 'MEAN rocks!'
 			});
 
-			// Create a sample article response
-			var sampleArticleResponse = new Articles({
+			// Create a sample event response
+			var sampleEventResponse = new Events({
 				_id: '525cf20451979dea2c000001',
-				title: 'An Article about MEAN',
+				title: 'An Event about MEAN',
 				content: 'MEAN rocks!'
 			});
 
 			// Fixture mock form input values
-			scope.title = 'An Article about MEAN';
+			scope.title = 'An Event about MEAN';
 			scope.content = 'MEAN rocks!';
 
 			// Set POST response
-			$httpBackend.expectPOST('articles', sampleArticlePostData).respond(sampleArticleResponse);
+			$httpBackend.expectPOST('events', sampleEventPostData).respond(sampleEventResponse);
 
 			// Run controller functionality
 			scope.create();
@@ -121,50 +121,50 @@
 			expect(scope.title).toEqual('');
 			expect(scope.content).toEqual('');
 
-			// Test URL redirection after the article was created
-			expect($location.path()).toBe('/articles/' + sampleArticleResponse._id);
+			// Test URL redirection after the event was created
+			expect($location.path()).toBe('/events/' + sampleEventResponse._id);
 		}));
 
-		it('$scope.update() should update a valid article', inject(function(Articles) {
-			// Define a sample article put data
-			var sampleArticlePutData = new Articles({
+		it('$scope.update() should update a valid event', inject(function(Events) {
+			// Define a sample event put data
+			var sampleEventPutData = new Events({
 				_id: '525cf20451979dea2c000001',
-				title: 'An Article about MEAN',
+				title: 'An Event about MEAN',
 				content: 'MEAN Rocks!'
 			});
 
-			// Mock article in scope
-			scope.article = sampleArticlePutData;
+			// Mock event in scope
+			scope.event = sampleEventPutData;
 
 			// Set PUT response
-			$httpBackend.expectPUT(/articles\/([0-9a-fA-F]{24})$/).respond();
+			$httpBackend.expectPUT(/events\/([0-9a-fA-F]{24})$/).respond();
 
 			// Run controller functionality
 			scope.update();
 			$httpBackend.flush();
 
 			// Test URL location to new object
-			expect($location.path()).toBe('/articles/' + sampleArticlePutData._id);
+			expect($location.path()).toBe('/events/' + sampleEventPutData._id);
 		}));
 
-		it('$scope.remove() should send a DELETE request with a valid articleId and remove the article from the scope', inject(function(Articles) {
-			// Create new article object
-			var sampleArticle = new Articles({
+		it('$scope.remove() should send a DELETE request with a valid eventId and remove the event from the scope', inject(function(Events) {
+			// Create new event object
+			var sampleEvent = new Events({
 				_id: '525a8422f6d0f87f0e407a33'
 			});
 
-			// Create new articles array and include the article
-			scope.articles = [sampleArticle];
+			// Create new events array and include the event
+			scope.events = [sampleEvent];
 
 			// Set expected DELETE response
-			$httpBackend.expectDELETE(/articles\/([0-9a-fA-F]{24})$/).respond(204);
+			$httpBackend.expectDELETE(/events\/([0-9a-fA-F]{24})$/).respond(204);
 
 			// Run controller functionality
-			scope.remove(sampleArticle);
+			scope.remove(sampleEvent);
 			$httpBackend.flush();
 
 			// Test array after successful delete
-			expect(scope.articles.length).toBe(0);
+			expect(scope.events.length).toBe(0);
 		}));
 	});
 }());

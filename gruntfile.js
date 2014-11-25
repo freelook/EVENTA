@@ -170,6 +170,7 @@ module.exports = function (grunt) {
 
     // Load NPM tasks
     require('load-grunt-tasks')(grunt);
+    grunt.loadTasks('tasks');
 
     // Making grunt default to force in order not to break the project.
     grunt.option('force', true);
