@@ -6,7 +6,7 @@
 
 var mongoose = require('mongoose'),
 	errorHandler = require('./errors'),
-	Event = mongoose.model('Event'),
+	Evnt = mongoose.model('Event'),
 	_ = require('lodash');
 
 /**

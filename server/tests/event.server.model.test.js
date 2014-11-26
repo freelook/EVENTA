@@ -6,12 +6,12 @@
 var should = require('should'),
 	mongoose = require('mongoose'),
 	User = mongoose.model('User'),
-	Event = mongoose.model('Event');
+	Evnt = mongoose.model('Event');
 
 /**
  * Globals
  */
-var user, event;
+var user, evnt;
 
 /**
  * Unit tests
@@ -28,7 +28,7 @@ describe('Event Model Unit Tests:', function() {
 		});
 
 		user.save(function() {
-			event = new Event({
+			evnt = new Event({
 				title: 'Event Title',
 				content: 'Event Content',
 				user: user
@@ -49,7 +49,7 @@ describe('Event Model Unit Tests:', function() {
 		it('should be able to show an error when try to save without title', function(done) {
 			event.title = '';
 
-			return event.save(function(err) {
+			return evnt.save(function(err) {
 				should.exist(err);
 				done();
 			});
@@ -57,7 +57,7 @@ describe('Event Model Unit Tests:', function() {
 	});
 
 	afterEach(function(done) {
-		Event.remove().exec();
+		Evnt.remove().exec();
 		User.remove().exec();
 		done();
 	});
