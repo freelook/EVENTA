@@ -2,6 +2,7 @@
 
 * Build Status: https://travis-ci.org/freelook/EVENTA
 * Demo: http://eventa.herokuapp.com/
+* Mobile: https://build.phonegap.com/apps/1201806/share
 
 ## Before You Begin 
 Before you begin we recommend you read about the basic building blocks that assemble a MEAN.JS application: 
