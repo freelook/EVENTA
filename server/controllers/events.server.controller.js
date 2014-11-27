@@ -74,7 +74,7 @@ exports.delete = function(req, res) {
  * List of events
  */
 exports.list = function(req, res) {
-	Event.find().sort('-created').populate('user', 'displayName').exec(function(err, events) {
+	Evnt.find().sort('-created').populate('user', 'displayName').exec(function(err, events) {
 		if (err) {
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
@@ -89,7 +89,7 @@ exports.list = function(req, res) {
  * event middleware
  */
 exports.eventByID = function(req, res, next, id) {
-	Event.findById(id).populate('user', 'displayName').exec(function(err, event) {
+	Evnt.findById(id).populate('user', 'displayName').exec(function(err, event) {
 		if (err) return next(err);
 		if (!event) return next(new Error('Failed to load event ' + id));
 		req.event = event;
