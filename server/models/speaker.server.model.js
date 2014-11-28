@@ -25,7 +25,7 @@ var PersonSchema = new Schema({
 	},
 	company: {
 		type: String,
-		default: ''
+		default: 'EPAM Systems'
 	},
 	title: {
 		type: String,
@@ -35,6 +35,10 @@ var PersonSchema = new Schema({
 		type: String,
 		default: ''
 	},
+    user: {
+        type: [{type: Schema.Types.ObjectId, ref: "UserModel"}],
+        required: true
+    },
 	thumbnailUrl: {
 		type: String,
 		default: ''

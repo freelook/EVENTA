@@ -11,26 +11,82 @@ var mongoose = require('mongoose'),
  * Event1 Schema
  */
 var Event1Schema = new Schema({
-	Event1Id: {
-		type: Number,
-		default: 0
-	},
-	name: {
-		type: String,
-		default: ''
-	},
-	days: [{
+    created: {
+        type: Date,
+        default: Date.now
+    },
+
+    title: {
+        type: String,
+        default: '',
+        trim: true,
+        required: 'Title cannot be blank'
+    },
+
+    external: {
+        type: Boolean,
+        default: false
+    },
+    description: {
+        type: String,
+        default: '',
+        trim: true,
+        required: 'Description cannot be blank'
+    },
+
+    startDateTime: {
+        type: Date,
+        default: Date.now
+    },
+
+    endDateTime: {
+        type: Date,
+        default: Date.now
+    },
+
+    backgroundImgUrl: {
+        type: String,
+        default: 'background.png'
+    },
+
+    speakers: {
+        type: [{type: Schema.Types.ObjectId, ref: "SpeakerModel"}],
+        required: true
+    },
+
+    partners: {
+        type: [{type: Schema.Types.ObjectId, ref: "PartnerModel"}],
+        required: true
+    },
+
+    organizers: {
+        type: [{type: Schema.Types.ObjectId, ref: "UserModel"}],
+        required: true
+    },
+
+    numberOfPersons: {
+        type: Number,
+        default: 0
+    },
+
+    attendants: {
+        type: [{type: Schema.Types.ObjectId, ref: "UserModel"}],
+        required: true
+    },
+
+
+	schedule: [{
 		day: {
 			type: Date, 
 			default: Date.now
 		},
-		tracks: [{
+		agenda: [{
 				track: {
 					name: {
 						type: String,
 						default: ''
 					},
-					timeslots: [{
+					sessions: [{
 							timeslot: {
 								start: {
 									type: Date, 
@@ -40,15 +96,31 @@ var Event1Schema = new Schema({
 									type: Date, 
 									default: Date.now
 								},
-								session: {
+								title: {
 									type: Number,
 									default: 0
-								}
+								},
+                                description: {
+                                    type: String,
+                                    default: '',
+                                    trim: true,
+                                    required: 'Description cannot be blank'
+                                },
+                                speakers: {
+                                    type: [{type: Schema.Types.ObjectId, ref: "SpeakerModel"}],
+                                    required: true
+                                }
 							}
 					}]
 				}
 		}]
-	}]
+	}],
+
+    location: {
+        type: [{type: Schema.Types.ObjectId, ref: "LocationModel"}],
+        required: true
+    }
+
 });
 
 mongoose.model('Event1', Event1Schema);
