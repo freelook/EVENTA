@@ -43,7 +43,8 @@ angular.module('events')
                 draggable: false,
                 labelAnchor: '100 0',
                 labelClass: 'marker-labels'
-            }
+            },
+            coordinates: DAFAULT_LOCATION
         };
 
 
@@ -129,14 +130,18 @@ angular.module('events')
         $scope.findOne = function () {
             $scope.event = Events.get({
                 eventId: $stateParams.eventId
+            }, function (event) {
+                if(event && event.location){
+                    $scope.map.center = event.location.coordinates || DAFAULT_LOCATION;
+                    $scope.marker.coordinates = angular.copy($scope.map.center);
+                }
             });
-            if($scope.event && $scope.event.location){
-                $scope.map.center = $scope.event.location.coordinates;
-            }
-        };
 
+        };
+        $scope.options = {scrollwheel: false};
         $scope.locationUpdate = function(){
             $scope.map.center = $scope.selectedLocation.coordinates;
         };
+
     }
 );
