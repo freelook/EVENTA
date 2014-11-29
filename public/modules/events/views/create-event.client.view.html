@@ -46,7 +46,7 @@
                                max-date="maxDate"
                                min-date="minDate"
                                datepicker-options="dateOptions"
-                               ng-model="dtStart"
+                               ng-model="startDate"
                                datepicker-popup="{{format}}"/>
 						<span class="input-group-btn">
                 			<button type="button" class="btn btn-default" ng-click="openStartDate($event)"><i
@@ -74,7 +74,7 @@
                                max-date="maxDate"
                                min-date="minDate"
                                datepicker-options="dateOptions"
-                               ng-model="dtEnd"
+                               ng-model="endDate"
                                datepicker-popup="{{format}}"/>
 						<span class="input-group-btn">
                 			<button type="button" class="btn btn-default" ng-click="openEndDate($event)"><i
@@ -105,7 +105,7 @@
                     <label class="control-label" for="numberOfPersons">Number of participants</label>
 
                     <div class="controls">
-                        <input class="form-control" id="numberOfPersons" data-ng-model="numberOfPersons" type="number"/>
+                        <input class="form-control" id="numberOfPersons" data-ng-model="numberOfPersons" type="number" value="0"/>
                     </div>
                 </div>
 

@@ -1,12 +1,12 @@
 'use strict';
 
 angular.module('events').controller('EventsController',
-	function($scope, $stateParams, $location, $filter, Authentication, Events) {
+	function($scope, $stateParams, $location, $filter, Authentication, Events, EventSettings) {
 		$scope.authentication = Authentication;
-		$scope.tags = '';
-		$scope.startDate = $filter('date')(new Date(), 'yyyy/MM/dd');
-		$scope.endDate = $filter('date')(new Date(), 'yyyy/MM/dd');
-		$scope.format = 'yyyy/MM/dd';
+
+		$scope.startDate = EventSettings.formatDate(new Date());
+		$scope.endDate = EventSettings.formatDate(new Date());
+		$scope.format = EventSettings.dateFormat;
 		$scope.minDate = new Date();
 		$scope.maxDate = '2020-12-31';
 		$scope.dateOptions = {
@@ -19,13 +19,10 @@ angular.module('events').controller('EventsController',
 		$scope.hstep= 1;
 		$scope.mstep= 15;
 
+		$scope.numberOfPersons = 0;
+		$scope.tags = '';
 		$scope.external = false;
-
-		function trimSplitTags(tags){
-			return tags.split(',').map(function(tag){
-				return tag.trim();
-			});
-		}
+		$scope.search = '';
 
 		$scope.openStartDate = function($event) {
 			$event.preventDefault();
@@ -38,24 +35,16 @@ angular.module('events').controller('EventsController',
 			$scope.endOpened = true;
 		};
 
-		$scope.search = '';
-
-		function getProperDate(date, time){
-			var d = $filter('date')(date, 'yyyy/MM/dd');
-			var t = $filter('date')(time, 'hh:mm a');
-			return new Date(d + ' ' + t);
-		}
-
 		$scope.create = function() {
 			var event = new Events({
 				title: this.title,
 				description: this.description,
 				content: this.content,
 				external: this.external,
-				startDate: getProperDate(this.startDate, this.startTime),
-				endDate: getProperDate(this.endDate, this.endTime),
+				startDate: EventSettings.getProperDate(this.startDate, this.startTime),
+				endDate: EventSettings.getProperDate(this.endDate, this.endTime),
 				numberOfPersons: this.numberOfPersons,
-				tags: trimSplitTags($scope.tags),
+				tags: EventSettings.trimSplitTags($scope.tags),
                 backgroundImgUrl: this.backgroundImgUrl
 			});
 			event.$save(function(response) {
