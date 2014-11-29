@@ -36,11 +36,22 @@ angular.module('events').factory('EventSettings',
                 return tag.trim();
             });
         }
+
         function getAddresses() {
             return KIEV_OFFICES_ADDRESSES;
         }
 
+        function parseDate(events){
+            events.forEach(function(event){
+               event.startDate = new Date(event.startDate);
+               event.endDate = new Date(event.endDate);
+               event.createDate = new Date(event.createDate);
+            });
+            return events;
+        }
+
         return {
+            parseDate : parseDate,
             dateFormat: getDateFormat,
             formatDate: formatDate,
             getProperDate: getProperDate,
