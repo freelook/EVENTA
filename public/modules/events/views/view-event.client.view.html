@@ -3,7 +3,15 @@
 		<div class="event__background">
 			<img ng-if="!!event.backgroundImgUrl.base64" data-ng-src="data:image/jpg;base64,{{event.backgroundImgUrl.base64}}" />
 		</div>
-		<h1 data-ng-bind="event.title"></h1>
+		<h1 class="event__header" data-ng-bind="event.title"></h1>
+		<div class="pull-right">
+			<a class="btn btn-primary event__button" href="/#!/events/{{event._id}}/edit">
+				<i class="glyphicon glyphicon-edit"></i>
+			</a>
+			<a class="btn btn-primary event__button" data-ng-click="remove();">
+				<i class="glyphicon glyphicon-trash"></i>
+			</a>
+		</div>
 	</div>
 	<div class="pull-right">
 		<a class="btn btn-primary" href="/#!/events/{{event._id}}/edit">
@@ -23,7 +31,7 @@
 	</small>
     <p>
 	<p class="lead" data-ng-bind="event.description"></p>
-
+	<h2 class="event__subheader">Event location</h2>
 	<ui-gmap-google-map center='map.center' zoom='map.zoom'>
 		<ui-gmap-marker coords="map.center" options="marker.options" idkey="marker.id"></ui-gmap-marker>
 	</ui-gmap-google-map>

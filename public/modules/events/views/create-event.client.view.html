@@ -5,6 +5,11 @@
     <div class="col-md-12">
         <form name="eventForm" class="form-horizontal" role="form" data-ng-submit="create()" novalidate>
             <fieldset>
+
+                <div data-ng-show="error" class="text-danger">
+                    <strong data-ng-bind="error"></strong>
+                </div>
+
                 <div class="form-group" ng-class="{ 'has-error': eventForm.title.$dirty && eventForm.title.$invalid }">
                     <label class="control-label col-sm-2" for="title" translate="Title"></label>
 
@@ -132,9 +137,16 @@
                     <label class="control-label col-sm-2" translate="Location"></label>
 
                     <div class="controls col-sm-5">
-                        <select class="form-control" ng-model="selectedLocation" ng-options="location.name group by location.group for location in locations"></select>
+                        <select class="form-control"
+                                ng-model="selectedLocation"
+                                ng-change="locationUpdate()"
+                                ng-options="location.name group by location.group for location in locations"></select>
                     </div>
                 </div>
+
+                <ui-gmap-google-map center='map.center' zoom='map.zoom'>
+                    <ui-gmap-marker coords="map.center" options="marker.options" idkey="marker.id"></ui-gmap-marker>
+                </ui-gmap-google-map>
 
                 <div class="form-group">
                     <label class="control-label col-sm-2" for="tags" translate="Tags"></label>
@@ -149,9 +161,6 @@
                     <div class="col-sm-offset-2 col-sm-10">
                         <input type="submit" class="btn btn-default">
                     </div>
-                </div>
-                <div data-ng-show="error" class="text-danger">
-                    <strong data-ng-bind="error"></strong>
                 </div>
 
             </fieldset>

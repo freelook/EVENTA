@@ -6,13 +6,13 @@ angular.module('events').factory('EventSettings',
         var dateFormat = 'yyyy/MM/dd',
             timeFormat = 'hh:mm a',
             KIEV_OFFICES_ADDRESSES = [
-            {name: '28 Fizkultury Street,', id: 0, group: 'Kiev'},
-            {name: '14B Kudryashova Street', id: 1, group: 'Kiev'},
-            {name: '74 Zhylyanska Street', id: 2, group: 'Kiev'},
-            {name: '17a Moskovskaya Street', id: 3, group: 'Dnipropetrovsk'},
-            {name: '63, Kolomenskaya Street', id: 4, group: 'Kharkiv'},
-            {name: '51 Kozytskogo Street', id: 5, group: 'Vinnytsia'},
-            {name: '45 O.Stepanivny Street', id: 6, group: 'Lviv'}
+                {name: 'Fizkultury St, 28,', id: 0, group: 'Kiev', coordinates: {latitude: 50.432212, longitude: 30.507915}},
+                {name: 'Kudryashova St, 14B', id: 1, group: 'Kiev', coordinates: {latitude: 50.432223, longitude: 30.486109}},
+                {name: 'Zhylyanska St, 74', id: 2, group: 'Kiev', coordinates: {latitude: 50.437418, longitude: 30.502163}},
+                {name: 'Moskovskaya St, 17a', id: 3, group: 'Dnipropetrovsk', coordinates: {latitude: 48.467868, longitude: 35.045819}},
+                {name: 'Kolomenskaya St, 63', id: 4, group: 'Kharkiv', coordinates: {latitude: 50.022476, longitude: 36.227384}},
+                {name: 'Kozytskogo St, 51', id: 5, group: 'Vinnytsia', coordinates: {latitude: 49.232700, longitude: 28.469381}},
+                {name: 'O.Stepanivny St, 45', id: 6, group: 'Lviv', coordinates: {latitude: 49.842985, longitude: 24.000391}}
         ];
 
         function getDateFormat(){

@@ -119,12 +119,7 @@ var EventSchema = new Schema({
 	}],
 
 	location: {
-		address: {type: String, default: 'Kudryashova, 14B'},
-		room: {type: String, default: ''},
-		coordinates: {
-			latitude: {type: Number},
-			longitedu: {type: Number}
-		},
+		type: Object,
 		required: false
 	},
 
