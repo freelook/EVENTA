@@ -7,7 +7,7 @@ var ApplicationConfiguration = (function () {
     var applicationModuleVendorDependencies = [
         'ngResource',
         'ngCookies',
-        'ngAnimate',
+        'ngMaterial',
         'ngTouch',
         'ngSanitize',
         'pascalprecht.translate',
@@ -462,6 +462,8 @@ angular.module('events').controller('EventsController', ['$scope', '$stateParams
 	function($scope, $stateParams, $location, Authentication, Events) {
 		$scope.authentication = Authentication;
 
+		$scope.search = '';
+
 		$scope.create = function() {
 			var event = new Events({
 				title: this.title,
@@ -805,7 +807,7 @@ angular.module("app").run(["$templateCache", function($templateCache) {
   );
 
   $templateCache.put("modules/events/views/list-events.client.view.html",
-    "<section data-ng-controller=\"EventsController\" data-ng-init=\"find()\"><div class=\"page-header events__header\"><h1 translate=\"Find event for you\"></h1></div><div class=\"list-group\"><a data-ng-repeat=\"event in events\" data-ng-href=\"#!/events/{{event._id}}\" class=\"list-group-item events-list__item\"><h4 class=\"list-group-item-heading event-list__item__header\" data-ng-bind=\"event.title\"></h4><p class=\"list-group-item-text\" data-ng-bind=\"event.content\"></p></a></div><div class=\"alert alert-warning text-center\" data-ng-if=\"events.$resolved && !events.length\">No events yet, why don't you <a href=\"/#!/events/create\">create one</a>?</div></section>"
+    "<section data-ng-controller=\"EventsController\" data-ng-init=\"find()\"><div><md-text-float label=\"{{ 'Find event for you' | translate}}\" ng-model=\"search\"></md-text-float></div><div class=\"list-group\"><a data-ng-repeat=\"event in events\" data-ng-href=\"#!/events/{{event._id}}\" class=\"list-group-item\"><small class=\"list-group-item-text\">Posted on <span data-ng-bind=\"event.created | date:'mediumDate'\"></span> by <span data-ng-bind=\"event.user.displayName\"></span></small><h4 class=\"list-group-item-heading\" data-ng-bind=\"event.title\"></h4><p class=\"list-group-item-text\" data-ng-bind=\"event.content\"></p></a></div><div class=\"alert alert-warning text-center\" data-ng-if=\"events.$resolved && !events.length\">No events yet, why don't you <a href=\"/#!/events/create\">create one</a>?</div></section>"
   );
 
   $templateCache.put("modules/events/views/view-event.client.view.html",

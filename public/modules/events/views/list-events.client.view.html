@@ -1,6 +1,6 @@
 <section data-ng-controller="EventsController" data-ng-init="find()">
-	<div class="page-header events__header">
-		<h1 translate="Find event for you"></h1>
+	<div>
+		<md-text-float label="{{ 'Find event for you' | translate}}" ng-model="search"></md-text-float>
 	</div>
 	<div class="list-group">
 		<a data-ng-repeat="event in events" data-ng-href="#!/events/{{event._id}}" class="list-group-item events-list__item">
