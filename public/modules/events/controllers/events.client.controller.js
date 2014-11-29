@@ -82,7 +82,8 @@ angular.module('events')
                 endDate: EventSettings.getProperDate(this.endDate, this.endTime),
                 numberOfPersons: this.numberOfPersons,
                 tags: EventSettings.trimSplitTags($scope.tags),
-                backgroundImgUrl: this.backgroundImgUrl
+                backgroundImgUrl: this.backgroundImgUrl,
+                location: this.selectedLocation
             });
             event.$save(function (response) {
                 $location.path('events/' + response._id);
@@ -110,6 +111,7 @@ angular.module('events')
 
         $scope.update = function () {
             var event = $scope.event;
+            event.location = $scope.selectedLocation;
 
             event.$update(function () {
                 $location.path('events/' + event._id);
@@ -126,6 +128,13 @@ angular.module('events')
             $scope.event = Events.get({
                 eventId: $stateParams.eventId
             });
+            if($scope.event && $scope.event.location){
+                $scope.map.center = $scope.event.location.coordinates;
+            }
+        };
+
+        $scope.locationUpdate = function(){
+            $scope.map.center = $scope.selectedLocation.coordinates;
         };
     }
 );
