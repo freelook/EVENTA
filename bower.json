@@ -1,19 +1,19 @@
 {
-	"name": "eventa",
-	"version": "0.0.1",
-	"description": "EPAM events",
-	"dependencies": {
-		"bootstrap": "~3",
-		"angular": "~1.3",
-		"angular-resource": "~1.3",
-		"angular-mocks": "~1.3",
-		"angular-cookies": "~1.3",
-		"angular-animate": "~1.3",
-		"angular-touch": "~1.3",
-		"angular-sanitize": "~1.3",
-		"angular-bootstrap": "~0.11.2",
-		"angular-ui-utils": "~0.1.1",
-		"angular-ui-router": "~0.2.11",
-		"angular-material": "master"
-	}
+  "name": "eventa",
+  "version": "0.0.1",
+  "description": "EPAM events",
+  "dependencies": {
+    "bootswatch-dist": "3.3.0-cerulean",
+    "angular": "~1.3",
+    "angular-resource": "~1.3",
+    "angular-mocks": "~1.3",
+    "angular-cookies": "~1.3",
+    "angular-animate": "~1.3",
+    "angular-touch": "~1.3",
+    "angular-sanitize": "~1.3",
+    "angular-bootstrap": "~0.11.2",
+    "angular-ui-utils": "~0.1.1",
+    "angular-ui-router": "~0.2.11",
+    "angular-material": "master"
+  }
 }
