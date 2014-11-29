@@ -446,19 +446,19 @@ angular.module('events').config(['$stateProvider',
 		$stateProvider.
 		state('listEvents', {
 			url: '/events',
-			templateUrl: 'modules/events/views/list-events.client.view.html'
+			templateUrl: '/modules/events/views/list-events.client.view.html'
 		}).
 		state('createEvent', {
 			url: '/events/create',
-			templateUrl: 'modules/events/views/create-event.client.view.html'
+			templateUrl: '/modules/events/views/create-event.client.view.html'
 		}).
 		state('viewEvent', {
 			url: '/events/:eventId',
-			templateUrl: 'modules/events/views/view-event.client.view.html'
+			templateUrl: '/modules/events/views/view-event.client.view.html'
 		}).
 		state('editEvent', {
 			url: '/events/:eventId/edit',
-			templateUrl: 'modules/events/views/edit-event.client.view.html'
+			templateUrl: '/modules/events/views/edit-event.client.view.html'
 		});
 	}
 ]);
@@ -690,7 +690,7 @@ angular.module('events').factory('EventSettings',
 //Events service used for communicating with the events REST endpoints
 angular.module('events').factory('Events', ['$resource',
     function($resource) {
-        return $resource('events/:eventId', {
+        return $resource(window.baseURL + 'events/:eventId', {
             eventId: '@_id'
         }, {
             update: {
