@@ -19,7 +19,8 @@
 		</em>
 	</small>
     <p>
-    <img data-ng-src="{{'data:image/jpg;base64,' + event.backgroundImgUrl.base64}}" />
+    <img ng-if="!!event.backgroundImgUrl.base64" data-ng-src="data:image/jpg;base64,{{event.backgroundImgUrl.base64}}" />
+
 
 	<p class="lead" data-ng-bind="event.description"></p>
 </section>
