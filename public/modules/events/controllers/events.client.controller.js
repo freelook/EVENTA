@@ -4,6 +4,8 @@ angular.module('events').controller('EventsController', ['$scope', '$stateParams
 	function($scope, $stateParams, $location, Authentication, Events) {
 		$scope.authentication = Authentication;
 
+
+
 		$scope.create = function() {
 			var event = new Events({
 				title: this.title,
@@ -11,8 +13,10 @@ angular.module('events').controller('EventsController', ['$scope', '$stateParams
 				external: this.external,
 				startDateTime: this.startDateTime,
 				endDateTime: this.endDateTime,
-				numberOfPersons: this.numberOfPersons
+				numberOfPersons: this.numberOfPersons,
+                backgroundImgUrl: this.backgroundImgUrl
 			});
+
 			event.$save(function(response) {
 				$location.path('events/' + response._id);
 
@@ -58,5 +62,7 @@ angular.module('events').controller('EventsController', ['$scope', '$stateParams
 				eventId: $stateParams.eventId
 			});
 		};
+
+
 	}
 ]);
