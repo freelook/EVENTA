@@ -7,8 +7,8 @@
 			<h4 class="list-group-item-heading event-list__item__header" data-ng-bind="event.title"></h4>
 			<p class="list-group-item-text event-list__item__text" data-ng-bind="event.description"></p>
 			<p class="list-group-item-text event-list__item__text" >
-				<label >Start: {{event.startDate  }}</label><br/>
-				<label >End: {{event.endDate }}</label>
+				<label >Start: {{event.startDate | date:'d MMMM yyyy, hh:mm' : 'UTC' }}</label><br/>
+				<label >End: {{event.endDate | date:'d MMMM yyyy, hh:mm' : 'UTC' }}</label>
 			</p>
 		</a>
 	</div>
