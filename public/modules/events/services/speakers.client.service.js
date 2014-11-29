@@ -8,7 +8,7 @@
 //Events service used for communicating with the events REST endpoints
 angular.module('events').factory('Speakers', ['$resource',
     function($resource) {
-        return $resource('/speakers/:id', {
+        return $resource('/speakers/', {
             query: {
                 method: 'GET',
                 isArray: true

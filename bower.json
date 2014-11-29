@@ -18,6 +18,7 @@
     "angular-translate": "~2.4.2",
     "angular-translate-loader-static-files": "~2.4.2",
     "angular-translate-storage-local": "~2.4.2",
-    "angular-translate-storage-cookie": "~2.4.2"
+    "angular-translate-storage-cookie": "~2.4.2",
+    "angular-base64-upload": "~0.0.2"
   }
 }
