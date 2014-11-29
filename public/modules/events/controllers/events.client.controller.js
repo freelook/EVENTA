@@ -12,6 +12,9 @@ angular.module('events')
         $scope.format = EventSettings.dateFormat;
         $scope.tags = '';
         $scope.search = '';
+        $scope.selectedLocation = '';
+        $scope.room = '';
+        $scope.locations = EventSettings.getAddresses();
         $scope.minDate = new Date();
         $scope.maxDate = '2020-12-31';
         $scope.dateOptions = {
@@ -43,7 +46,20 @@ angular.module('events')
             }
         };
 
+
         $scope.map.center = DAFAULT_LOCATION;
+
+        function clearInputs(){
+            $scope.title = '';
+            $scope.content = '';
+            $scope.description = '';
+            $scope.numberOfPersons = 0;
+            $scope.selectedLocation = '';
+            $scope.tags = '';
+            $scope.external = false;
+            $scope.backgroundImgUrl = null;
+            $scope.room = '';
+        }
 
         $scope.openStartDate = function ($event) {
             $event.preventDefault();
@@ -70,9 +86,7 @@ angular.module('events')
             });
             event.$save(function (response) {
                 $location.path('events/' + response._id);
-
-                $scope.title = '';
-                $scope.content = '';
+                clearInputs();
             }, function (errorResponse) {
                 $scope.error = errorResponse.data.message;
             });
