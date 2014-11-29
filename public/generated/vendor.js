@@ -38501,7 +38501,7 @@ ngAriaModule.directive('ngShow', ['$aria', function($aria) {
  * Angular Material Design
  * https://github.com/angular/material
  * @license MIT
- * v0.6.0-rc2-master-e2c50a8
+ * v0.6.0-rc3-master-98c3152
  */
 angular.module('ngMaterial', ["ng","ngAnimate","ngAria","material.core","material.components.backdrop","material.components.bottomSheet","material.components.button","material.components.card","material.components.checkbox","material.components.content","material.components.dialog","material.components.divider","material.components.icon","material.components.list","material.components.progressCircular","material.components.progressLinear","material.components.radioButton","material.components.sidenav","material.components.slider","material.components.sticky","material.components.subheader","material.components.swipe","material.components.switch","material.components.tabs","material.components.textField","material.components.toast","material.components.toolbar","material.components.tooltip","material.components.whiteframe"]);
 (function() {
@@ -39015,7 +39015,7 @@ angular.element.prototype.blur = angular.element.prototype.blur || function() {
 angular.module('material.core')
   .service('$mdAria', AriaService);
 
-function AriaService($$rAF, $log) {
+function AriaService($$rAF, $log, $window) {
 
   return {
     expect: expect,
@@ -39061,11 +39061,10 @@ function AriaService($$rAF, $log) {
 
   function childHasAttribute(node, attrName) {
     var hasChildren = node.hasChildNodes(),
-        childHasAttribute = false;
+        hasAttr = false;
 
     function isHidden(el) {
-      var style = el.currentStyle ? el.currentStyle :
-                            getComputedStyle(el);
+      var style = el.currentStyle ? el.currentStyle : $window.getComputedStyle(el);
       return (style.display === 'none');
     }
 
@@ -39075,15 +39074,15 @@ function AriaService($$rAF, $log) {
         var child = children[i];
         if(child.nodeType === 1 && child.hasAttribute(attrName)) {
           if(!isHidden(child)){
-            childHasAttribute = true;
+            hasAttr = true;
           }
         }
       }
     }
-    return childHasAttribute;
+    return hasAttr;
   }
 }
-AriaService.$inject = ["$$rAF", "$log"];
+AriaService.$inject = ["$$rAF", "$log", "$window"];
 })();
 
 (function() {
@@ -39959,7 +39958,6 @@ function attrNoDirective() {
 angular.module('material.core')
   .directive('mdTheme', ThemingDirective)
   .directive('mdThemable', ThemableDirective)
-  .directive('mdThemeLevels', ThemeLevelsDirective)
   .provider('$mdTheming', ThemingProvider);
 
 /**
@@ -40054,41 +40052,6 @@ function ThemingProvider() {
     }
   }
 }
-
-function ThemeLevelsDirective($window, $mdTheming) {
-  var lookup = {},
-      dummyElement = angular.element('<div>'),
-      body = angular.element(document.body);
-
-  return function (scope, element, attr) {
-    var styles = scope.$eval(attr.mdThemeLevels),
-        themeName;
-    angular.forEach(styles, function (value, key) {
-      styles[key] = getColor(value);
-    });
-    element.css(styles);
-    $mdTheming(element);
-    themeName = element.controller('mdTheme').$mdTheme;
-    function getColor(level) {
-      //-- get or create theme
-      var theme = lookup[themeName],
-          color;
-      if (!theme) theme = lookup[themeName] = {};
-      //-- attempt to get color
-      color = theme[level];
-      //-- if color has been found already, return it
-      if (color) return color;
-      //-- otherwise, use the dummy DOM element to find it
-      element.append(dummyElement);
-      $mdTheming(dummyElement);
-      dummyElement.attr('md-color-level', level);
-      theme[level] = color = $window.getComputedStyle(dummyElement[0]).color;
-      dummyElement.remove();
-      return color;
-    }
-  };
-}
-ThemeLevelsDirective.$inject = ["$window", "$mdTheming"];
 
 function ThemingDirective($interpolate) {
   return {
@@ -41190,16 +41153,16 @@ function MdDialogProvider($$interimElementProvider) {
       if (clickElement) {
         var clickRect = clickElement[0].getBoundingClientRect();
         startPos = 'translate3d(' +
-          (clickRect.left - element[0].offsetWidth) + 'px,' +
-          (clickRect.top - element[0].offsetHeight) + 'px,' +
+          (clickRect.left - element[0].offsetWidth / 2) + 'px,' +
+          (clickRect.top - element[0].offsetHeight / 2) + 'px,' +
           '0) scale(0.2)';
       } else {
         startPos = 'translate3d(0,100%,0) scale(0.5)';
       }
 
       element
-      .css($mdConstant.CSS.TRANSFORM, startPos)
-      .css('opacity', 0);
+        .css($mdConstant.CSS.TRANSFORM, startPos)
+        .css('opacity', 0);
 
       $$rAF(function() {
         $$rAF(function() {
@@ -44163,7 +44126,7 @@ function MdTabInkDirective($mdConstant, $window, $$rAF, $timeout) {
       var selected = tabsCtrl.selected();
 
       var hideInkBar = !selected || tabsCtrl.count() < 2 ||
-        (scope.pagination && scope.pagination.itemsPerPage === 1);
+        (scope.pagination || {}).itemsPerPage === 1;
       element.css('display', hideInkBar ? 'none' : 'block');
 
       if (!hideInkBar) {
