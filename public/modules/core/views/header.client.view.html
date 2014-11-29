@@ -60,6 +60,12 @@
 					</li>
 				</ul>
 			</li>
+			<li>
+				<select ng-controller="LangController" data-ng-model="lang" ng-change="setLang()" style="margin-top: 13px;margin-left: 10px;">
+					<option ng-selected="lang === 'ru'">ru</option>
+					<option ng-selected="lang === 'en'">en</option>
+				</select>
+			</li>
 		</ul>
 	</nav>
 </div>
