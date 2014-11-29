@@ -44,10 +44,14 @@ var EventSchema = new Schema({
 	startDate:{ type: Date },
 	endDate: { type: Date },
 
-	backgroundImgUrl: {
-		type: String,
-		default: 'background.png'
-	},
+	backgroundImgUrl:
+    {
+        filesize: {type: String},
+        filetype: {type: String},
+        filename: {type: String},
+        base64:  {type: String}
+
+    },
 
 	speakers: {
 		type: [{type: Schema.Types.ObjectId, ref: 'SpeakerModel'}],

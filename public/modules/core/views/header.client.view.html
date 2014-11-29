@@ -12,15 +12,15 @@
 		<ul class="nav navbar-nav" data-ng-if="menu.shouldRender(authentication.user);">
 			<li data-ng-repeat="item in menu.items | orderBy: 'position'" data-ng-if="item.shouldRender(authentication.user);" ng-switch="item.menuItemType" ui-route="{{item.uiRoute}}" class="{{item.menuItemClass}}" ng-class="{active: ($uiRoute)}" dropdown="item.menuItemType === 'dropdown'">
 				<a ng-switch-when="dropdown" class="dropdown-toggle">
-					<span data-ng-bind="item.title"></span>
+					<span translate="{{item.title}}"></span>
 					<b class="caret"></b>
 				</a>
 				<ul ng-switch-when="dropdown" class="dropdown-menu">
 					<li data-ng-repeat="subitem in item.items | orderBy: 'position'" data-ng-if="subitem.shouldRender(authentication.user);" ui-route="{{subitem.uiRoute}}" ng-class="{active: $uiRoute}">
-						<a href="/#!/{{subitem.link}}" data-ng-bind="subitem.title"></a>
+						<a href="/#!/{{subitem.link}}" translate="{{subitem.title}}"></a>
 					</li>
 				</ul>
-				<a ng-switch-default href="/#!/{{item.link}}" data-ng-bind="item.title"></a>
+				<a ng-switch-default href="/#!/{{item.link}}" translate="{{item.title}}"></a>
 			</li>
 		</ul>
 		<ul class="nav navbar-nav navbar-right" data-ng-hide="authentication.user">
@@ -34,8 +34,8 @@
 			<li class="divider-vertical"></li>
 			<li>
 				<select ng-controller="LangController" data-ng-model="lang" ng-change="setLang()" style="margin-top: 13px;margin-left: 10px;">
-					<option ng-selected="lang === 'ru'">ru</option>
-					<option ng-selected="lang === 'en'">en</option>
+					<option ng-selected="lang === 'ru'">RU</option>
+					<option ng-selected="lang === 'en'">EN</option>
 				</select>
 			</li>
 		</ul>
@@ -62,8 +62,8 @@
 			</li>
 			<li class="dropdown">
 				<select ng-controller="LangController" data-ng-model="lang" ng-change="setLang()" class="form-control header__language">
-					<option ng-selected="lang === 'ru'">ru</option>
-					<option ng-selected="lang === 'en'">en</option>
+					<option ng-selected="lang === 'ru'">RU</option>
+					<option ng-selected="lang === 'en'">EN</option>
 				</select>
 			</li>
 		</ul>

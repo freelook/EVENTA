@@ -11,7 +11,7 @@
 
     "Sign up":"Sign up",
     "Forgot your password?":"Forgot your password?",
-    "Sign in using your social accounts":"Sign in using your social accounts",
+    "Sign up using your EPAM accounts":"Sign up using your EPAM accounts",
     "Or with your account":"Or with your account",
     "or": "or",
     "Day":"Day ",
@@ -38,7 +38,15 @@
     "Change your password":"Change your password",
     "Current Password":"Current Password",
     "Save Password":"Save Password",
-    "Password Changed Successfully":"Password Changed Successfully"
+    "Password Changed Successfully":"Password Changed Successfully",
+
+    "Edit your profile":"Edit your profile",
+    "Save Profile":"Save Profile",
+    "Connect other social accounts:":"Connect other social accounts:",
+
+    "Events":"Events",
+    "List Events":"List Events",
+    "New Event":"New Event"
 
 
 

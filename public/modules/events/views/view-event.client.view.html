@@ -2,7 +2,7 @@
 	<div class="page-header">
 		<h1 data-ng-bind="event.title"></h1>
 	</div>
-	<div class="pull-right" data-ng-show="authentication.user._id == event.user._id">
+	<div class="pull-right">
 		<a class="btn btn-primary" href="/#!/events/{{event._id}}/edit">
 			<i class="glyphicon glyphicon-edit"></i>
 		</a>
@@ -18,5 +18,8 @@
 			<span data-ng-bind="event.user.displayName"></span>
 		</em>
 	</small>
+    <p>
+    <img data-ng-src="{{'data:image/jpg;base64,' + event.backgroundImgUrl.base64}}" />
+
 	<p class="lead" data-ng-bind="event.description"></p>
 </section>

@@ -13,7 +13,8 @@ var ApplicationConfiguration = (function () {
         'pascalprecht.translate',
         'ui.router',
         'ui.bootstrap',
-        'ui.utils'
+        'ui.utils',
+        'naif.base64'
     ];
 
     // Add a new vertical module

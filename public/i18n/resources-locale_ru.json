@@ -11,7 +11,7 @@
 
     "Sign up":"Регистрация",
     "Forgot your password?":"Забыли пароль?",
-    "Sign in using your social accounts":"Войти с помощью аккаунтов соцсетей",
+    "Sign up using your EPAM accounts":"Войти с помощью EPAM аккаунтa",
     "Or with your account":"Или с помощью вашего аккаунта",
     "or": "или",
     "Day":"День ",
@@ -38,5 +38,13 @@
     "Change your password":"Изменить пароль",
     "Current Password":"Текущий пароль",
     "Save Password":"Сохранить пароль",
-    "Password Changed Successfully":"Пароль успешно изменен"
+    "Password Changed Successfully":"Пароль успешно изменен",
+
+    "Edit your profile":"Изменение профиля",
+    "Save Profile":"Сохранить профиль",
+    "Connect other social accounts:":"Подключить другие аккаунты:",
+
+    "Events":"События",
+    "List Events":"Список событий",
+    "New Event":"Новое событие"
 }

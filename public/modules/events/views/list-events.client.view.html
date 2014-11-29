@@ -3,7 +3,7 @@
 		<md-text-float label="{{ 'Find event for you' | translate}}" ng-model="search"></md-text-float>
 	</div>
 	<div class="list-group">
-		<a data-ng-repeat="event in events" data-ng-href="#!/events/{{event._id}}" class="list-group-item events-list__item">
+		<a data-ng-repeat="event in events | filter:search" data-ng-href="#!/events/{{event._id}}" class="list-group-item events-list__item">
 			<h4 class="list-group-item-heading event-list__item__header" data-ng-bind="event.title"></h4>
 			<p class="list-group-item-text event-list__item__text" data-ng-bind="event.description"></p>
 			<p class="list-group-item-text event-list__item__text" >
