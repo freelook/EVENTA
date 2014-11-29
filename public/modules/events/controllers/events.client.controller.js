@@ -2,6 +2,8 @@
 
 angular.module('events').controller('EventsController',
 	function($scope, $stateParams, $location, $filter, Authentication, Events, EventSettings) {
+		var kievCoordinates = { latitude: '50.4500', longitude: '30.5233'};
+
 		$scope.authentication = Authentication;
 
 		$scope.startDate = EventSettings.formatDate(new Date());
@@ -23,6 +25,9 @@ angular.module('events').controller('EventsController',
 		$scope.tags = '';
 		$scope.external = false;
 		$scope.search = '';
+		$scope.selectedLocation = '';
+		$scope.room = '';
+		$scope.locations = EventSettings.getAddresses();
 
 		$scope.openStartDate = function($event) {
 			$event.preventDefault();
@@ -45,17 +50,33 @@ angular.module('events').controller('EventsController',
 				endDate: EventSettings.getProperDate(this.endDate, this.endTime),
 				numberOfPersons: this.numberOfPersons,
 				tags: EventSettings.trimSplitTags($scope.tags),
-                backgroundImgUrl: this.backgroundImgUrl
+                backgroundImgUrl: this.backgroundImgUrl,
+				location: {
+					address: this.selectedLocation,
+					room: this.room,
+					coordinates: kievCoordinates
+				}
 			});
 			event.$save(function(response) {
 				$location.path('events/' + response._id);
 
-				$scope.title = '';
-				$scope.content = '';
+				clearInputs();
 			}, function(errorResponse) {
 				$scope.error = errorResponse.data.message;
 			});
 		};
+
+		function clearInputs(){
+			$scope.title = '';
+			$scope.content = '';
+			$scope.description = '';
+			$scope.numberOfPersons = 0;
+			$scope.selectedLocation = '';
+			$scope.tags = '';
+			$scope.external = false;
+			$scope.backgroundImgUrl = null;
+			$scope.room = '';
+		}
 
 		$scope.remove = function(event) {
 			if (event) {

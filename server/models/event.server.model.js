@@ -123,7 +123,7 @@ var EventSchema = new Schema({
 		room: {type: String, default: ''},
 		coordinates: {
 			latitude: {type: Number},
-			longitedu: {type: Number}
+			longitude: {type: Number}
 		},
 		required: false
 	},
