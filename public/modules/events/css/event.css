@@ -31,7 +31,7 @@
 	font-weight: 100;
 	font-size: 4em;
 	margin-top: -150px;
-	margin-bottom: 150px;
+	margin-bottom: 100px;
 }
 
 @media only screen and (max-width: 768px) {
@@ -42,7 +42,6 @@
 
 .event__button {
 	z-index: 1000;
-	margin-top: -50px;
 }
 
 .event__subheader {

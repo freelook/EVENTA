@@ -137,9 +137,16 @@
                     <label class="control-label col-sm-2">Location</label>
 
                     <div class="controls col-sm-5">
-                        <select class="form-control" ng-model="selectedLocation" ng-options="location.name group by location.group for location in locations"></select>
+                        <select class="form-control"
+                                ng-model="selectedLocation"
+                                ng-change="locationUpdate()"
+                                ng-options="location.name group by location.group for location in locations"></select>
                     </div>
                 </div>
+
+                <ui-gmap-google-map center='map.center' zoom='map.zoom'>
+                    <ui-gmap-marker coords="map.center" options="marker.options" idkey="marker.id"></ui-gmap-marker>
+                </ui-gmap-google-map>
 
                 <div class="form-group">
                     <label class="control-label col-sm-2" for="tags">Tags</label>
