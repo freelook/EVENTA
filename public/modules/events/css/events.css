@@ -14,6 +14,12 @@
 	color: white;
 }
 
+@media only screen and (max-width: 768px) {
+	.events__header h1 {
+		font-size: 2em;
+	}
+}
+
 .events-list__item {
 	border-left: none;
 	border-right: none;
@@ -30,4 +36,9 @@ a.list-group-item .event-list__item__header {
 	color: #317eac;
 }
 
+.event-list__item__text {
+	font-family: 'Roboto', Arial, sans-serif;
+	font-weight: 300px;
+	color: black;
+}
 
