@@ -1,7 +1,8 @@
 'use strict';
 
 module.exports = {
-	db: 'mongodb://localhost/eventa-dev',
+//	db: 'mongodb://localhost/eventa-dev',
+    db: process.env.MONGOHQ_URL || process.env.MONGOLAB_URI || 'mongodb://localhost/eventa',
 	baseURL: 'localhost:' + process.env.PORT || 3000 + '/',
 	app: {
 		title: 'EVENTA - Development Environment'

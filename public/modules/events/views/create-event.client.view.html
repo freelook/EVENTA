@@ -25,24 +25,53 @@
 						<input type="checkbox" id="external" data-ng-model="external" />
 					</div>
 				</div>
+
 				<div class="form-group">
 					<label class="control-label">Start Date</label>
 					<div class="controls">
-						<input type="date" id="startDateTime" />
+						<input type="text" class="form-control"
+							   id="startDate"
+							   is-open="startOpened "
+							   ng-required="true"
+							   close-text="Close"
+							   max-date="maxDate"
+							   min-date="minDate"
+							   datepicker-options="dateOptions"
+							   ng-model="dtStart"
+							   datepicker-popup="{{format}}" />
+						<span class="input-group-btn">
+                			<button type="button" class="btn btn-default" ng-click="openStartDate($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+              </span>
 					</div>
 				</div>
+
 				<div class="form-group">
 					<label class="control-label" for="endDate">End Date</label>
 					<div class="controls">
-						<input type="date" id="endDate" data-ng-model="endDateTime" required/>
+						<input type="text" class="form-control"
+							   id="endDate"
+							   is-open="endOpened "
+							   ng-required="true"
+							   close-text="Close"
+							   max-date="maxDate"
+							   min-date="minDate"
+							   datepicker-options="dateOptions"
+							   ng-model="dtEnd"
+							   datepicker-popup="{{format}}" />
+						<span class="input-group-btn">
+                			<button type="button" class="btn btn-default" ng-click="openEndDate($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+						</span>
 					</div>
 				</div>
-				<!--<div class="form-group">-->
-					<!--<label class="control-label" for="backgroundImgUrl">Background Image</label>-->
-					<!--<div class="controls">-->
-						<!--<input type="file" id="backgroundImgUrl" />-->
-					<!--</div>-->
-				<!--</div>-->
+
+
+				<div class="form-group">
+					<label class="control-label" for="backgroundImgUrl">Background Image</label>
+					<div class="controls">
+						<input type="file" id="backgroundImgUrl" data-ng-model='backgroundImgUrl' base-sixty-four-input/>
+					</div>
+				</div>
+
 
 				<div class="form-group">
 					<label class="control-label" for="numberOfPersons">Number of participants</label>

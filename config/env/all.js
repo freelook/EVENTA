@@ -32,7 +32,9 @@ module.exports = {
 				'public/lib/angular-translate-storage-cookie/angular-translate-storage-cookie.js',
 				'public/lib/angular-ui-router/release/angular-ui-router.js',
 				'public/lib/angular-ui-utils/ui-utils.js',
-				'public/lib/angular-bootstrap/ui-bootstrap-tpls.js'
+				'public/lib/angular-bootstrap/ui-bootstrap-tpls.js',
+                'public/lib/angular-base64-upload/dist/angular-base64-upload.js',
+				'public/vendors/ui-bootstrap-tpls.js'
 			]
 		},
 		css: [
