@@ -45,6 +45,13 @@
                 			<button type="button" class="btn btn-default" ng-click="openStartDate($event)"><i class="glyphicon glyphicon-calendar"></i></button>
               </span>
 					</div>
+                    <label class="control-label">Start Time</label>
+					<div class="controls">
+                        <timepicker ng-model="startTime"
+                                    hour-step="hstep"
+                                    minute-step="mstep"
+                                    show-meridian="false"></timepicker>
+					</div>
 				</div>
 				<div class="form-group">
 					<label class="control-label" for="endDate">End Date</label>
@@ -70,6 +77,16 @@
 							<input type="file" id="backgroundImgUrl" ng-model='backgroundImgUrl' base-sixty-four-input>
 						</div>
 					</div>
+                    
+                    <label class="control-label">End Time</label>
+                    <div class="controls">
+                        <timepicker ng-model="endTime"
+                                    hour-step="hstep"
+                                    minute-step="mstep"
+                                    show-meridian="false"></timepicker>
+                    </div>
+				</div>
+
 
 					<div class="form-group col-sm-4">
 						<label class="control-label" for="numberOfPersons">Number of participants</label>

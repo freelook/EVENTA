@@ -41,17 +41,8 @@ var EventSchema = new Schema({
 		required: false
 	},
 
-	startDateTime: {
-		type: Date,
-		default: Date.now,
-		required: true
-	},
-
-	endDateTime: {
-		type: Date,
-		default: Date.now,
-		required: true
-	},
+	startDate:{ type: Date },
+	endDate: { type: Date },
 
 	backgroundImgUrl:
     {
