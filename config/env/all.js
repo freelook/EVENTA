@@ -13,13 +13,17 @@ module.exports = {
 	assets: {
 		lib: {
 			css: [
-				'public/lib/bootswatch-dist/css/bootstrap.css'
+				'public/lib/bootswatch-dist/css/bootstrap.css',
+				'public/lib/angular-material/angular-material.css'
 			],
 			js: [
+				'public/lib/hammerjs/hammer.js',
 				'public/lib/angular/angular.js',
 				'public/lib/angular-resource/angular-resource.js',
 				'public/lib/angular-cookies/angular-cookies.js',
 				'public/lib/angular-animate/angular-animate.js',
+				'public/lib/angular-aria/angular-aria.js',
+				'public/lib/angular-material/angular-material.js',
 				'public/lib/angular-touch/angular-touch.js',
 				'public/lib/angular-sanitize/angular-sanitize.js',
 				'public/lib/angular-translate/angular-translate.js',

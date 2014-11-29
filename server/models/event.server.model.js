@@ -27,21 +27,30 @@ var EventSchema = new Schema({
 		default: false
 	},
 
-	dsescription: {
+	description: {
 		type: String,
 		default: '',
 		trim: true,
 		required: 'Description cannot be blank'
 	},
 
+	content: {
+		type: String,
+		default: '',
+		trim: true,
+		required: false
+	},
+
 	startDateTime: {
 		type: Date,
-		default: Date.now
+		default: Date.now,
+		required: true
 	},
 
 	endDateTime: {
 		type: Date,
-		default: Date.now
+		default: Date.now,
+		required: true
 	},
 
 	backgroundImgUrl: {
@@ -51,17 +60,17 @@ var EventSchema = new Schema({
 
 	speakers: {
 		type: [{type: Schema.Types.ObjectId, ref: 'SpeakerModel'}],
-		required: true
+		required: false
 	},
 
 	partners: {
 		type: [{type: Schema.Types.ObjectId, ref: 'PartnerModel'}],
-		required: true
+		required: false
 	},
 
 	organizers: {
 		type: [{type: Schema.Types.ObjectId, ref: 'UserModel'}],
-		required: true
+		required: false
 	},
 
 	numberOfPersons: {
@@ -71,10 +80,8 @@ var EventSchema = new Schema({
 
 	attendants: {
 		type: [{type: Schema.Types.ObjectId, ref: 'UserModel'}],
-		required: true
+		required: false
 	},
-
-
 	schedule: [{
 		day: {
 			type: Date,
@@ -117,8 +124,18 @@ var EventSchema = new Schema({
 	}],
 
 	location: {
-		type: [{type: Schema.Types.ObjectId, ref: 'LocationModel'}],
-		required: true
+		address: {type: String, default: 'Kudryashova, 14B'},
+		room: {type: String, default: ''},
+		coordinates: {
+			latitude: {type: Number},
+			longitedu: {type: Number}
+		},
+		required: false
+	},
+
+	tags:{
+		type: Array,
+		require: false
 	}
 });
 
