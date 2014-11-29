@@ -35,36 +35,13 @@ var SpeakerSchema = new Schema({
 		type: String,
 		default: ''
 	},
-    user: {
-        type: [{type: Schema.Types.ObjectId, ref: 'UserModel'}],
-        required: true
-    },
-	thumbnailUrl: {
-		type: String,
-		default: ''
-	},
-	rockstar: {
-		type: Boolean,
-		default: false
-	},
-	team: {
-		type: Boolean,
-		default: false
-	},
-	ribbons: {
-		type: [{
-			name: {type: String, default: ''},
-			link: {type: String, default: ''}
-		}],
-		default: []
-	},
-	socials: {
-		type: [{
-			abbr: {type: String, default: ''},
-			title: {type: String, default: ''}
-		}],
-		default: []
+    thumbnailUrl: {
+		filesize: {type: String},
+        filetype: {type: String},
+        filename: {type: String},
+        base64:  {type: String}
 	}
+	
 });
 
 
