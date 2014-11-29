@@ -9,6 +9,12 @@
 	overflow: hidden;
 }
 
+.event__filter {
+	background: transparent;
+	background: rgba(0,0,0,0.5);
+	z-index: 100;
+}
+
 .event__background img {
 	width: 1140px;
 	height: auto;
