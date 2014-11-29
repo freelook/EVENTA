@@ -18,6 +18,7 @@ angular.module('events')
             formatYear: 'yy',
             startingDay: 1
         };
+
         //TimePricker settings
         $scope.startTime = new Date();
         $scope.endTime = new Date();
@@ -44,12 +45,6 @@ angular.module('events')
 
         $scope.map.center = DAFAULT_LOCATION;
 
-        function trimSplitTags(tags) {
-            return tags.split(',').map(function (tag) {
-                return tag.trim();
-            });
-        }
-
         $scope.openStartDate = function ($event) {
             $event.preventDefault();
             $event.stopPropagation();
@@ -60,12 +55,6 @@ angular.module('events')
             $event.stopPropagation();
             $scope.endOpened = true;
         };
-
-        function getProperDate(date, time) {
-            var d = $filter('date')(date, 'yyyy/MM/dd');
-            var t = $filter('date')(time, 'hh:mm a');
-            return new Date(d + ' ' + t);
-        }
 
         $scope.create = function () {
             var event = new Events({
