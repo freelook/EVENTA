@@ -8,10 +8,10 @@ var mongoose = require('mongoose'),
 
 
 /**
- * Person Schema
+ * Speaker Schema
  */
-var PersonSchema = new Schema({
-	personId: {
+var SpeakerSchema = new Schema({
+	speakerId: {
 		type: Number,
 		default: 0
 	},
@@ -67,4 +67,4 @@ var PersonSchema = new Schema({
 	}
 });
 
-mongoose.model('Person', PersonSchema);
+mongoose.model('Speaker', SpeakerSchema);

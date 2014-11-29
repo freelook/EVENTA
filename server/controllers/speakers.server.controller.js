@@ -5,72 +5,72 @@
  */
 var mongoose = require('mongoose'),
 	errorHandler = require('./errors'),
-	Person = mongoose.model('Person'),
+	Speaker = mongoose.model('Speaker'),
     speakersData = require('../models/speaker.server.model').data,
 	_ = require('lodash');
 	
 /**
- * Create a person
+ * Create a speaker
  */
 exports.create = function(req, res) {
-	var person = new Person(req.body);
+	var speaker = new Speaker(req.body);
 	
-	person.save(function(err) {
+	speaker.save(function(err) {
 		if (err) {
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
 			});
 		} else {
-			res.jsonp(person);
+			res.jsonp(speaker);
 		}
 	});
 };
 
 /**
- * Show the current person
+ * Show the current speaker
  */
 exports.read = function(req, res) {
-	res.jsonp(req.person);
+	res.jsonp(req.speaker);
 };
 
 /**
- * Update a person
+ * Update a speaker
  */
 exports.update = function(req, res) {
-	var person = req.person;
+	var speaker = req.speaker;
 
-	person = _.extend(person, req.body);
+	speaker = _.extend(speaker, req.body);
 
-	person.save(function(err) {
+	speaker.save(function(err) {
 		if (err) {
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
 			});
 		} else {
-			res.jsonp(person);
+			res.jsonp(speaker);
 		}
 	});
 };
 
 /**
- * Delete an person
+ * Delete an speaker
  */
 exports.delete = function(req, res) {
-	var person = req.person;
+	var speaker = req.speaker;
 
-	person.remove(function(err) {
+	speaker.remove(function(err) {
 		if (err) {
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
 			});
 		} else {
-			res.jsonp(person);
+			res.jsonp(speaker);
 		}
 	});
 };
 
 /**
- * List of Person
+ * List of Speaker
  */
 exports.list = function(req, res) {
 
@@ -81,13 +81,13 @@ exports.list = function(req, res) {
  * List of Speakers
  */
 exports.speakerList = function(req, res) {
-    Person.find({rockstar : true}).exec(function(err, persons) {
+    Speaker.find({rockstar : true}).exec(function(err, speakers) {
         if (err) {
             return res.status(400).send({
                 message: errorHandler.getErrorMessage(err)
             });
         } else {
-            res.jsonp(persons);
+            res.jsonp(speakers);
         }
     });
 };
@@ -96,25 +96,25 @@ exports.speakerList = function(req, res) {
  * List of Teamplayers
  */
 exports.teamList = function(req, res) {
-    Person.find({team : true}).exec(function(err, persons) {
+    Speaker.find({team : true}).exec(function(err, speakers) {
         if (err) {
             return res.status(400).send({
                 message: errorHandler.getErrorMessage(err)
             });
         } else {
-            res.jsonp(persons);
+            res.jsonp(speakers);
         }
     });
 };
 
 /**
- * Person middleware
+ * Speaker middleware
  */
-exports.personByID = function(req, res, next, id) {
-	Person.findById(id).exec(function(err, person) {
+exports.speakerByID = function(req, res, next, id) {
+	Speaker.findById(id).exec(function(err, speaker) {
 		if (err) return next(err);
-		if (!person) return next(new Error('Failed to load person ' + id));
-		req.person = person;
+		if (!speaker) return next(new Error('Failed to load speaker ' + id));
+		req.speaker = speaker;
 		next();
 	});
 };
