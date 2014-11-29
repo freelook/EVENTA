@@ -14,6 +14,7 @@ var ApplicationConfiguration = (function () {
         'ui.router',
         'ui.bootstrap',
         'ui.utils',
+        'uiGmapgoogle-maps',
         'naif.base64'
     ];
 
@@ -459,120 +460,134 @@ angular.module('events').config(['$stateProvider',
 
 'use strict';
 
-angular.module('events').controller('EventsController',
-	["$scope", "$stateParams", "$location", "$filter", "Authentication", "Events", "EventSettings", function($scope, $stateParams, $location, $filter, Authentication, Events, EventSettings) {
-		var kievCoordinates = { latitude: '50.4500', longitude: '30.5233'};
+angular.module('events')
+    .controller('EventsController',
+    ["$scope", "$stateParams", "$location", "$filter", "Authentication", "Events", "EventSettings", function ($scope, $stateParams, $location, $filter, Authentication, Events, EventSettings) {
 
-		$scope.authentication = Authentication;
+        var DAFAULT_LOCATION = {latitude: 50.4020355, longitude: 30.5326905};
+        $scope.authentication = Authentication;
 
-		$scope.startDate = EventSettings.formatDate(new Date());
-		$scope.endDate = EventSettings.formatDate(new Date());
-		$scope.format = EventSettings.dateFormat;
-		$scope.minDate = new Date();
-		$scope.maxDate = '2020-12-31';
-		$scope.dateOptions = {
-			formatYear: 'yy',
-			startingDay: 1
-		};
-		//TimePricker settings
-		$scope.startTime = new Date();
-		$scope.endTime = new Date();
-		$scope.hstep= 1;
-		$scope.mstep= 15;
+        $scope.startDate = EventSettings.formatDate(new Date());
+        $scope.endDate = EventSettings.formatDate(new Date());
+        $scope.format = EventSettings.dateFormat;
+        $scope.tags = '';
+        $scope.search = '';
+        $scope.selectedLocation = '';
+        $scope.room = '';
+        $scope.locations = EventSettings.getAddresses();
+        $scope.minDate = new Date();
+        $scope.maxDate = '2020-12-31';
+        $scope.dateOptions = {
+            formatYear: 'yy',
+            startingDay: 1
+        };
 
-		$scope.numberOfPersons = 0;
-		$scope.tags = '';
-		$scope.external = false;
-		$scope.search = '';
-		$scope.selectedLocation = '';
-		$scope.room = '';
-		$scope.locations = EventSettings.getAddresses();
+        //TimePricker settings
+        $scope.startTime = new Date();
+        $scope.endTime = new Date();
+        $scope.hstep = 1;
+        $scope.mstep = 15;
 
-		$scope.openStartDate = function($event) {
-			$event.preventDefault();
-			$event.stopPropagation();
-			$scope.startOpened = true;
-		};
-		$scope.openEndDate = function($event) {
-			$event.preventDefault();
-			$event.stopPropagation();
-			$scope.endOpened = true;
-		};
+        $scope.numberOfPersons = 0;
+        $scope.tags = '';
+        $scope.external = false;
+        $scope.search = '';
 
-		$scope.create = function() {
-			var event = new Events({
-				title: this.title,
-				description: this.description,
-				content: this.content,
-				external: this.external,
-				startDate: EventSettings.getProperDate(this.startDate, this.startTime),
-				endDate: EventSettings.getProperDate(this.endDate, this.endTime),
-				numberOfPersons: this.numberOfPersons,
-				tags: EventSettings.trimSplitTags($scope.tags),
-                backgroundImgUrl: this.backgroundImgUrl,
-				location: {
-					address: this.selectedLocation,
-					room: this.room,
-					coordinates: kievCoordinates
-				}
-			});
-			event.$save(function(response) {
-				$location.path('events/' + response._id);
+        $scope.map = {
+            zoom: 12
+        };
 
-				clearInputs();
-			}, function(errorResponse) {
-				$scope.error = errorResponse.data.message;
-			});
-		};
+        $scope.marker = {
+            id: 0,
+            options: {
+                draggable: false,
+                labelAnchor: '100 0',
+                labelClass: 'marker-labels'
+            }
+        };
 
-		function clearInputs(){
-			$scope.title = '';
-			$scope.content = '';
-			$scope.description = '';
-			$scope.numberOfPersons = 0;
-			$scope.selectedLocation = '';
-			$scope.tags = '';
-			$scope.external = false;
-			$scope.backgroundImgUrl = null;
-			$scope.room = '';
-		}
 
-		$scope.remove = function(event) {
-			if (event) {
-				event.$remove();
+        $scope.map.center = DAFAULT_LOCATION;
 
-				for (var i in $scope.events) {
-					if ($scope.events[i] === event) {
-						$scope.events.splice(i, 1);
-					}
-				}
-			} else {
-				$scope.event.$remove(function() {
-					$location.path('events');
-				});
-			}
-		};
+        function clearInputs(){
+            $scope.title = '';
+            $scope.content = '';
+            $scope.description = '';
+            $scope.numberOfPersons = 0;
+            $scope.selectedLocation = '';
+            $scope.tags = '';
+            $scope.external = false;
+            $scope.backgroundImgUrl = null;
+            $scope.room = '';
+        }
 
-		$scope.update = function() {
-			var event = $scope.event;
+        $scope.openStartDate = function ($event) {
+            $event.preventDefault();
+            $event.stopPropagation();
+            $scope.startOpened = true;
+        };
+        $scope.openEndDate = function ($event) {
+            $event.preventDefault();
+            $event.stopPropagation();
+            $scope.endOpened = true;
+        };
 
-			event.$update(function() {
-				$location.path('events/' + event._id);
-			}, function(errorResponse) {
-				$scope.error = errorResponse.data.message;
-			});
-		};
+        $scope.create = function () {
+            var event = new Events({
+                title: this.title,
+                description: this.description,
+                content: this.content,
+                external: this.external,
+                startDate: EventSettings.getProperDate(this.startDate, this.startTime),
+                endDate: EventSettings.getProperDate(this.endDate, this.endTime),
+                numberOfPersons: this.numberOfPersons,
+                tags: EventSettings.trimSplitTags($scope.tags),
+                backgroundImgUrl: this.backgroundImgUrl
+            });
+            event.$save(function (response) {
+                $location.path('events/' + response._id);
+                clearInputs();
+            }, function (errorResponse) {
+                $scope.error = errorResponse.data.message;
+            });
+        };
 
-		$scope.find = function() {
-			$scope.events = Events.query();
-		};
+        $scope.remove = function (event) {
+            if (event) {
+                event.$remove();
 
-		$scope.findOne = function() {
-			$scope.event = Events.get({
-				eventId: $stateParams.eventId
-			});
-		};
-	}]
+                for (var i in $scope.events) {
+                    if ($scope.events[i] === event) {
+                        $scope.events.splice(i, 1);
+                    }
+                }
+            } else {
+                $scope.event.$remove(function () {
+                    $location.path('events');
+                });
+            }
+        };
+
+        $scope.update = function () {
+            var event = $scope.event;
+
+            event.$update(function () {
+                $location.path('events/' + event._id);
+            }, function (errorResponse) {
+                $scope.error = errorResponse.data.message;
+            });
+        };
+
+        $scope.find = function () {
+            $scope.events = Events.query();
+        };
+
+        $scope.findOne = function () {
+            $scope.event = Events.get({
+                eventId: $stateParams.eventId
+            });
+        };
+    }]
 );
 
 'use strict';
@@ -580,8 +595,9 @@ angular.module('events').controller('EventsController',
 angular.module('events').factory('EventSettings',
     ["$filter", function($filter) {
 
-
-        var KievOfficesAddresses = [
+        var dateFormat = 'yyyy/MM/dd',
+            timeFormat = 'hh:mm a',
+            KIEV_OFFICES_ADDRESSES = [
             {name: '28 Fizkultury Street,', id: 0, group: 'Kiev'},
             {name: '14B Kudryashova Street', id: 1, group: 'Kiev'},
             {name: '74 Zhylyanska Street', id: 2, group: 'Kiev'},
@@ -590,10 +606,6 @@ angular.module('events').factory('EventSettings',
             {name: '51 Kozytskogo Street', id: 5, group: 'Vinnytsia'},
             {name: '45 O.Stepanivny Street', id: 6, group: 'Lviv'}
         ];
-
-
-        var dateFormat = 'yyyy/MM/dd';
-        var timeFormat = 'hh:mm a';
 
         function getDateFormat(){
             return dateFormat;
@@ -616,17 +628,16 @@ angular.module('events').factory('EventSettings',
                 return tag.trim();
             });
         }
-
-        function getAddresses(){
-            return KievOfficesAddresses;
+        function getAddresses() {
+            return KIEV_OFFICES_ADDRESSES;
         }
 
         return {
-            getAddresses: getAddresses,
             dateFormat: getDateFormat,
             formatDate: formatDate,
             getProperDate: getProperDate,
-            trimSplitTags: trimSplitTags
+            trimSplitTags: trimSplitTags,
+            getAddresses: getAddresses
         };
     }]
 );
@@ -941,7 +952,7 @@ angular.module("app").run(["$templateCache", function($templateCache) {
   );
 
   $templateCache.put("modules/events/views/view-event.client.view.html",
-    "<section data-ng-controller=\"EventsController\" data-ng-init=\"findOne()\"><div class=\"page-header\"><h1 data-ng-bind=\"event.title\"></h1></div><div class=\"pull-right\"><a class=\"btn btn-primary\" href=\"/#!/events/{{event._id}}/edit\"><i class=\"glyphicon glyphicon-edit\"></i></a> <a class=\"btn btn-primary\" data-ng-click=\"remove();\"><i class=\"glyphicon glyphicon-trash\"></i></a></div><small><em class=\"text-muted\">Posted on <span data-ng-bind=\"event.created | date:'mediumDate'\"></span> by <span data-ng-bind=\"event.user.displayName\"></span></em></small><p><img ng-if=\"!!event.backgroundImgUrl.base64\" data-ng-src=\"data:image/jpg;base64,{{event.backgroundImgUrl.base64}}\"></p><p class=\"lead\" data-ng-bind=\"event.description\"></p></section>"
+    "<section data-ng-controller=\"EventsController\" data-ng-init=\"findOne()\"><div class=\"page-header\"><h1 data-ng-bind=\"event.title\"></h1></div><div class=\"pull-right\"><a class=\"btn btn-primary\" href=\"/#!/events/{{event._id}}/edit\"><i class=\"glyphicon glyphicon-edit\"></i></a> <a class=\"btn btn-primary\" data-ng-click=\"remove();\"><i class=\"glyphicon glyphicon-trash\"></i></a></div><small><em class=\"text-muted\">Posted on <span data-ng-bind=\"event.created | date:'mediumDate'\"></span> by <span data-ng-bind=\"event.user.displayName\"></span></em></small><p><img ng-if=\"!!event.backgroundImgUrl.base64\" data-ng-src=\"data:image/jpg;base64,{{event.backgroundImgUrl.base64}}\"></p><p class=\"lead\" data-ng-bind=\"event.description\"></p><ui-gmap-google-map center=\"map.center\" zoom=\"map.zoom\"><ui-gmap-marker coords=\"map.center\" options=\"marker.options\" idkey=\"marker.id\"></ui-gmap-marker></ui-gmap-google-map></section>"
   );
 
   $templateCache.put("modules/users/views/authentication/signin.client.view.html",

@@ -3,8 +3,9 @@
 angular.module('events').factory('EventSettings',
     function($filter) {
 
-
-        var KievOfficesAddresses = [
+        var dateFormat = 'yyyy/MM/dd',
+            timeFormat = 'hh:mm a',
+            KIEV_OFFICES_ADDRESSES = [
             {name: '28 Fizkultury Street,', id: 0, group: 'Kiev'},
             {name: '14B Kudryashova Street', id: 1, group: 'Kiev'},
             {name: '74 Zhylyanska Street', id: 2, group: 'Kiev'},
@@ -13,10 +14,6 @@ angular.module('events').factory('EventSettings',
             {name: '51 Kozytskogo Street', id: 5, group: 'Vinnytsia'},
             {name: '45 O.Stepanivny Street', id: 6, group: 'Lviv'}
         ];
-
-
-        var dateFormat = 'yyyy/MM/dd';
-        var timeFormat = 'hh:mm a';
 
         function getDateFormat(){
             return dateFormat;
@@ -39,17 +36,16 @@ angular.module('events').factory('EventSettings',
                 return tag.trim();
             });
         }
-
-        function getAddresses(){
-            return KievOfficesAddresses;
+        function getAddresses() {
+            return KIEV_OFFICES_ADDRESSES;
         }
 
         return {
-            getAddresses: getAddresses,
             dateFormat: getDateFormat,
             formatDate: formatDate,
             getProperDate: getProperDate,
-            trimSplitTags: trimSplitTags
+            trimSplitTags: trimSplitTags,
+            getAddresses: getAddresses
         };
     }
 );
