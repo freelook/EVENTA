@@ -1,0 +1,22 @@
+<section data-ng-controller="SpeakersController" data-ng-init="find()">
+	<div class="events__header">
+		<md-text-float label="{{ 'Hall of fame' | translate}}" ng-model="search"></md-text-float>
+	</div>
+
+<<<<<<< HEAD
+	<div class="container list-group">
+		<a data-ng-repeat="speaker in speakers | filter:search" data-ng-href="#!/speakers/{{speaker._id}}" class="list-group-item speakers-list__item clearfix">
+=======
+	<div class="list-group">
+		<a data-ng-repeat="speaker in speakers | filter:search" data-ng-href="#!/speakers/{{speaker._id}}" class="list-group-item speakers-list__item" flex="45" flex-order="{{$index % 2}}">
+
+            <img data-ng-src="data:image/jpg;base64,{{speaker.thumbnailUrl.base64}}"/>
+>>>>>>> 068bd27f8eb0ef6305579c54e62bb29c930dc71b
+            <h2>{{speaker.name + '&nbsp;' + speaker.surname}}</h2>
+            <h3>{{speaker.company}}</h3>
+            <h4>{{speaker.title}}</h4>
+			<p data-ng-bind-html="speaker.bio"></p>
+		</a>
+	</div>
+
+</section>
