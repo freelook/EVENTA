@@ -2,8 +2,12 @@
 
 angular.module('events').controller('EventsController',
 	function($scope, $stateParams, $location, $filter, Authentication, Events) {
+
+		var DAFAULT_LOCATION = {latitude: 50.4020355, longitude: 30.5326905};
+
 		$scope.authentication = Authentication;
 		$scope.tags = '';
+		$scope.search = '';
 		$scope.startDate = $filter('date')(new Date(), 'yyyy/MM/dd');
 		$scope.endDate = $filter('date')(new Date(), 'yyyy/MM/dd');
 		$scope.format = 'yyyy/MM/dd';
@@ -21,6 +25,21 @@ angular.module('events').controller('EventsController',
 
 		$scope.external = false;
 
+		$scope.map = {
+			zoom: 12
+		};
+
+		$scope.marker = {
+			id: 0,
+			options: {
+				draggable: false,
+				labelAnchor: "100 0",
+				labelClass: "marker-labels"
+			}
+		};
+
+		$scope.map.center = DAFAULT_LOCATION;
+
 		function trimSplitTags(tags){
 			return tags.split(',').map(function(tag){
 				return tag.trim();
@@ -37,8 +56,6 @@ angular.module('events').controller('EventsController',
 			$event.stopPropagation();
 			$scope.endOpened = true;
 		};
-
-		$scope.search = '';
 
 		function getProperDate(date, time){
 			var d = $filter('date')(date, 'yyyy/MM/dd');
@@ -102,6 +119,8 @@ angular.module('events').controller('EventsController',
 			$scope.event = Events.get({
 				eventId: $stateParams.eventId
 			});
+			if($scope.event && $scope.event.location) {
+				$scope.map.center = $scope.event.location;
+			}
 		};
-	}
-);
+	});

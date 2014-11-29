@@ -14,6 +14,7 @@ var ApplicationConfiguration = (function () {
         'ui.router',
         'ui.bootstrap',
         'ui.utils',
+        'uiGmapgoogle-maps',
         'naif.base64'
     ];
 

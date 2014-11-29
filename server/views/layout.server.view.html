@@ -55,7 +55,7 @@
 	<script type="text/javascript">
 		var user = {{ user | json | safe }};
 	</script>
-
+	<script src='//maps.googleapis.com/maps/api/js?sensor=false'></script>
 	<!--Application JavaScript Files-->
 	{% for jsFile in jsFiles %}<script src="{{jsFile}}"></script>
 	{% endfor %}
