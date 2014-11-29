@@ -27,6 +27,7 @@ var Event1Schema = new Schema({
         type: Boolean,
         default: false
     },
+
     description: {
         type: String,
         default: '',
