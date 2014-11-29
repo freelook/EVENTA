@@ -3,14 +3,8 @@
 		<md-text-float label="{{ 'Find event for you' | translate}}" ng-model="search"></md-text-float>
 	</div>
 	<div class="list-group">
-		<a data-ng-repeat="event in events" data-ng-href="#!/events/{{event._id}}" class="list-group-item">
-			<small class="list-group-item-text">
-				Posted on
-				<span data-ng-bind="event.created | date:'mediumDate'"></span>
-				by
-				<span data-ng-bind="event.user.displayName"></span>
-			</small>
-			<h4 class="list-group-item-heading" data-ng-bind="event.title"></h4>
+		<a data-ng-repeat="event in events" data-ng-href="#!/events/{{event._id}}" class="list-group-item events-list__item">
+			<h4 class="list-group-item-heading event-list__item__header" data-ng-bind="event.title"></h4>
 			<p class="list-group-item-text" data-ng-bind="event.content"></p>
 		</a>
 	</div>

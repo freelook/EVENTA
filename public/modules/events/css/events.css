@@ -1,11 +1,33 @@
 .events__header {
 	text-align: center;
 	border-bottom: none;
+	background: url('../../core/img/header/slider-bg.jpg');
+	margin: 0;
+	margin-top: -20px;
+	padding: 40px 0;
 }
 
 .events__header h1 {
+	font-family: 'Roboto', Arial, sans-serif;
 	font-size: 4em;
-	font-family: 'Roboto';
 	font-weight: 100;
-	color: black;
+	color: white;
 }
+
+.events-list__item {
+	border-left: none;
+	border-right: none;
+}
+
+.events-list__item:last-child {
+	border-bottom: none;
+}
+
+a.list-group-item .event-list__item__header {
+	font-family: 'Roboto', Arial, sans-serif;
+	font-weight: 700;
+	font-size: 2em;
+	color: #317eac;
+}
+
+
