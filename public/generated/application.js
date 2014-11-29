@@ -13,7 +13,8 @@ var ApplicationConfiguration = (function () {
         'pascalprecht.translate',
         'ui.router',
         'ui.bootstrap',
-        'ui.utils'
+        'ui.utils',
+        'naif.base64'
     ];
 
     // Add a new vertical module
@@ -458,8 +459,8 @@ angular.module('events').config(['$stateProvider',
 
 'use strict';
 
-angular.module('events').controller('EventsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Events',
-	function($scope, $stateParams, $location, Authentication, Events) {
+angular.module('events').controller('EventsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Events', 'Speakers',
+	function($scope, $stateParams, $location, Authentication, Events, Speakers) {
 		$scope.authentication = Authentication;
 
 		$scope.create = function() {
@@ -471,6 +472,7 @@ angular.module('events').controller('EventsController', ['$scope', '$stateParams
 				endDateTime: this.endDateTime,
 				numberOfPersons: this.numberOfPersons
 			});
+
 			event.$save(function(response) {
 				$location.path('events/' + response._id);
 
@@ -516,6 +518,12 @@ angular.module('events').controller('EventsController', ['$scope', '$stateParams
 				eventId: $stateParams.eventId
 			});
 		};
+
+        $scope.findSpeaker = function(speakerId) {
+            $scope.speaker = Speakers.get({
+                speakerId: speakerId
+            });
+        };
 	}
 ]);
 
@@ -523,15 +531,35 @@ angular.module('events').controller('EventsController', ['$scope', '$stateParams
 
 //Events service used for communicating with the events REST endpoints
 angular.module('events').factory('Events', ['$resource',
-	function($resource) {
-		return $resource('events/:eventId', {
-			eventId: '@_id'
-		}, {
-			update: {
-				method: 'PUT'
-			}
-		});
-	}
+    function($resource) {
+        return $resource('events/:eventId', {
+            eventId: '@_id'
+        }, {
+            update: {
+                method: 'PUT'
+            }
+        });
+    }
+]);
+
+/**
+ * Created by Mykola_Turunov on 11/29/2014.
+ */
+
+
+'use strict';
+
+//Events service used for communicating with the events REST endpoints
+angular.module('speakers').factory('Events', ['$resource',
+    function($resource) {
+        return $resource('/speakers/', {
+            query: {
+                method: 'GET',
+                isArray: true
+            },
+            show: { method: 'GET' }
+        });
+    }
 ]);
 
 'use strict';
@@ -797,7 +825,7 @@ angular.module("app").run(["$templateCache", function($templateCache) {
   );
 
   $templateCache.put("modules/events/views/create-event.client.view.html",
-    "<section data-ng-controller=\"EventsController\"><div class=\"page-header\"><h1>New Event</h1></div><div class=\"col-md-12\"><form name=\"eventForm\" class=\"form-horizontal\" data-ng-submit=\"create()\" novalidate=\"\"><fieldset><div class=\"form-group\" ng-class=\"{ 'has-error': eventForm.title.$dirty && eventForm.title.$invalid }\"><label class=\"control-label\" for=\"title\">Title</label><div class=\"controls\"><input name=\"title\" type=\"text\" data-ng-model=\"title\" id=\"title\" class=\"form-control\" placeholder=\"Title\" required=\"\"></div></div><div class=\"form-group\"><label class=\"control-label\" for=\"external\">External</label><div class=\"controls\"><input type=\"checkbox\" id=\"external\" data-ng-model=\"external\"></div></div><div class=\"form-group\"><label class=\"control-label\" for=\"stardDate\">Start Date</label><div class=\"controls\"><input type=\"date\" id=\"stardDate\" data-ng-model=\"startDateTime\"></div></div><div class=\"form-group\"><label class=\"control-label\" for=\"endDate\">End Date</label><div class=\"controls\"><input type=\"date\" id=\"endDate\" data-ng-model=\"endDateTime\"></div></div><div class=\"form-group\"><label class=\"control-label\" for=\"numberOfPersons\">Number of participants</label><div class=\"controls\"><input id=\"numberOfPersons\" data-ng-model=\"numberOfPersons\" type=\"number\"></div></div><div class=\"form-group\"><label class=\"control-label\" for=\"description\">Description</label><div class=\"controls\"><textarea name=\"description\" data-ng-model=\"description\" id=\"description\" class=\"form-control\" cols=\"20\" rows=\"10\" placeholder=\"Description cannot be blank\"></textarea></div></div><div class=\"form-group\"><input type=\"submit\" class=\"btn btn-default\"></div><div data-ng-show=\"error\" class=\"text-danger\"><strong data-ng-bind=\"error\"></strong></div></fieldset></form></div></section>"
+    "<section data-ng-controller=\"EventsController\"><div class=\"page-header\"><h1>New Event</h1></div><div class=\"col-md-12\"><form name=\"eventForm\" class=\"form-horizontal\" data-ng-submit=\"create()\" novalidate=\"\"><fieldset><div class=\"form-group\" ng-class=\"{ 'has-error': eventForm.title.$dirty && eventForm.title.$invalid }\"><label class=\"control-label\" for=\"title\">Title</label><div class=\"controls\"><input name=\"title\" type=\"text\" data-ng-model=\"title\" id=\"title\" class=\"form-control\" placeholder=\"Title\" required=\"\"></div></div><div class=\"form-group\"><label class=\"control-label\" for=\"external\">External</label><div class=\"controls\"><input type=\"checkbox\" id=\"external\" data-ng-model=\"external\"></div></div><div class=\"form-group\"><label class=\"control-label\" for=\"stardDate\">Start Date</label><div class=\"controls\"><input type=\"date\" id=\"stardDate\" data-ng-model=\"startDateTime\"></div></div><div class=\"form-group\"><label class=\"control-label\" for=\"endDate\">End Date</label><div class=\"controls\"><input type=\"date\" id=\"endDate\" data-ng-model=\"endDateTime\"></div></div><div class=\"form-group\"><label class=\"control-label\" for=\"backgroundImgUrl\">Background Image</label><div class=\"controls\"><input type=\"file\" id=\"backgroundImgUrl\" ng-model=\"image\" base-sixty-four-input=\"\"></div><p><b>File Name:</b> {{image.filename}}</p><p><b>File type:</b> {{image.filetype}}</p></div><div class=\"form-group\"><label class=\"control-label\" for=\"numberOfPersons\">Number of participants</label><div class=\"controls\"><input id=\"numberOfPersons\" data-ng-model=\"numberOfPersons\" type=\"number\"></div></div><div class=\"form-group\"><label class=\"control-label\" for=\"description\">Description</label><div class=\"controls\"><textarea name=\"description\" data-ng-model=\"description\" id=\"description\" class=\"form-control\" cols=\"20\" rows=\"10\" placeholder=\"Description cannot be blank\"></textarea></div></div><div class=\"form-group\"><input type=\"submit\" class=\"btn btn-default\"></div><div data-ng-show=\"error\" class=\"text-danger\"><strong data-ng-bind=\"error\"></strong></div></fieldset></form></div></section>"
   );
 
   $templateCache.put("modules/events/views/edit-event.client.view.html",
