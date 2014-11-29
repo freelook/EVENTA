@@ -1,27 +1,27 @@
 <section data-ng-controller="EventsController">
     <div class="page-header">
-        <h1>Add new event</h1>
+        <h1 translate="Add new event"></h1>
     </div>
     <div class="col-md-12">
         <form name="eventForm" class="form-horizontal" role="form" data-ng-submit="create()" novalidate>
             <fieldset>
                 <div class="form-group" ng-class="{ 'has-error': eventForm.title.$dirty && eventForm.title.$invalid }">
-                    <label class="control-label col-sm-2" for="title">Title</label>
+                    <label class="control-label col-sm-2" for="title" translate="Title"></label>
 
                     <div class="controls col-sm-10">
                         <input name="title" type="text" data-ng-model="title" id="title" class="form-control"
-                               placeholder="Title of future event" required>
+                               placeholder="{{'Title of future event' | translate}}" required>
                     </div>
                 </div>
 
                 <div class="form-group"
                      ng-class="{ 'has-error': eventForm.description.$dirty && eventForm.description.$invalid }">
-                    <label class="control-label col-sm-2" for="description">Short Description</label>
+                    <label class="control-label col-sm-2" for="description" translate="Short Description"></label>
 
                     <div class="controls col-sm-10">
                         <textarea type="text" name="description" data-ng-model="description" id="description"
                                   class="form-control col-sm-12" cols="20" rows="5"
-                                  placeholder="Add short description here" required></textarea>
+                                  placeholder="{{'Add short description here' | translate}}" required></textarea>
                     </div>
                 </div>
 
@@ -31,10 +31,10 @@
                         <div class="controls edit-event__checkbox">
                             <input type="checkbox" id="external" data-ng-model="external"/>
                         </div>
-                        <label class="control-label edit-event__checkbox__label" for="external">External event</label>
+                        <label class="control-label edit-event__checkbox__label" for="external" translate="External event"></label>
                     </div>
                     <div class="form-group col-sm-5 edit-event__box2">
-                        <label class="control-label" for="backgroundImgUrl">Add Background Image</label>
+                        <label class="control-label" for="backgroundImgUrl" translate="Add Background Image"></label>
 
                         <div class="controls">
                             <input type="file" id="backgroundImgUrl" ng-model='backgroundImgUrl' base-sixty-four-input>
@@ -45,7 +45,7 @@
                 <div class="row">
                     <div class="col-sm-2"></div>
                     <div class="form-group col-sm-5 edit-event__date">
-                        <label class="control-label">Start Date</label>
+                        <label class="control-label" translate="Start Date"></label>
 
                         <div class="controls">
                             <input type="text" class="form-control edit-event__date__input"
@@ -64,7 +64,7 @@
                 </span>
                         </div>
                         <div class="edit-event__time">
-                            <label class="control-label">Start Time</label>
+                            <label class="control-label" translate="Start Time"></label>
 
                             <div class="controls">
                                 <timepicker ng-model="startTime"
@@ -75,7 +75,7 @@
                         </div>
                     </div>
                     <div class="form-group col-sm-5 edit-event__date">
-                        <label class="control-label" for="endDate">End Date</label>
+                        <label class="control-label" for="endDate" translate="End Date"></label>
 
                         <div class="controls">
                             <input type="text" class="form-control edit-event__date__input"
@@ -96,7 +96,7 @@
                         </div>
 
                         <div class="edit-event__time">
-                            <label class="control-label">End Time</label>
+                            <label class="control-label" translate="End Time"></label>
 
                             <div class="controls">
                                 <timepicker ng-model="endTime"
@@ -110,7 +110,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="control-label col-sm-2" for="numberOfPersons">Number of participants</label>
+                    <label class="control-label col-sm-2" for="numberOfPersons" translate="Number of participants"></label>
 
                     <div class="controls col-sm-5">
                         <input class="form-control" id="numberOfPersons" data-ng-model="numberOfPersons" type="number" value="0"/>
@@ -120,16 +120,16 @@
 
 
                 <div class="form-group">
-                    <label class="control-label col-sm-2" for="content">Long description</label>
+                    <label class="control-label col-sm-2" for="content" translate="Long description"></label>
 
                     <div class="controls col-sm-10">
                         <textarea name="content" data-ng-model="content" id="content" class="form-control" cols="20"
-                                  rows="10" placeholder="Tell more about your future event"></textarea>
+                                  rows="10" placeholder="{{'Tell more about your future event' | translate}}"></textarea>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label class="control-label col-sm-2">Location</label>
+                    <label class="control-label col-sm-2" translate="Location"></label>
 
                     <div class="controls col-sm-5">
                         <select class="form-control" ng-model="selectedLocation" ng-options="location.name group by location.group for location in locations"></select>
@@ -137,11 +137,11 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="control-label col-sm-2" for="tags">Tags</label>
+                    <label class="control-label col-sm-2" for="tags" translate="Tags"></label>
 
                     <div class="controls col-sm-10">
                         <input class="form-control" type="text" name="tags" id="tags" data-ng-model="tags"
-                               placeholder="Keywords of your event"/>
+                               placeholder="{{'Keywords of your event' | translate}}"/>
                     </div>
                 </div>
 

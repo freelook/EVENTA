@@ -12,6 +12,8 @@ module.exports = function(app) {
     app.route('/speakers')
         .get(speakers.list);
 
+    app.route('/speakers').post(speakers.create);
+
 
     // Finish by binding the speaker middleware
     app.param('speakerId', speakers.speakerByID);

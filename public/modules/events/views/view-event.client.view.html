@@ -15,16 +15,13 @@
 	</div>
 	<small>
 		<em class="text-muted">
-			Posted on
-			<span data-ng-bind="event.created | date:'mediumDate'"></span>
-			by
+			<label translate="Posted on"></label>&nbsp
+			<span data-ng-bind="event.created | date:'mediumDate'"></span>&nbsp
+            <label translate="by"></label>
 			<span data-ng-bind="event.user.displayName"></span>
 		</em>
 	</small>
     <p>
-
-
-
 	<p class="lead" data-ng-bind="event.description"></p>
 
 	<ui-gmap-google-map center='map.center' zoom='map.zoom'>
