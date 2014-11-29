@@ -1,0 +1,4 @@
+.event__background {
+	z-index: -200;
+	overflow: hidden;
+}
