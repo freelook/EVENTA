@@ -1,0 +1,41 @@
+.edit-event__box2 {
+	padding: 0 30px;
+}
+
+.edit-event__checkbox {
+	display: inline-block;
+	margin-right: 10px;
+}
+
+.edit-event__checkbox input {
+	height: 20px;
+	width: 20px;
+}
+
+.edit-event__date {
+	padding:0 30px;
+}
+
+@media only screen and (max-width: 768px) {
+	.edit-event__date {
+		padding: 0 30px;
+	}
+}
+
+.edit-event__date .controls .edit-event__date__input{
+	display: inline-block;
+}
+
+.edit-event__date .input-group-btn {
+	display: inline-block;
+	margin-left: -38px;
+	margin-top: -2px;
+}
+
+.edit-event__time {
+	text-align: center;
+}
+
+.edit-event__time .controls table{
+	margin: 0 auto;
+}

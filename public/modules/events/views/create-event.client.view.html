@@ -26,96 +26,105 @@
                 </div>
 
                 <div class="row">
-                    <div class="form-group col-sm-10">
-                        <div class="controls col-sm-2">
-                            <input type="checkbox" id="external" data-ng-model="external"/>
-                        </div>
-                        <label class="control-label col-sm-10" for="external">External event</label>
+                    <div class="col-sm-2"></div>
+                    <div class="form-group col-sm-5 edit-event__box2">
+                          <div class="controls edit-event__checkbox">
+                              <input type="checkbox" id="external" data-ng-model="external"/>
+                          </div>
+                          <label class="control-label edit-event__checkbox__label" for="external">External event</label>
                     </div>
+                  <div class="form-group col-sm-5 edit-event__box2">
+                      <label class="control-label" for="backgroundImgUrl">Add Background Image</label>
+
+                      <div class="controls">
+                          <input type="file" id="backgroundImgUrl" ng-model='backgroundImgUrl' base-sixty-four-input>
+                      </div>
+                  </div>
                 </div>
 
-                <div class="form-group">
-                    <label class="control-label">Start Date</label>
+                <div class="row">
+                  <div class="col-sm-2"></div>
+                  <div class="form-group col-sm-5 edit-event__date">
+                      <label class="control-label">Start Date</label>
 
-                    <div class="controls">
-                        <input type="text" class="form-control"
-                               id="startDate"
-                               is-open="startOpened "
-                               ng-required="true"
-                               close-text="Close"
-                               max-date="maxDate"
-                               min-date="minDate"
-                               datepicker-options="dateOptions"
-                               ng-model="startDate"
-                               datepicker-popup="{{format}}"/>
-						<span class="input-group-btn">
-                			<button type="button" class="btn btn-default" ng-click="openStartDate($event)"><i
-                                    class="glyphicon glyphicon-calendar"></i></button>
-              </span>
-                    </div>
-                    <label class="control-label">Start Time</label>
-
-                    <div class="controls">
-                        <timepicker ng-model="startTime"
-                                    hour-step="hstep"
-                                    minute-step="mstep"
-                                    show-meridian="false"></timepicker>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="control-label" for="endDate">End Date</label>
-
-                    <div class="controls">
-                        <input type="text" class="form-control"
-                               id="endDate"
-                               is-open="endOpened "
-                               ng-required="true"
-                               close-text="Close"
-                               max-date="maxDate"
-                               min-date="minDate"
-                               datepicker-options="dateOptions"
-                               ng-model="endDate"
-                               datepicker-popup="{{format}}"/>
-						<span class="input-group-btn">
-                			<button type="button" class="btn btn-default" ng-click="openEndDate($event)"><i
-                                    class="glyphicon glyphicon-calendar"></i></button>
-						</span>
-
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label" for="backgroundImgUrl">Background Image</label>
+                      <div class="controls">
+                          <input type="text" class="form-control edit-event__date__input"
+                                 id="startDate"
+                                 is-open="startOpened "
+                                 ng-required="true"
+                                 close-text="Close"
+                                 max-date="maxDate"
+                                 min-date="minDate"
+                                 datepicker-options="dateOptions"
+                                 ng-model="dtStart"
+                                 datepicker-popup="{{format}}"/>
+  						<span class="input-group-btn">
+                  			<button type="button" class="btn btn-default" ng-click="openStartDate($event)"><i
+                                      class="glyphicon glyphicon-calendar"></i></button>
+                </span>
+                      </div>
+                      <div class="edit-event__time">
+                        <label class="control-label">Start Time</label>
 
                         <div class="controls">
-                            <input type="file" id="backgroundImgUrl" ng-model='backgroundImgUrl' base-sixty-four-input>
+                            <timepicker ng-model="startTime"
+                                        hour-step="hstep"
+                                        minute-step="mstep"
+                                        show-meridian="false"></timepicker>
                         </div>
-                    </div>
+                      </div>
+                  </div>
+                  <div class="form-group col-sm-5 edit-event__date">
+                      <label class="control-label" for="endDate">End Date</label>
 
-                    <label class="control-label">End Time</label>
+                      <div class="controls">
+                          <input type="text" class="form-control edit-event__date__input"
+                                 id="endDate"
+                                 is-open="endOpened "
+                                 ng-required="true"
+                                 close-text="Close"
+                                 max-date="maxDate"
+                                 min-date="minDate"
+                                 datepicker-options="dateOptions"
+                                 ng-model="dtEnd"
+                                 datepicker-popup="{{format}}"/>
+  						<span class="input-group-btn">
+                  			<button type="button" class="btn btn-default" ng-click="openEndDate($event)"><i
+                                      class="glyphicon glyphicon-calendar"></i></button>
+  						</span>
 
-                    <div class="controls">
-                        <timepicker ng-model="endTime"
-                                    hour-step="hstep"
-                                    minute-step="mstep"
-                                    show-meridian="false"></timepicker>
-                    </div>
+                      </div>
+
+                      <div class="edit-event__time">
+                        <label class="control-label">End Time</label>
+
+                        <div class="controls">
+                            <timepicker ng-model="endTime"
+                                        hour-step="hstep"
+                                        minute-step="mstep"
+                                        show-meridian="false"></timepicker>
+                        </div>
+                      </div>
+                  </div>
+
                 </div>
 
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="numberOfPersons">Number of participants</label>
 
-                <div class="form-group col-sm-4">
-                    <label class="control-label" for="numberOfPersons">Number of participants</label>
-
-                    <div class="controls">
+                    <div class="controls col-sm-5">
                         <input class="form-control" id="numberOfPersons" data-ng-model="numberOfPersons" type="number" value="0"/>
                     </div>
                 </div>
 
 
-                <div class="form-group">
-                    <label class="control-label" for="content">Content</label>
 
-                    <div class="controls">
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="content">Long description</label>
+
+                    <div class="controls col-sm-10">
                         <textarea name="content" data-ng-model="content" id="content" class="form-control" cols="20"
-                                  rows="10" placeholder="Description cannot be blank"></textarea>
+                                  rows="10" placeholder="Tell more about your future event"></textarea>
                     </div>
                 </div>
                 <div class="form-group">
@@ -127,10 +136,10 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="control-label">Location</label>
+                    <label class="control-label col-sm-2">Location</label>
 
-                    <div class="controls">
-                        <select ng-model="selectedLocation" ng-options="location.name group by location.group for location in locations"></select>
+                    <div class="controls col-sm-5">
+                        <select class="form-control" ng-model="selectedLocation" ng-options="location.name group by location.group for location in locations"></select>
                     </div>
                 </div>
 
@@ -144,7 +153,9 @@
                 </div>
 
                 <div class="form-group">
-                    <input type="submit" class="btn btn-default">
+                    <div class="col-sm-offset-2 col-sm-10">
+                      <input type="submit" class="btn btn-default">
+                    </div>
                 </div>
                 <div data-ng-show="error" class="text-danger">
                     <strong data-ng-bind="error"></strong>
