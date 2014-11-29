@@ -38,6 +38,7 @@
 			$stateParams = _$stateParams_;
 			$httpBackend = _$httpBackend_;
 			$location = _$location_;
+			$httpBackend.expectGET('/i18n/resources-locale_ru.json').respond({});
 
 			// Initialize the Authentication controller
 			AuthenticationController = $controller('AuthenticationController', {
