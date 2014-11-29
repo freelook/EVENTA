@@ -6,7 +6,7 @@
 'use strict';
 
 //Events service used for communicating with the events REST endpoints
-angular.module('speakers').factory('Speakers', ['$resource',
+angular.module('events').factory('Speakers', ['$resource',
     function($resource) {
         return $resource('/speakers/:id', {
             query: {
