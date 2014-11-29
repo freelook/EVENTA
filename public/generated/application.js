@@ -102,17 +102,6 @@ angular.module('core').config(
     }]);
 
 'use strict';
-angular
-    .module('core')
-    .controller('LangController', ["$scope", "$translate", function ($scope, $translate) {
-
-        $scope.lang = $translate.use();
-        $scope.setLang = function () {
-            $translate.use($scope.lang);
-        };
-    }]);
-
-'use strict';
 
 angular.module('core').controller('HeaderController', ['$scope', 'Authentication', 'Menus',
 	function($scope, Authentication, Menus) {
@@ -196,6 +185,17 @@ angular.module('core')
                     }
                 ]
             }];
+    }]);
+
+'use strict';
+angular
+    .module('core')
+    .controller('LangController', ["$scope", "$translate", function ($scope, $translate) {
+
+        $scope.lang = $translate.use() || 'en';
+        $scope.setLang = function () {
+            $translate.use($scope.lang.toLocaleLowerCase());
+        };
     }]);
 
 'use strict';
@@ -860,7 +860,7 @@ angular.module("app").run(["$templateCache", function($templateCache) {
   );
 
   $templateCache.put("modules/events/views/view-event.client.view.html",
-    "<section data-ng-controller=\"EventsController\" data-ng-init=\"findOne()\"><div class=\"page-header\"><h1 data-ng-bind=\"event.title\"></h1></div><div class=\"pull-right\" data-ng-show=\"authentication.user._id == event.user._id\"><a class=\"btn btn-primary\" href=\"/#!/events/{{event._id}}/edit\"><i class=\"glyphicon glyphicon-edit\"></i></a> <a class=\"btn btn-primary\" data-ng-click=\"remove();\"><i class=\"glyphicon glyphicon-trash\"></i></a></div><small><em class=\"text-muted\">Posted on <span data-ng-bind=\"event.created | date:'mediumDate'\"></span> by <span data-ng-bind=\"event.user.displayName\"></span></em></small><p class=\"lead\" data-ng-bind=\"event.description\"></p></section>"
+    "<section data-ng-controller=\"EventsController\" data-ng-init=\"findOne()\"><div class=\"page-header\"><h1 data-ng-bind=\"event.title\"></h1></div><div class=\"pull-right\"><a class=\"btn btn-primary\" href=\"/#!/events/{{event._id}}/edit\"><i class=\"glyphicon glyphicon-edit\"></i></a> <a class=\"btn btn-primary\" data-ng-click=\"remove();\"><i class=\"glyphicon glyphicon-trash\"></i></a></div><small><em class=\"text-muted\">Posted on <span data-ng-bind=\"event.created | date:'mediumDate'\"></span> by <span data-ng-bind=\"event.user.displayName\"></span></em></small><p class=\"lead\" data-ng-bind=\"event.description\"></p></section>"
   );
 
   $templateCache.put("modules/users/views/authentication/signin.client.view.html",
