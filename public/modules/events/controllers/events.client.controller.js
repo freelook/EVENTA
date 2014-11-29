@@ -42,7 +42,8 @@ angular.module('events').controller('EventsController',
 				startDateTime: this.startDateTime,
 				endDateTime: this.endDateTime,
 				numberOfPersons: this.numberOfPersons,
-				tags: trimSplitTags($scope.tags)
+				tags: trimSplitTags($scope.tags),
+                backgroundImgUrl: this.backgroundImgUrl
 			});
 			event.$save(function(response) {
 				$location.path('events/' + response._id);
