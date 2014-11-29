@@ -459,9 +459,25 @@ angular.module('events').config(['$stateProvider',
 'use strict';
 
 angular.module('events').controller('EventsController',
-	["$scope", "$stateParams", "$location", "$filter", "Authentication", "Events", function($scope, $stateParams, $location,$filter, Authentication, Events) {
+	["$scope", "$stateParams", "$location", "$filter", "Authentication", "Events", function($scope, $stateParams, $location, $filter, Authentication, Events) {
 		$scope.authentication = Authentication;
 		$scope.tags = '';
+		$scope.startDate = $filter('date')(new Date(), 'yyyy/MM/dd');
+		$scope.endDate = $filter('date')(new Date(), 'yyyy/MM/dd');
+		$scope.format = 'yyyy/MM/dd';
+		$scope.minDate = new Date();
+		$scope.maxDate = '2020-12-31';
+		$scope.dateOptions = {
+			formatYear: 'yy',
+			startingDay: 1
+		};
+		//TimePricker settings
+		$scope.startTime = new Date();
+		$scope.endTime = new Date();
+		$scope.hstep= 1;
+		$scope.mstep= 15;
+
+		$scope.external = false;
 
 		function trimSplitTags(tags){
 			return tags.split(',').map(function(tag){
@@ -469,7 +485,24 @@ angular.module('events').controller('EventsController',
 			});
 		}
 
+		$scope.openStartDate = function($event) {
+			$event.preventDefault();
+			$event.stopPropagation();
+			$scope.startOpened = true;
+		};
+		$scope.openEndDate = function($event) {
+			$event.preventDefault();
+			$event.stopPropagation();
+			$scope.endOpened = true;
+		};
+
 		$scope.search = '';
+
+		function getProperDate(date, time){
+			var d = $filter('date')(date, 'yyyy/MM/dd');
+			var t = $filter('date')(time, 'hh:mm a');
+			return new Date(d + ' ' + t);
+		}
 
 		$scope.create = function() {
 			var event = new Events({
@@ -477,8 +510,8 @@ angular.module('events').controller('EventsController',
 				description: this.description,
 				content: this.content,
 				external: this.external,
-				startDateTime: this.startDateTime,
-				endDateTime: this.endDateTime,
+				startDate: getProperDate(this.startDate, this.startTime),
+				endDate: getProperDate(this.endDate, this.endTime),
 				numberOfPersons: this.numberOfPersons,
 				tags: trimSplitTags($scope.tags)
 			});
@@ -828,7 +861,7 @@ angular.module("app").run(["$templateCache", function($templateCache) {
   );
 
   $templateCache.put("modules/events/views/create-event.client.view.html",
-    "<section data-ng-controller=\"EventsController\"><div class=\"page-header\"><h1>New Event</h1></div><div class=\"col-md-12\"><form name=\"eventForm\" class=\"form-horizontal\" data-ng-submit=\"create()\" novalidate=\"\"><fieldset><div class=\"form-group\" ng-class=\"{ 'has-error': eventForm.title.$dirty && eventForm.title.$invalid }\"><label class=\"control-label\" for=\"title\">Title</label><div class=\"controls\"><input name=\"title\" type=\"text\" data-ng-model=\"title\" id=\"title\" class=\"form-control\" placeholder=\"Title\" required=\"\"></div></div><div class=\"form-group\" ng-class=\"{ 'has-error': eventForm.description.$dirty && eventForm.description.$invalid }\"><label class=\"control-label\" for=\"description\">Short Description</label><div class=\"controls\"><input type=\"text\" name=\"description\" data-ng-model=\"description\" id=\"description\" class=\"form-control\" cols=\"20\" rows=\"10\" placeholder=\"Description cannot be blank\" required=\"\"></div></div><div class=\"form-group\"><label class=\"control-label\" for=\"external\">External</label><div class=\"controls\"><input type=\"checkbox\" id=\"external\" data-ng-model=\"external\"></div></div><div class=\"form-group\"><label class=\"control-label\">Start Date</label><div class=\"controls\"><input type=\"date\" id=\"startDateTime\"></div></div><div class=\"form-group\"><label class=\"control-label\" for=\"endDate\">End Date</label><div class=\"controls\"><input type=\"date\" id=\"endDate\" data-ng-model=\"endDateTime\" required=\"\"></div></div><div class=\"form-group\"><label class=\"control-label\" for=\"numberOfPersons\">Number of participants</label><div class=\"controls\"><input id=\"numberOfPersons\" data-ng-model=\"numberOfPersons\" type=\"number\"></div></div><div class=\"form-group\"><label class=\"control-label\" for=\"content\">Content</label><div class=\"controls\"><textarea name=\"content\" data-ng-model=\"content\" id=\"content\" class=\"form-control\" cols=\"20\" rows=\"10\" placeholder=\"Description cannot be blank\"></textarea></div></div><div class=\"form-group\"><label class=\"control-label\" for=\"tags\">Tags</label><div class=\"controls\"><input type=\"text\" name=\"tags\" id=\"tags\" data-ng-model=\"tags\" placeholder=\"Content\"></div></div><div class=\"form-group\"><input type=\"submit\" class=\"btn btn-default\"></div><div data-ng-show=\"error\" class=\"text-danger\"><strong data-ng-bind=\"error\"></strong></div></fieldset></form></div></section>"
+    "<section data-ng-controller=\"EventsController\"><div class=\"page-header\"><h1>New Event</h1></div><div class=\"col-md-12\"><form name=\"eventForm\" class=\"form-horizontal\" data-ng-submit=\"create()\" novalidate=\"\"><fieldset><div class=\"form-group\" ng-class=\"{ 'has-error': eventForm.title.$dirty && eventForm.title.$invalid }\"><label class=\"control-label\" for=\"title\">Title</label><div class=\"controls\"><input name=\"title\" type=\"text\" data-ng-model=\"title\" id=\"title\" class=\"form-control\" placeholder=\"Title\" required=\"\"></div></div><div class=\"form-group\" ng-class=\"{ 'has-error': eventForm.description.$dirty && eventForm.description.$invalid }\"><label class=\"control-label\" for=\"description\">Short Description</label><div class=\"controls\"><input type=\"text\" name=\"description\" data-ng-model=\"description\" id=\"description\" class=\"form-control\" cols=\"20\" rows=\"10\" placeholder=\"Description cannot be blank\" required=\"\"></div></div><div class=\"form-group\"><label class=\"control-label\" for=\"external\">External</label><div class=\"controls\"><input type=\"checkbox\" id=\"external\" data-ng-model=\"external\"></div></div><div class=\"form-group\"><label class=\"control-label\">Start Date</label><div class=\"controls\"><input type=\"text\" class=\"form-control\" id=\"startDate\" is-open=\"startOpened \" ng-required=\"true\" close-text=\"Close\" max-date=\"maxDate\" min-date=\"minDate\" datepicker-options=\"dateOptions\" ng-model=\"startDate\" datepicker-popup=\"{{format}}\"><span class=\"input-group-btn\"><button type=\"button\" class=\"btn btn-default\" ng-click=\"openStartDate($event)\"><i class=\"glyphicon glyphicon-calendar\"></i></button></span></div><label class=\"control-label\">Start Time</label><div class=\"controls\"><timepicker ng-model=\"startTime\" hour-step=\"hstep\" minute-step=\"mstep\" show-meridian=\"false\"></timepicker></div></div><div class=\"form-group\"><label class=\"control-label\" for=\"endDate\">End Date</label><div class=\"controls\"><input type=\"text\" class=\"form-control\" id=\"endDate\" is-open=\"endOpened \" ng-required=\"true\" close-text=\"Close\" max-date=\"maxDate\" min-date=\"minDate\" datepicker-options=\"dateOptions\" ng-model=\"endDate\" datepicker-popup=\"{{format}}\"><span class=\"input-group-btn\"><button type=\"button\" class=\"btn btn-default\" ng-click=\"openEndDate($event)\"><i class=\"glyphicon glyphicon-calendar\"></i></button></span></div><label class=\"control-label\">End Time</label><div class=\"controls\"><timepicker ng-model=\"endTime\" hour-step=\"hstep\" minute-step=\"mstep\" show-meridian=\"false\"></timepicker></div></div><div class=\"form-group\"><label class=\"control-label\" for=\"numberOfPersons\">Number of participants</label><div class=\"controls\"><input id=\"numberOfPersons\" data-ng-model=\"numberOfPersons\" type=\"number\"></div></div><div class=\"form-group\"><label class=\"control-label\" for=\"content\">Content</label><div class=\"controls\"><textarea name=\"content\" data-ng-model=\"content\" id=\"content\" class=\"form-control\" cols=\"20\" rows=\"10\" placeholder=\"Description cannot be blank\"></textarea></div></div><div class=\"form-group\"><label class=\"control-label\" for=\"tags\">Tags</label><div class=\"controls\"><input type=\"text\" name=\"tags\" id=\"tags\" data-ng-model=\"tags\" placeholder=\"Content\"></div></div><div class=\"form-group\"><input type=\"submit\" class=\"btn btn-default\"></div><div data-ng-show=\"error\" class=\"text-danger\"><strong data-ng-bind=\"error\"></strong></div></fieldset></form></div></section>"
   );
 
   $templateCache.put("modules/events/views/edit-event.client.view.html",
@@ -836,7 +869,7 @@ angular.module("app").run(["$templateCache", function($templateCache) {
   );
 
   $templateCache.put("modules/events/views/list-events.client.view.html",
-    "<section data-ng-controller=\"EventsController\" data-ng-init=\"find()\"><div class=\"events__header\"><md-text-float label=\"{{ 'Find event for you' | translate}}\" ng-model=\"search\"></md-text-float></div><div class=\"list-group\"><a data-ng-repeat=\"event in events\" data-ng-href=\"#!/events/{{event._id}}\" class=\"list-group-item events-list__item\"><h4 class=\"list-group-item-heading event-list__item__header\" data-ng-bind=\"event.title\"></h4><p class=\"list-group-item-text event-list__item__text\" data-ng-bind=\"event.content\"></p></a></div><div class=\"alert alert-warning text-center\" data-ng-if=\"events.$resolved && !events.length\">No events yet, why don't you <a href=\"/#!/events/create\">create one</a>?</div></section>"
+    "<section data-ng-controller=\"EventsController\" data-ng-init=\"find()\"><div class=\"events__header\"><md-text-float label=\"{{ 'Find event for you' | translate}}\" ng-model=\"search\"></md-text-float></div><div class=\"list-group\"><a data-ng-repeat=\"event in events\" data-ng-href=\"#!/events/{{event._id}}\" class=\"list-group-item events-list__item\"><h4 class=\"list-group-item-heading event-list__item__header\" data-ng-bind=\"event.title\"></h4><p class=\"list-group-item-text event-list__item__text\" data-ng-bind=\"event.description\"></p><p class=\"list-group-item-text event-list__item__text\"><label>Start: {{event.startDate }}</label><br><label>End: {{event.endDate }}</label></p></a></div><div class=\"alert alert-warning text-center\" data-ng-if=\"events.$resolved && !events.length\">No events yet, why don't you <a href=\"/#!/events/create\">create one</a>?</div></section>"
   );
 
   $templateCache.put("modules/events/views/view-event.client.view.html",

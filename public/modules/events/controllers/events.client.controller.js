@@ -4,8 +4,8 @@ angular.module('events').controller('EventsController',
 	function($scope, $stateParams, $location, $filter, Authentication, Events) {
 		$scope.authentication = Authentication;
 		$scope.tags = '';
-		$scope.dtStart = $filter('date')(new Date(), 'yyyy/MM/dd');
-		$scope.dtEnd = $filter('date')(new Date(), 'yyyy/MM/dd');
+		$scope.startDate = $filter('date')(new Date(), 'yyyy/MM/dd');
+		$scope.endDate = $filter('date')(new Date(), 'yyyy/MM/dd');
 		$scope.format = 'yyyy/MM/dd';
 		$scope.minDate = new Date();
 		$scope.maxDate = '2020-12-31';
@@ -13,6 +13,13 @@ angular.module('events').controller('EventsController',
 			formatYear: 'yy',
 			startingDay: 1
 		};
+		//TimePricker settings
+		$scope.startTime = new Date();
+		$scope.endTime = new Date();
+		$scope.hstep= 1;
+		$scope.mstep= 15;
+
+		$scope.external = false;
 
 		function trimSplitTags(tags){
 			return tags.split(',').map(function(tag){
@@ -33,14 +40,20 @@ angular.module('events').controller('EventsController',
 
 		$scope.search = '';
 
+		function getProperDate(date, time){
+			var d = $filter('date')(date, 'yyyy/MM/dd');
+			var t = $filter('date')(time, 'hh:mm a');
+			return new Date(d + ' ' + t);
+		}
+
 		$scope.create = function() {
 			var event = new Events({
 				title: this.title,
 				description: this.description,
 				content: this.content,
 				external: this.external,
-				startDateTime: this.startDateTime,
-				endDateTime: this.endDateTime,
+				startDate: getProperDate(this.startDate, this.startTime),
+				endDate: getProperDate(this.endDate, this.endTime),
 				numberOfPersons: this.numberOfPersons,
 				tags: trimSplitTags($scope.tags)
 			});
