@@ -38,5 +38,13 @@
     "Change your password":"Изменить пароль",
     "Current Password":"Текущий пароль",
     "Save Password":"Сохранить пароль",
-    "Password Changed Successfully":"Пароль успешно изменен"
+    "Password Changed Successfully":"Пароль успешно изменен",
+
+    "Edit your profile":"Изменение профиля",
+    "Save Profile":"Сохранить профиль",
+    "Connect other social accounts:":"Подключить другие аккаунты:",
+
+    "Events":"События",
+    "List Events":"Список событий",
+    "New Event":"Новое событие"
 }
