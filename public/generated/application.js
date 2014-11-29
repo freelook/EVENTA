@@ -14,6 +14,7 @@ var ApplicationConfiguration = (function () {
         'ui.router',
         'ui.bootstrap',
         'ui.utils',
+        'uiGmapgoogle-maps',
         'naif.base64'
     ];
 
@@ -459,99 +460,131 @@ angular.module('events').config(['$stateProvider',
 
 'use strict';
 
-angular.module('events').controller('EventsController',
-	["$scope", "$stateParams", "$location", "$filter", "Authentication", "Events", "EventSettings", function($scope, $stateParams, $location, $filter, Authentication, Events, EventSettings) {
-		$scope.authentication = Authentication;
+angular.module('events')
+    .controller('EventsController',
+    ["$scope", "$stateParams", "$location", "$filter", "Authentication", "Events", "EventSettings", function ($scope, $stateParams, $location, $filter, Authentication, Events, EventSettings) {
 
-		$scope.startDate = EventSettings.formatDate(new Date());
-		$scope.endDate = EventSettings.formatDate(new Date());
-		$scope.format = EventSettings.dateFormat;
-		$scope.minDate = new Date();
-		$scope.maxDate = '2020-12-31';
-		$scope.dateOptions = {
-			formatYear: 'yy',
-			startingDay: 1
-		};
-		//TimePricker settings
-		$scope.startTime = new Date();
-		$scope.endTime = new Date();
-		$scope.hstep= 1;
-		$scope.mstep= 15;
+        var DAFAULT_LOCATION = {latitude: 50.4020355, longitude: 30.5326905};
+        $scope.authentication = Authentication;
 
-		$scope.numberOfPersons = 0;
-		$scope.tags = '';
-		$scope.external = false;
-		$scope.search = '';
+        $scope.startDate = EventSettings.formatDate(new Date());
+        $scope.endDate = EventSettings.formatDate(new Date());
+        $scope.format = EventSettings.dateFormat;
+        $scope.tags = '';
+        $scope.search = '';
+        $scope.minDate = new Date();
+        $scope.maxDate = '2020-12-31';
+        $scope.dateOptions = {
+            formatYear: 'yy',
+            startingDay: 1
+        };
+        //TimePricker settings
+        $scope.startTime = new Date();
+        $scope.endTime = new Date();
+        $scope.hstep = 1;
+        $scope.mstep = 15;
 
-		$scope.openStartDate = function($event) {
-			$event.preventDefault();
-			$event.stopPropagation();
-			$scope.startOpened = true;
-		};
-		$scope.openEndDate = function($event) {
-			$event.preventDefault();
-			$event.stopPropagation();
-			$scope.endOpened = true;
-		};
+        $scope.numberOfPersons = 0;
+        $scope.tags = '';
+        $scope.external = false;
+        $scope.search = '';
 
-		$scope.create = function() {
-			var event = new Events({
-				title: this.title,
-				description: this.description,
-				content: this.content,
-				external: this.external,
-				startDate: EventSettings.getProperDate(this.startDate, this.startTime),
-				endDate: EventSettings.getProperDate(this.endDate, this.endTime),
-				numberOfPersons: this.numberOfPersons,
-				tags: EventSettings.trimSplitTags($scope.tags),
+        $scope.map = {
+            zoom: 12
+        };
+
+        $scope.marker = {
+            id: 0,
+            options: {
+                draggable: false,
+                labelAnchor: '100 0',
+                labelClass: 'marker-labels'
+            }
+        };
+
+        $scope.map.center = DAFAULT_LOCATION;
+
+        function trimSplitTags(tags) {
+            return tags.split(',').map(function (tag) {
+                return tag.trim();
+            });
+        }
+
+        $scope.openStartDate = function ($event) {
+            $event.preventDefault();
+            $event.stopPropagation();
+            $scope.startOpened = true;
+        };
+        $scope.openEndDate = function ($event) {
+            $event.preventDefault();
+            $event.stopPropagation();
+            $scope.endOpened = true;
+        };
+
+        function getProperDate(date, time) {
+            var d = $filter('date')(date, 'yyyy/MM/dd');
+            var t = $filter('date')(time, 'hh:mm a');
+            return new Date(d + ' ' + t);
+        }
+
+        $scope.create = function () {
+            var event = new Events({
+                title: this.title,
+                description: this.description,
+                content: this.content,
+                external: this.external,
+                startDate: EventSettings.getProperDate(this.startDate, this.startTime),
+                endDate: EventSettings.getProperDate(this.endDate, this.endTime),
+                numberOfPersons: this.numberOfPersons,
+                tags: EventSettings.trimSplitTags($scope.tags),
                 backgroundImgUrl: this.backgroundImgUrl
-			});
-			event.$save(function(response) {
-				$location.path('events/' + response._id);
+            });
+            event.$save(function (response) {
+                $location.path('events/' + response._id);
 
-				$scope.title = '';
-				$scope.content = '';
-			}, function(errorResponse) {
-				$scope.error = errorResponse.data.message;
-			});
-		};
+                $scope.title = '';
+                $scope.content = '';
+            }, function (errorResponse) {
+                $scope.error = errorResponse.data.message;
+            });
+        };
 
-		$scope.remove = function(event) {
-			if (event) {
-				event.$remove();
+        $scope.remove = function (event) {
+            if (event) {
+                event.$remove();
 
-				for (var i in $scope.events) {
-					if ($scope.events[i] === event) {
-						$scope.events.splice(i, 1);
-					}
-				}
-			} else {
-				$scope.event.$remove(function() {
-					$location.path('events');
-				});
-			}
-		};
+                for (var i in $scope.events) {
+                    if ($scope.events[i] === event) {
+                        $scope.events.splice(i, 1);
+                    }
+                }
+            } else {
+                $scope.event.$remove(function () {
+                    $location.path('events');
+                });
+            }
+        };
 
-		$scope.update = function() {
-			var event = $scope.event;
+        $scope.update = function () {
+            var event = $scope.event;
 
-			event.$update(function() {
-				$location.path('events/' + event._id);
-			}, function(errorResponse) {
-				$scope.error = errorResponse.data.message;
-			});
-		};
+            event.$update(function () {
+                $location.path('events/' + event._id);
+            }, function (errorResponse) {
+                $scope.error = errorResponse.data.message;
+            });
+        };
 
-		$scope.find = function() {
-			$scope.events = Events.query();
-		};
+        $scope.find = function () {
+            $scope.events = Events.query();
+        };
 
-		$scope.findOne = function() {
-			$scope.event = Events.get({
-				eventId: $stateParams.eventId
-			});
-		};
-	}]
+        $scope.findOne = function () {
+            $scope.event = Events.get({
+                eventId: $stateParams.eventId
+            });
+        };
+    }]
 );
 
 'use strict';
@@ -903,7 +936,7 @@ angular.module("app").run(["$templateCache", function($templateCache) {
   );
 
   $templateCache.put("modules/events/views/view-event.client.view.html",
-    "<section data-ng-controller=\"EventsController\" data-ng-init=\"findOne()\"><div class=\"page-header\"><h1 data-ng-bind=\"event.title\"></h1></div><div class=\"pull-right\"><a class=\"btn btn-primary\" href=\"/#!/events/{{event._id}}/edit\"><i class=\"glyphicon glyphicon-edit\"></i></a> <a class=\"btn btn-primary\" data-ng-click=\"remove();\"><i class=\"glyphicon glyphicon-trash\"></i></a></div><small><em class=\"text-muted\">Posted on <span data-ng-bind=\"event.created | date:'mediumDate'\"></span> by <span data-ng-bind=\"event.user.displayName\"></span></em></small><p><img ng-if=\"!!event.backgroundImgUrl.base64\" data-ng-src=\"data:image/jpg;base64,{{event.backgroundImgUrl.base64}}\"></p><p class=\"lead\" data-ng-bind=\"event.description\"></p></section>"
+    "<section data-ng-controller=\"EventsController\" data-ng-init=\"findOne()\"><div class=\"page-header\"><h1 data-ng-bind=\"event.title\"></h1></div><div class=\"pull-right\"><a class=\"btn btn-primary\" href=\"/#!/events/{{event._id}}/edit\"><i class=\"glyphicon glyphicon-edit\"></i></a> <a class=\"btn btn-primary\" data-ng-click=\"remove();\"><i class=\"glyphicon glyphicon-trash\"></i></a></div><small><em class=\"text-muted\">Posted on <span data-ng-bind=\"event.created | date:'mediumDate'\"></span> by <span data-ng-bind=\"event.user.displayName\"></span></em></small><p><img ng-if=\"!!event.backgroundImgUrl.base64\" data-ng-src=\"data:image/jpg;base64,{{event.backgroundImgUrl.base64}}\"></p><p class=\"lead\" data-ng-bind=\"event.description\"></p><ui-gmap-google-map center=\"map.center\" zoom=\"map.zoom\"><ui-gmap-marker coords=\"map.center\" options=\"marker.options\" idkey=\"marker.id\"></ui-gmap-marker></ui-gmap-google-map></section>"
   );
 
   $templateCache.put("modules/users/views/authentication/signin.client.view.html",
