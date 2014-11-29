@@ -4,6 +4,7 @@
 	</div>
 	<div class="list-group">
 		<a data-ng-repeat="event in events | filter : search | orderBy: 'startDate'" data-ng-href="#!/events/{{event._id}}" class="list-group-item events-list__item">
+			<img ng-src="images/event_thumbnail.png"/>
 			<h4 class="list-group-item-heading event-list__item__header" data-ng-bind="event.title"></h4>
 			<p class="list-group-item-text event-list__item__text" data-ng-bind="event.description"></p>
 			<p class="list-group-item-text event-list__item__text" >
