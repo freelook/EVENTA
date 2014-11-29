@@ -36,7 +36,7 @@ var PersonSchema = new Schema({
 		default: ''
 	},
     user: {
-        type: [{type: Schema.Types.ObjectId, ref: "UserModel"}],
+        type: [{type: Schema.Types.ObjectId, ref: 'UserModel'}],
         required: true
     },
 	thumbnailUrl: {
