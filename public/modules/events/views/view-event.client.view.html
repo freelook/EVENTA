@@ -2,8 +2,8 @@
 	<div class="page-header">
 		<div class="event__background">
 			<div class="event__filter">
-				<img ng-if="!!event.backgroundImgUrl.base64" data-ng-src="data:image/jpg;base64,{{event.backgroundImgUrl.base64}}" />
 			</div>
+			<img ng-if="!!event.backgroundImgUrl.base64" data-ng-src="data:image/jpg;base64,{{event.backgroundImgUrl.base64}}" />
 		</div>
 		<h1 class="event__header" data-ng-bind="event.title"></h1>
 		<div class="pull-right">
