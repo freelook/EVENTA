@@ -29,7 +29,7 @@
 			</li>
 			<li class="divider-vertical"></li>
 			<li ui-route="/signin" ng-class="{active: $uiRoute}">
-				<a href="/#!/signin">Sign In</a>
+				<a href="/#!/signin" translate="Sign In"></a>
 			</li>
 			<li class="divider-vertical"></li>
 			<li>
@@ -46,17 +46,17 @@
 				</a>
 				<ul class="dropdown-menu">
 					<li>
-						<a href="/#!/settings/profile">Edit Profile</a>
+						<a href="/#!/settings/profile" translate="Edit Profile"></a>
 					</li>
 					<li>
-						<a href="/#!/settings/accounts">Manage Social Accounts</a>
+						<a href="/#!/settings/accounts" translate="Manage Social Accounts"></a>
 					</li>
 					<li data-ng-show="authentication.user.provider === 'local'">
-						<a href="/#!/settings/password">Change Password</a>
+						<a href="/#!/settings/password" translate="Change Password"></a>
 					</li>
 					<li class="divider"></li>
 					<li>
-						<a href="/auth/signout">Signout</a>
+						<a href="/auth/signout" translate="Signout"></a>
 					</li>
 				</ul>
 			</li>

@@ -1,4 +1,42 @@
 {
   "Find event for you" : "Найди свое событие",
-  "Sign Up": "Регистрация"
+  "Sign Up": "Регистрация",
+    "Sign In": "Войти",
+    "Edit Profile":"Редактировать профиль",
+    "Manage Social Accounts":"Управление аккаунтами соцсетей",
+    "Change Password":"Изменить пароль",
+    "Signout":"Выйти",
+    "Username":"Имя пользователя",
+    "Password":"Пароль",
+
+    "Sign up":"Регистрация",
+    "Forgot your password?":"Забыли пароль?",
+    "Sign in using your social accounts":"Войти с помощью аккаунтов соцсетей",
+    "Or with your account":"Или с помощью вашего аккаунта",
+    "or": "или",
+    "Day":"День ",
+
+    "Sign up using your social accounts":"Зарегистрироваться с помощью аккаунтов соцсетей",
+    "Or with your email":"Или с помощью вашей электронной почты",
+    "First Name":"Имя",
+    "Last Name":"Фамилия",
+    "Email":"Адрес электронной почты",
+    "Submit":"Подтвердить",
+    "Restore your password":"Восстановить пароль",
+    "Enter your account username.":"Введите имя пользователя",
+
+    "Reset your password":"Сбросить пароль",
+    "New Password":"Новый пароль",
+    "Verify Password":"Повторите пароль",
+    "Update Password":"Изменить пароль",
+
+    "Password reset is invalid":"Неправильный код восстановления пароля",
+    "Ask for a new password reset":"Запросить новый код восстановления пароля",
+    "Password successfully reset":"Пароль успешно сброшен",
+    "Continue to home page":"На главную страницу",
+
+    "Change your password":"Изменить пароль",
+    "Current Password":"Текущий пароль",
+    "Save Password":"Сохранить пароль",
+    "Password Changed Successfully":"Пароль успешно изменен"
 }
