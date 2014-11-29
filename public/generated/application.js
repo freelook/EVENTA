@@ -14,6 +14,7 @@ var ApplicationConfiguration = (function () {
         'ui.router',
         'ui.bootstrap',
         'ui.utils',
+        'uiGmapgoogle-maps',
         'naif.base64'
     ];
 
@@ -464,110 +465,186 @@ angular.module('events').config(['$stateProvider',
 
 'use strict';
 
-angular.module('events').controller('EventsController',
-	["$scope", "$stateParams", "$location", "$filter", "Authentication", "Events", function($scope, $stateParams, $location, $filter, Authentication, Events) {
-		$scope.authentication = Authentication;
-		$scope.tags = '';
-		$scope.startDate = $filter('date')(new Date(), 'yyyy/MM/dd');
-		$scope.endDate = $filter('date')(new Date(), 'yyyy/MM/dd');
-		$scope.format = 'yyyy/MM/dd';
-		$scope.minDate = new Date();
-		$scope.maxDate = '2020-12-31';
-		$scope.dateOptions = {
-			formatYear: 'yy',
-			startingDay: 1
-		};
-		//TimePricker settings
-		$scope.startTime = new Date();
-		$scope.endTime = new Date();
-		$scope.hstep= 1;
-		$scope.mstep= 15;
+angular.module('events')
+    .controller('EventsController',
+    ["$scope", "$stateParams", "$location", "$filter", "Authentication", "Events", "EventSettings", function ($scope, $stateParams, $location, $filter, Authentication, Events, EventSettings) {
 
-		$scope.external = false;
+        var DAFAULT_LOCATION = {latitude: 50.4020355, longitude: 30.5326905};
+        $scope.authentication = Authentication;
 
-		function trimSplitTags(tags){
-			return tags.split(',').map(function(tag){
-				return tag.trim();
-			});
-		}
+        $scope.startDate = EventSettings.formatDate(new Date());
+        $scope.endDate = EventSettings.formatDate(new Date());
+        $scope.format = EventSettings.dateFormat;
+        $scope.tags = '';
+        $scope.search = '';
+        $scope.selectedLocation = '';
+        $scope.room = '';
+        $scope.locations = EventSettings.getAddresses();
+        $scope.minDate = new Date();
+        $scope.maxDate = '2020-12-31';
+        $scope.dateOptions = {
+            formatYear: 'yy',
+            startingDay: 1
+        };
 
-		$scope.openStartDate = function($event) {
-			$event.preventDefault();
-			$event.stopPropagation();
-			$scope.startOpened = true;
-		};
-		$scope.openEndDate = function($event) {
-			$event.preventDefault();
-			$event.stopPropagation();
-			$scope.endOpened = true;
-		};
+        //TimePricker settings
+        $scope.startTime = new Date();
+        $scope.endTime = new Date();
+        $scope.hstep = 1;
+        $scope.mstep = 15;
 
-		$scope.search = '';
+        $scope.numberOfPersons = 0;
+        $scope.tags = '';
+        $scope.external = false;
+        $scope.search = '';
 
-		function getProperDate(date, time){
-			var d = $filter('date')(date, 'yyyy/MM/dd');
-			var t = $filter('date')(time, 'hh:mm a');
-			return new Date(d + ' ' + t);
-		}
+        $scope.map = {
+            zoom: 12
+        };
 
-		$scope.create = function() {
-			var event = new Events({
-				title: this.title,
-				description: this.description,
-				content: this.content,
-				external: this.external,
-				startDate: getProperDate(this.startDate, this.startTime),
-				endDate: getProperDate(this.endDate, this.endTime),
-				numberOfPersons: this.numberOfPersons,
-				tags: trimSplitTags($scope.tags),
+        $scope.marker = {
+            id: 0,
+            options: {
+                draggable: false,
+                labelAnchor: '100 0',
+                labelClass: 'marker-labels'
+            }
+        };
+
+
+        $scope.map.center = DAFAULT_LOCATION;
+
+        function clearInputs(){
+            $scope.title = '';
+            $scope.content = '';
+            $scope.description = '';
+            $scope.numberOfPersons = 0;
+            $scope.selectedLocation = '';
+            $scope.tags = '';
+            $scope.external = false;
+            $scope.backgroundImgUrl = null;
+            $scope.room = '';
+        }
+
+        $scope.openStartDate = function ($event) {
+            $event.preventDefault();
+            $event.stopPropagation();
+            $scope.startOpened = true;
+        };
+        $scope.openEndDate = function ($event) {
+            $event.preventDefault();
+            $event.stopPropagation();
+            $scope.endOpened = true;
+        };
+
+        $scope.create = function () {
+            var event = new Events({
+                title: this.title,
+                description: this.description,
+                content: this.content,
+                external: this.external,
+                startDate: EventSettings.getProperDate(this.startDate, this.startTime),
+                endDate: EventSettings.getProperDate(this.endDate, this.endTime),
+                numberOfPersons: this.numberOfPersons,
+                tags: EventSettings.trimSplitTags($scope.tags),
                 backgroundImgUrl: this.backgroundImgUrl
-			});
-			event.$save(function(response) {
-				$location.path('events/' + response._id);
+            });
+            event.$save(function (response) {
+                $location.path('events/' + response._id);
+                clearInputs();
+            }, function (errorResponse) {
+                $scope.error = errorResponse.data.message;
+            });
+        };
 
-				$scope.title = '';
-				$scope.content = '';
-			}, function(errorResponse) {
-				$scope.error = errorResponse.data.message;
-			});
-		};
+        $scope.remove = function (event) {
+            if (event) {
+                event.$remove();
 
-		$scope.remove = function(event) {
-			if (event) {
-				event.$remove();
+                for (var i in $scope.events) {
+                    if ($scope.events[i] === event) {
+                        $scope.events.splice(i, 1);
+                    }
+                }
+            } else {
+                $scope.event.$remove(function () {
+                    $location.path('events');
+                });
+            }
+        };
 
-				for (var i in $scope.events) {
-					if ($scope.events[i] === event) {
-						$scope.events.splice(i, 1);
-					}
-				}
-			} else {
-				$scope.event.$remove(function() {
-					$location.path('events');
-				});
-			}
-		};
+        $scope.update = function () {
+            var event = $scope.event;
 
-		$scope.update = function() {
-			var event = $scope.event;
+            event.$update(function () {
+                $location.path('events/' + event._id);
+            }, function (errorResponse) {
+                $scope.error = errorResponse.data.message;
+            });
+        };
 
-			event.$update(function() {
-				$location.path('events/' + event._id);
-			}, function(errorResponse) {
-				$scope.error = errorResponse.data.message;
-			});
-		};
+        $scope.find = function () {
+            $scope.events = Events.query();
+        };
 
-		$scope.find = function() {
-			$scope.events = Events.query();
-		};
+        $scope.findOne = function () {
+            $scope.event = Events.get({
+                eventId: $stateParams.eventId
+            });
+        };
+    }]
+);
 
-		$scope.findOne = function() {
-			$scope.event = Events.get({
-				eventId: $stateParams.eventId
-			});
-		};
-	}]
+'use strict';
+
+angular.module('events').factory('EventSettings',
+    ["$filter", function($filter) {
+
+        var dateFormat = 'yyyy/MM/dd',
+            timeFormat = 'hh:mm a',
+            KIEV_OFFICES_ADDRESSES = [
+            {name: '28 Fizkultury Street,', id: 0, group: 'Kiev'},
+            {name: '14B Kudryashova Street', id: 1, group: 'Kiev'},
+            {name: '74 Zhylyanska Street', id: 2, group: 'Kiev'},
+            {name: '17a Moskovskaya Street', id: 3, group: 'Dnipropetrovsk'},
+            {name: '63, Kolomenskaya Street', id: 4, group: 'Kharkiv'},
+            {name: '51 Kozytskogo Street', id: 5, group: 'Vinnytsia'},
+            {name: '45 O.Stepanivny Street', id: 6, group: 'Lviv'}
+        ];
+
+        function getDateFormat(){
+            return dateFormat;
+        }
+
+        function formatDate(date){
+            if(date){
+                return $filter('date')(date, 'yyyy/MM/dd');
+            }
+        }
+
+        function getProperDate(date, time){
+            var d = $filter('date')(date, dateFormat);
+            var t = $filter('date')(time, timeFormat);
+            return new Date(d + ' ' + t);
+        }
+
+        function trimSplitTags(tags){
+            return tags.split(',').map(function(tag){
+                return tag.trim();
+            });
+        }
+        function getAddresses() {
+            return KIEV_OFFICES_ADDRESSES;
+        }
+
+        return {
+            dateFormat: getDateFormat,
+            formatDate: formatDate,
+            getProperDate: getProperDate,
+            trimSplitTags: trimSplitTags,
+            getAddresses: getAddresses
+        };
+    }]
 );
 
 'use strict';
@@ -988,7 +1065,11 @@ angular.module("app").run(["$templateCache", function($templateCache) {
   );
 
   $templateCache.put("modules/events/views/create-event.client.view.html",
+<<<<<<< HEAD
     "<section data-ng-controller=\"EventsController\"><div class=\"page-header\"><h1>Add new event</h1></div><div class=\"col-md-12\"><form name=\"eventForm\" class=\"form-horizontal\" role=\"form\" data-ng-submit=\"create()\" novalidate=\"\"><fieldset><div class=\"form-group\" ng-class=\"{ 'has-error': eventForm.title.$dirty && eventForm.title.$invalid }\"><label class=\"control-label col-sm-2\" for=\"title\">Title</label><div class=\"controls col-sm-10\"><input name=\"title\" type=\"text\" data-ng-model=\"title\" id=\"title\" class=\"form-control\" placeholder=\"Title of future event\" required=\"\"></div></div><div class=\"form-group\" ng-class=\"{ 'has-error': eventForm.description.$dirty && eventForm.description.$invalid }\"><label class=\"control-label col-sm-2\" for=\"description\">Short Description</label><div class=\"controls col-sm-10\"><textarea type=\"text\" name=\"description\" data-ng-model=\"description\" id=\"description\" class=\"form-control col-sm-12\" cols=\"20\" rows=\"5\" placeholder=\"Add short description here\" required=\"\"></textarea></div></div><div class=\"row\"><div class=\"form-group col-sm-10\"><div class=\"controls col-sm-2\"><input type=\"checkbox\" id=\"external\" data-ng-model=\"external\"></div><label class=\"control-label col-sm-10\" for=\"external\">External event</label></div></div><div class=\"form-group\"><label class=\"control-label\">Start Date</label><div class=\"controls\"><input type=\"text\" class=\"form-control\" id=\"startDate\" is-open=\"startOpened \" ng-required=\"true\" close-text=\"Close\" max-date=\"maxDate\" min-date=\"minDate\" datepicker-options=\"dateOptions\" ng-model=\"dtStart\" datepicker-popup=\"{{format}}\"><span class=\"input-group-btn\"><button type=\"button\" class=\"btn btn-default\" ng-click=\"openStartDate($event)\"><i class=\"glyphicon glyphicon-calendar\"></i></button></span></div><label class=\"control-label\">Start Time</label><div class=\"controls\"><timepicker ng-model=\"startTime\" hour-step=\"hstep\" minute-step=\"mstep\" show-meridian=\"false\"></timepicker></div></div><div class=\"form-group\"><label class=\"control-label\" for=\"endDate\">End Date</label><div class=\"controls\"><input type=\"text\" class=\"form-control\" id=\"endDate\" is-open=\"endOpened \" ng-required=\"true\" close-text=\"Close\" max-date=\"maxDate\" min-date=\"minDate\" datepicker-options=\"dateOptions\" ng-model=\"dtEnd\" datepicker-popup=\"{{format}}\"><span class=\"input-group-btn\"><button type=\"button\" class=\"btn btn-default\" ng-click=\"openEndDate($event)\"><i class=\"glyphicon glyphicon-calendar\"></i></button></span></div><div class=\"form-group\"><label class=\"control-label\" for=\"backgroundImgUrl\">Background Image</label><div class=\"controls\"><input type=\"file\" id=\"backgroundImgUrl\" ng-model=\"backgroundImgUrl\" base-sixty-four-input=\"\"></div></div><label class=\"control-label\">End Time</label><div class=\"controls\"><timepicker ng-model=\"endTime\" hour-step=\"hstep\" minute-step=\"mstep\" show-meridian=\"false\"></timepicker></div></div><div class=\"form-group col-sm-4\"><label class=\"control-label\" for=\"numberOfPersons\">Number of participants</label><div class=\"controls\"><input class=\"form-control\" id=\"numberOfPersons\" data-ng-model=\"numberOfPersons\" type=\"number\"></div></div></fieldset></form></div><div class=\"form-group\"><label class=\"control-label\" for=\"content\">Content</label><div class=\"controls\"><textarea name=\"content\" data-ng-model=\"content\" id=\"content\" class=\"form-control\" cols=\"20\" rows=\"10\" placeholder=\"Description cannot be blank\"></textarea></div></div><div class=\"form-group\"><label class=\"control-label col-sm-2\" for=\"tags\">Tags</label><div class=\"controls col-sm-10\"><input class=\"form-control\" type=\"text\" name=\"tags\" id=\"tags\" data-ng-model=\"tags\" placeholder=\"Keywords of your event\"></div></div><div class=\"form-group\"><input type=\"submit\" class=\"btn btn-default\"></div><div data-ng-show=\"error\" class=\"text-danger\"><strong data-ng-bind=\"error\"></strong></div></section>"
+=======
+    "<section data-ng-controller=\"EventsController\"><div class=\"page-header\"><h1>Add new event</h1></div><div class=\"col-md-12\"><form name=\"eventForm\" class=\"form-horizontal\" role=\"form\" data-ng-submit=\"create()\" novalidate=\"\"><fieldset><div class=\"form-group\" ng-class=\"{ 'has-error': eventForm.title.$dirty && eventForm.title.$invalid }\"><label class=\"control-label col-sm-2\" for=\"title\">Title</label><div class=\"controls col-sm-10\"><input name=\"title\" type=\"text\" data-ng-model=\"title\" id=\"title\" class=\"form-control\" placeholder=\"Title of future event\" required=\"\"></div></div><div class=\"form-group\" ng-class=\"{ 'has-error': eventForm.description.$dirty && eventForm.description.$invalid }\"><label class=\"control-label col-sm-2\" for=\"description\">Short Description</label><div class=\"controls col-sm-10\"><textarea type=\"text\" name=\"description\" data-ng-model=\"description\" id=\"description\" class=\"form-control col-sm-12\" cols=\"20\" rows=\"5\" placeholder=\"Add short description here\" required=\"\"></textarea></div></div><div class=\"row\"><div class=\"col-sm-2\"></div><div class=\"form-group col-sm-5 edit-event__box2\"><div class=\"controls edit-event__checkbox\"><input type=\"checkbox\" id=\"external\" data-ng-model=\"external\"></div><label class=\"control-label edit-event__checkbox__label\" for=\"external\">External event</label></div><div class=\"form-group col-sm-5 edit-event__box2\"><label class=\"control-label\" for=\"backgroundImgUrl\">Add Background Image</label><div class=\"controls\"><input type=\"file\" id=\"backgroundImgUrl\" ng-model=\"backgroundImgUrl\" base-sixty-four-input=\"\"></div></div></div><div class=\"row\"><div class=\"col-sm-2\"></div><div class=\"form-group col-sm-5 edit-event__date\"><label class=\"control-label\">Start Date</label><div class=\"controls\"><input type=\"text\" class=\"form-control edit-event__date__input\" id=\"startDate\" is-open=\"startOpened \" ng-required=\"true\" close-text=\"Close\" max-date=\"maxDate\" min-date=\"minDate\" datepicker-options=\"dateOptions\" ng-model=\"dtStart\" datepicker-popup=\"{{format}}\"><span class=\"input-group-btn\"><button type=\"button\" class=\"btn btn-default\" ng-click=\"openStartDate($event)\"><i class=\"glyphicon glyphicon-calendar\"></i></button></span></div><div class=\"edit-event__time\"><label class=\"control-label\">Start Time</label><div class=\"controls\"><timepicker ng-model=\"startTime\" hour-step=\"hstep\" minute-step=\"mstep\" show-meridian=\"false\"></timepicker></div></div></div><div class=\"form-group col-sm-5 edit-event__date\"><label class=\"control-label\" for=\"endDate\">End Date</label><div class=\"controls\"><input type=\"text\" class=\"form-control edit-event__date__input\" id=\"endDate\" is-open=\"endOpened \" ng-required=\"true\" close-text=\"Close\" max-date=\"maxDate\" min-date=\"minDate\" datepicker-options=\"dateOptions\" ng-model=\"dtEnd\" datepicker-popup=\"{{format}}\"><span class=\"input-group-btn\"><button type=\"button\" class=\"btn btn-default\" ng-click=\"openEndDate($event)\"><i class=\"glyphicon glyphicon-calendar\"></i></button></span></div><div class=\"edit-event__time\"><label class=\"control-label\">End Time</label><div class=\"controls\"><timepicker ng-model=\"endTime\" hour-step=\"hstep\" minute-step=\"mstep\" show-meridian=\"false\"></timepicker></div></div></div></div><div class=\"form-group\"><label class=\"control-label col-sm-2\" for=\"numberOfPersons\">Number of participants</label><div class=\"controls col-sm-5\"><input class=\"form-control\" id=\"numberOfPersons\" data-ng-model=\"numberOfPersons\" type=\"number\" value=\"0\"></div></div><div class=\"form-group\"><label class=\"control-label col-sm-2\" for=\"content\">Long description</label><div class=\"controls col-sm-10\"><textarea name=\"content\" data-ng-model=\"content\" id=\"content\" class=\"form-control\" cols=\"20\" rows=\"10\" placeholder=\"Tell more about your future event\"></textarea></div></div><div class=\"form-group\"><label class=\"control-label col-sm-2\">Location</label><div class=\"controls col-sm-5\"><select class=\"form-control\" ng-model=\"selectedLocation\" ng-options=\"location.name group by location.group for location in locations\"></select></div></div><div class=\"form-group\"><label class=\"control-label col-sm-2\" for=\"tags\">Tags</label><div class=\"controls col-sm-10\"><input class=\"form-control\" type=\"text\" name=\"tags\" id=\"tags\" data-ng-model=\"tags\" placeholder=\"Keywords of your event\"></div></div><div class=\"form-group\"><div class=\"col-sm-offset-2 col-sm-10\"><input type=\"submit\" class=\"btn btn-default\"></div></div><div data-ng-show=\"error\" class=\"text-danger\"><strong data-ng-bind=\"error\"></strong></div></fieldset></form></div></section>"
+>>>>>>> 6bc2cb75d926f127cb25beef3ca789d77998e006
   );
 
   $templateCache.put("modules/events/views/edit-event.client.view.html",
@@ -996,11 +1077,11 @@ angular.module("app").run(["$templateCache", function($templateCache) {
   );
 
   $templateCache.put("modules/events/views/list-events.client.view.html",
-    "<section data-ng-controller=\"EventsController\" data-ng-init=\"find()\"><div class=\"events__header\"><md-text-float label=\"{{ 'Find event for you' | translate}}\" ng-model=\"search\"></md-text-float></div><div class=\"list-group\"><a data-ng-repeat=\"event in events | filter:search\" data-ng-href=\"#!/events/{{event._id}}\" class=\"list-group-item events-list__item\"><h4 class=\"list-group-item-heading event-list__item__header\" data-ng-bind=\"event.title\"></h4><p class=\"list-group-item-text event-list__item__text\" data-ng-bind=\"event.description\"></p><p class=\"list-group-item-text event-list__item__text\"><label>Start: {{event.startDate }}</label><br><label>End: {{event.endDate }}</label></p></a></div><div class=\"alert alert-warning text-center\" data-ng-if=\"events.$resolved && !events.length\">No events yet, why don't you <a href=\"/#!/events/create\">create one</a>?</div></section>"
+    "<section data-ng-controller=\"EventsController\" data-ng-init=\"find()\"><div class=\"events__header\"><md-text-float label=\"{{ 'Find event for you' | translate}}\" ng-model=\"search\"></md-text-float></div><div class=\"list-group\"><a data-ng-repeat=\"event in events | filter:search\" data-ng-href=\"#!/events/{{event._id}}\" class=\"list-group-item events-list__item\"><h4 class=\"list-group-item-heading event-list__item__header\" data-ng-bind=\"event.title\"></h4><p class=\"list-group-item-text event-list__item__text\" data-ng-bind=\"event.description\"></p><p class=\"list-group-item-text event-list__item__text\"><label>Start: {{event.startDate | date:'d MMMM yyyy, hh:mm' : 'UTC' }}</label><br><label>End: {{event.endDate | date:'d MMMM yyyy, hh:mm' : 'UTC' }}</label></p></a></div><div class=\"alert alert-warning text-center\" data-ng-if=\"events.$resolved && !events.length\">No events yet, why don't you <a href=\"/#!/events/create\">create one</a>?</div></section>"
   );
 
   $templateCache.put("modules/events/views/view-event.client.view.html",
-    "<section data-ng-controller=\"EventsController\" data-ng-init=\"findOne()\"><div class=\"page-header\"><h1 data-ng-bind=\"event.title\"></h1></div><div class=\"pull-right\"><a class=\"btn btn-primary\" href=\"/#!/events/{{event._id}}/edit\"><i class=\"glyphicon glyphicon-edit\"></i></a> <a class=\"btn btn-primary\" data-ng-click=\"remove();\"><i class=\"glyphicon glyphicon-trash\"></i></a></div><small><em class=\"text-muted\">Posted on <span data-ng-bind=\"event.created | date:'mediumDate'\"></span> by <span data-ng-bind=\"event.user.displayName\"></span></em></small><p><img ng-if=\"!!event.backgroundImgUrl.base64\" data-ng-src=\"data:image/jpg;base64,{{event.backgroundImgUrl.base64}}\"></p><p class=\"lead\" data-ng-bind=\"event.description\"></p></section>"
+    "<section data-ng-controller=\"EventsController\" data-ng-init=\"findOne()\"><div class=\"page-header\"><div class=\"event__background\"><img ng-if=\"!!event.backgroundImgUrl.base64\" data-ng-src=\"data:image/jpg;base64,{{event.backgroundImgUrl.base64}}\"></div><h1 data-ng-bind=\"event.title\"></h1></div><div class=\"pull-right\"><a class=\"btn btn-primary\" href=\"/#!/events/{{event._id}}/edit\"><i class=\"glyphicon glyphicon-edit\"></i></a> <a class=\"btn btn-primary\" data-ng-click=\"remove();\"><i class=\"glyphicon glyphicon-trash\"></i></a></div><small><em class=\"text-muted\">Posted on <span data-ng-bind=\"event.created | date:'mediumDate'\"></span> by <span data-ng-bind=\"event.user.displayName\"></span></em></small><p></p><p class=\"lead\" data-ng-bind=\"event.description\"></p><ui-gmap-google-map center=\"map.center\" zoom=\"map.zoom\"><ui-gmap-marker coords=\"map.center\" options=\"marker.options\" idkey=\"marker.id\"></ui-gmap-marker></ui-gmap-google-map></section>"
   );
 
   $templateCache.put("modules/speakers/views/create-speaker.client.view.html",
