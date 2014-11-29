@@ -138,5 +138,16 @@ angular.module('events')
         $scope.locationUpdate = function(){
             $scope.map.center = $scope.selectedLocation.coordinates;
         };
+
+        $scope.isFilterVisible = false;
+        $scope.toggleFilterVisibility = function(){
+            $scope.isFilterVisible = !$scope.isFilterVisible;
+        };
+
+        $scope.showTags = function(event){
+            return event.tags.join(', ');
+        };
+
+        $scope.tagName = '';
     }
 );
