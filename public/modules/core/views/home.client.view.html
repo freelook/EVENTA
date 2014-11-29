@@ -6,7 +6,7 @@
             <h4 class="schedule-table-heading">{{day.dateReadable}}</h4>
 
             <div class="timeslot track-header stick-header">
-                <div class="track-header-label">Day {{day.$index}}</div>
+                <div class="track-header-label"><label translate="Day"></label>{{day.$index}}</div>
                 <div class="timeslot-elements flexbox-wrapper">
                     <div ng-repeat="track in day.tracks" class="track-header-slot col-md-{{12/day.tracks.length}} flexbox-item-height hidden-xs">
                         <h5 class="track-header-title">{{track.title}}</h5>

@@ -7,7 +7,7 @@ var ApplicationConfiguration = (function () {
     var applicationModuleVendorDependencies = [
         'ngResource',
         'ngCookies',
-        'ngAnimate',
+        'ngMaterial',
         'ngTouch',
         'ngSanitize',
         'pascalprecht.translate',

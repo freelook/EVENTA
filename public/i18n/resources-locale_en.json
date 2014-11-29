@@ -1,4 +1,46 @@
 {
   "Find event for you": "Find event for you",
-  "Sign Up": "Sign Up"
+  "Sign Up": "Sign Up",
+    "Sign In":"Sign In",
+    "Edit Profile":"Edit Profile",
+    "Manage Social Accounts":"Manage Social Accounts",
+    "Change Password":"Change Password",
+    "Signout":"Signout",
+    "Username":"Username",
+    "Password":"Password",
+
+    "Sign up":"Sign up",
+    "Forgot your password?":"Forgot your password?",
+    "Sign in using your social accounts":"Sign in using your social accounts",
+    "Or with your account":"Or with your account",
+    "or": "or",
+    "Day":"Day ",
+
+    "Sign up using your social accounts":"Sign up using your social accounts",
+    "Or with your email":"Or with your email",
+    "First Name":"First Name",
+    "Last Name":"Last Name",
+    "Email":"Email",
+    "Submit":"Submit",
+    "Restore your password":"Restore your password",
+    "Enter your account username.":"Enter your account username.",
+
+    "Reset your password":"Reset your password",
+    "New Password":"New Password",
+    "Verify Password":"Verify Password",
+    "Update Password":"Update Password",
+
+    "Password reset is invalid":"Password reset is invalid",
+    "Ask for a new password reset":"Ask for a new password reset",
+    "Password successfully reset":"Password successfully reset",
+    "Continue to home page":"Continue to home page",
+
+    "Change your password":"Change your password",
+    "Current Password":"Current Password",
+    "Save Password":"Save Password",
+    "Password Changed Successfully":"Password Changed Successfully"
+
+
+
+
 }

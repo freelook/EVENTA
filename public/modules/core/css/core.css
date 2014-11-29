@@ -18,3 +18,20 @@ body {
 .ng-valid.ng-dirty{
     border-color:#78FA89;
 }
+
+/* Header style */
+.header__language {
+	height: 50px;
+	background-color: transparent;
+	border: none;
+	color: white;
+	box-shadow: none;
+}
+
+.header__language.ng-valid.ng-dirty {
+	border: none;
+}
+
+.header__language option {
+	color: black;
+}

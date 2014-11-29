@@ -3,20 +3,28 @@
 angular.module('events').controller('EventsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Events',
 	function($scope, $stateParams, $location, Authentication, Events) {
 		$scope.authentication = Authentication;
+		$scope.tags = '';
 
+		function trimSplitTags(tags){
+			return tags.split(',').map(function(tag){
+				return tag.trim();
+			});
+		}
 
+		$scope.search = '';
 
 		$scope.create = function() {
 			var event = new Events({
 				title: this.title,
 				description: this.description,
+				content: this.content,
 				external: this.external,
 				startDateTime: this.startDateTime,
 				endDateTime: this.endDateTime,
 				numberOfPersons: this.numberOfPersons,
+				tags: trimSplitTags($scope.tags),
                 backgroundImgUrl: this.backgroundImgUrl
 			});
-
 			event.$save(function(response) {
 				$location.path('events/' + response._id);
 
@@ -62,7 +70,5 @@ angular.module('events').controller('EventsController', ['$scope', '$stateParams
 				eventId: $stateParams.eventId
 			});
 		};
-
-
 	}
 ]);
