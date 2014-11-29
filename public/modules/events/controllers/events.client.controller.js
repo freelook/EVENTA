@@ -136,13 +136,10 @@ angular.module('events')
                     $scope.marker.coordinates = angular.copy($scope.map.center);
                 }
             });
-            if($scope.event && $scope.event.location){
-                $scope.map.center = $scope.event.location.coordinates;
-            }
         };
 
-        };
         $scope.options = {scrollwheel: false};
+
         $scope.locationUpdate = function(){
             $scope.map.center = $scope.selectedLocation.coordinates;
         };
@@ -158,5 +155,4 @@ angular.module('events')
 
         $scope.tagName = '';
 
-    }
-);
+    });
