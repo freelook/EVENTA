@@ -58,7 +58,7 @@ angular.module('speakers').controller('SpeakersController',
 		};
 
 		$scope.findOne = function() {
-            console.log($stateParams.speakerId);
+
 			$scope.speaker = Speakers.get({
 				speakerId: $stateParams.speakerId
 			});
