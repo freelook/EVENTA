@@ -1,0 +1,10 @@
+<section data-ng-controller="UsersController" data-ng-init="find()">
+    <div class="list-group">
+        <a data-ng-repeat="user in users" data-ng-href="#!/user/{{user._id}}" class="list-group-item events-list__item">
+            <h4 class="list-group-item-heading event-list__item__header" data-ng-bind="user.username"></h4>
+        </a>
+    </div>
+    <div class="alert alert-warning text-center" data-ng-if="users.$resolved && !users.length">
+        <label>No users yet</label>
+    </div>
+</section>
