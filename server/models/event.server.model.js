@@ -27,7 +27,7 @@ var EventSchema = new Schema({
 		default: false
 	},
 
-	dsescription: {
+	description: {
 		type: String,
 		default: '',
 		trim: true,
@@ -51,17 +51,17 @@ var EventSchema = new Schema({
 
 	speakers: {
 		type: [{type: Schema.Types.ObjectId, ref: 'SpeakerModel'}],
-		required: true
+		required: false
 	},
 
 	partners: {
 		type: [{type: Schema.Types.ObjectId, ref: 'PartnerModel'}],
-		required: true
+		required: false
 	},
 
 	organizers: {
 		type: [{type: Schema.Types.ObjectId, ref: 'UserModel'}],
-		required: true
+		required: false
 	},
 
 	numberOfPersons: {
@@ -71,7 +71,7 @@ var EventSchema = new Schema({
 
 	attendants: {
 		type: [{type: Schema.Types.ObjectId, ref: 'UserModel'}],
-		required: true
+		required: false
 	},
 
 
@@ -118,7 +118,7 @@ var EventSchema = new Schema({
 
 	location: {
 		type: [{type: Schema.Types.ObjectId, ref: 'LocationModel'}],
-		required: true
+		required: false
 	}
 });
 
