@@ -1,26 +1,37 @@
 <section data-ng-controller="SpeakersController" data-ng-init="findOne()">
 	<div class="page-header">
-		<h1>Edit Event</h1>
+		<h1>Edit Speaker</h1>
 	</div>
 	<div class="col-md-12">
-		<form name="eventForm" class="form-horizontal" data-ng-submit="update(eventForm.$valid)" novalidate>
+		<form name="speakerForm" class="form-horizontal" data-ng-submit="update(speakerForm.$valid)" novalidate>
 			<fieldset>
-				<div class="form-group" ng-class="{ 'has-error' : submitted && eventForm.title.$invalid}">
-					<label class="control-label" for="title">Title</label>
+				<div class="form-group" ng-class="{ 'has-error' : submitted && eventForm.name.$invalid}">
+					<label class="control-label" for="name">Name</label>
 					<div class="controls">
-						<input name="title" type="text" data-ng-model="event.title" id="title" class="form-control" placeholder="Title" required>
+						<input name="name" type="text" data-ng-model="speaker.name" id="name" class="form-control" placeholder="Name" required>
 					</div>
-					<div ng-show="submitted && eventForm.title.$invalid" class="help-block">
-						<p ng-show="eventForm.title.$error.required" class="text-danger">Title is required</p>
+					<div ng-show="submitted && speakerForm.name.$invalid" class="help-block">
+						<p ng-show="speakerForm.name.$error.required" class="text-danger">Name is required</p>
 					</div>
 				</div>
-				<div class="form-group" ng-class="{ 'has-error' : submitted && eventForm.content.$invalid}">
-					<label class="control-label" for="description">Description</label>
+
+                <div class="form-group" ng-class="{ 'has-error' : submitted && eventForm.surname.$invalid}">
+                    <label class="control-label" for="surname">Surame</label>
+                    <div class="controls">
+                        <input name="surname" type="text" data-ng-model="speaker.surname" id="surname" class="form-control" placeholder="Surname" required>
+                    </div>
+                    <div ng-show="submitted && speakerForm.surname.$invalid" class="help-block">
+                        <p ng-show="speakerForm.surname.$error.required" class="text-danger">Surname is required</p>
+                    </div>
+                </div>
+
+				<div class="form-group" ng-class="{ 'has-error' : submitted && speakerForm.bio.$invalid}">
+					<label class="control-label" for="bio">Bio</label>
 					<div class="controls">
-						<textarea name="description" data-ng-model="event.description" id="description" class="form-control" cols="30" rows="10" placeholder="Description cannot be empty" required></textarea>
+						<textarea name="bio" data-ng-model="speaker.bio" id="bio" class="form-control" cols="30" rows="10" placeholder="Bio cannot be empty" required></textarea>
 					</div>
-					<div ng-show="submitted && eventForm.content.$invalid" class="help-block">
-						<p ng-show="eventForm.content.$error.required" class="text-danger">Description cannot be empty</p>
+					<div ng-show="submitted && speakerForm.bio.$invalid" class="help-block">
+						<p ng-show="speakerForm.bio.$error.required" class="text-danger">Bio cannot be empty</p>
 					</div>
 				</div>
 				<div class="form-group">
