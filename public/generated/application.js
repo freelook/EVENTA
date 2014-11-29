@@ -75,6 +75,11 @@ ApplicationConfiguration.registerModule('events');
 'use strict';
 
 // Use Applicaion configuration module to register a new module
+ApplicationConfiguration.registerModule('speakers');
+
+'use strict';
+
+// Use Applicaion configuration module to register a new module
 ApplicationConfiguration.registerModule('users');
 
 'use strict';
@@ -679,6 +684,126 @@ angular.module('events').factory('Speakers', ['$resource',
 
 'use strict';
 
+// Configuring the Events module
+angular.module('speakers', ['ui.bootstrap']).run(['Menus',
+	function(Menus) {
+		// Set top bar menu items
+		Menus.addMenuItem('topbar', 'Speakers', 'speakers', 'dropdown', '/speakers(/create)?');
+		Menus.addSubMenuItem('topbar', 'speakers', 'List Speakers', 'speakers');
+		Menus.addSubMenuItem('topbar', 'speakers', 'New Speaker', 'speakers/create');
+	}
+]);
+
+'use strict';
+
+// Setting up route
+angular.module('speakers').config(['$stateProvider',
+	function($stateProvider) {
+		// Events state routing
+		$stateProvider.
+		state('listSpeakers', {
+			url: '/speakers',
+			templateUrl: 'modules/speakers/views/list-speakers.client.view.html'
+		}).
+		state('createSpeaker', {
+			url: '/speakers/create',
+			templateUrl: 'modules/speakers/views/create-speaker.client.view.html'
+		}).
+		state('viewSpeaker', {
+			url: '/speakers/:eventId',
+			templateUrl: 'modules/speakers/views/view-speaker.client.view.html'
+		}).
+		state('editSpeaker', {
+			url: '/speakers/:eventId/edit',
+			templateUrl: 'modules/speakers/views/edit-speaker.client.view.html'
+		});
+	}
+]);
+
+'use strict';
+
+angular.module('speakers').controller('SpeakersController',
+	["$scope", "$stateParams", "$location", "$filter", "Authentication", "Speakers", function($scope, $stateParams, $location, $filter, Authentication, Speakers) {
+		$scope.authentication = Authentication;
+
+		$scope.search = '';
+
+		$scope.create = function() {
+			var speaker = new Speakers({
+				name: this.name,
+                surname: this.surname,
+                company: this.company,
+                title: this.title,
+                bio: this.bio,
+                thumbnailUrl: this.thumbnailUrl
+
+			});
+
+            speaker.$save(function(response) {
+				$location.path('speaker/' + response._id);
+
+				$scope.name = '';
+				$scope.speakers = '';
+			}, function(errorResponse) {
+				$scope.error = errorResponse.data.message;
+			});
+		};
+
+		$scope.remove = function(speaker) {
+			if (speaker) {
+				event.$remove();
+
+				for (var i in $scope.speakers) {
+					if ($scope.speakers[i] === speaker) {
+						$scope.speakers.splice(i, 1);
+					}
+				}
+			} else {
+				$scope.speaker.$remove(function() {
+					$location.path('speaker');
+				});
+			}
+		};
+
+		$scope.update = function() {
+			var speaker = $scope.speaker;
+
+            speaker.$update(function() {
+				$location.path('speaker/' + speaker._id);
+			}, function(errorResponse) {
+				$scope.error = errorResponse.data.message;
+			});
+		};
+
+		$scope.find = function() {
+			$scope.speakers = Speakers.query();
+		};
+
+		$scope.findOne = function() {
+			$scope.event = Speakers.get({
+				speakerId: $stateParams.speakerId
+			});
+		};
+	}]
+);
+
+'use strict';
+
+//Events service used for communicating with the events REST endpoints
+angular.module('speakers').factory('Speakers', ['$resource',
+    function($resource) {
+        return $resource('speakers/:speakerId', {
+            speakerId: '@_id'
+        }, {
+            update: {
+                method: 'PUT'
+            }
+        });
+    }
+]);
+
+'use strict';
+
 // Config HTTP Error Handling
 angular.module('users').config(['$httpProvider',
 	function($httpProvider) {
@@ -940,11 +1065,11 @@ angular.module("app").run(["$templateCache", function($templateCache) {
   );
 
   $templateCache.put("modules/events/views/create-event.client.view.html",
-    "<section data-ng-controller=\"EventsController\"><div class=\"page-header\"><h1>Add new event</h1></div><div class=\"col-md-12\"><form name=\"eventForm\" class=\"form-horizontal\" role=\"form\" data-ng-submit=\"create()\" novalidate=\"\"><fieldset><div class=\"form-group\" ng-class=\"{ 'has-error': eventForm.title.$dirty && eventForm.title.$invalid }\"><label class=\"control-label col-sm-2\" for=\"title\">Title</label><div class=\"controls col-sm-10\"><input name=\"title\" type=\"text\" data-ng-model=\"title\" id=\"title\" class=\"form-control\" placeholder=\"Title of future event\" required=\"\"></div></div><div class=\"form-group\" ng-class=\"{ 'has-error': eventForm.description.$dirty && eventForm.description.$invalid }\"><label class=\"control-label col-sm-2\" for=\"description\">Short Description</label><div class=\"controls col-sm-10\"><textarea type=\"text\" name=\"description\" data-ng-model=\"description\" id=\"description\" class=\"form-control col-sm-12\" cols=\"20\" rows=\"5\" placeholder=\"Add short description here\" required=\"\"></textarea></div></div><div class=\"row\"><div class=\"col-sm-2\"></div><div class=\"form-group col-sm-5 edit-event__box2\"><div class=\"controls edit-event__checkbox\"><input type=\"checkbox\" id=\"external\" data-ng-model=\"external\"></div><label class=\"control-label edit-event__checkbox__label\" for=\"external\">External event</label></div><div class=\"form-group col-sm-5 edit-event__box2\"><label class=\"control-label\" for=\"backgroundImgUrl\">Add Background Image</label><div class=\"controls\"><input type=\"file\" id=\"backgroundImgUrl\" ng-model=\"backgroundImgUrl\" base-sixty-four-input=\"\"></div></div></div><div class=\"row\"><div class=\"col-sm-2\"></div><div class=\"form-group col-sm-5 edit-event__date\"><label class=\"control-label\">Start Date</label><div class=\"controls\"><input type=\"text\" class=\"form-control edit-event__date__input\" id=\"startDate\" is-open=\"startOpened \" ng-required=\"true\" close-text=\"Close\" max-date=\"maxDate\" min-date=\"minDate\" datepicker-options=\"dateOptions\" ng-model=\"dtStart\" datepicker-popup=\"{{format}}\"><span class=\"input-group-btn\"><button type=\"button\" class=\"btn btn-default\" ng-click=\"openStartDate($event)\"><i class=\"glyphicon glyphicon-calendar\"></i></button></span></div><div class=\"edit-event__time\"><label class=\"control-label\">Start Time</label><div class=\"controls\"><timepicker ng-model=\"startTime\" hour-step=\"hstep\" minute-step=\"mstep\" show-meridian=\"false\"></timepicker></div></div></div><div class=\"form-group col-sm-5 edit-event__date\"><label class=\"control-label\" for=\"endDate\">End Date</label><div class=\"controls\"><input type=\"text\" class=\"form-control edit-event__date__input\" id=\"endDate\" is-open=\"endOpened \" ng-required=\"true\" close-text=\"Close\" max-date=\"maxDate\" min-date=\"minDate\" datepicker-options=\"dateOptions\" ng-model=\"dtEnd\" datepicker-popup=\"{{format}}\"><span class=\"input-group-btn\"><button type=\"button\" class=\"btn btn-default\" ng-click=\"openEndDate($event)\"><i class=\"glyphicon glyphicon-calendar\"></i></button></span></div><div class=\"edit-event__time\"><label class=\"control-label\">End Time</label><div class=\"controls\"><timepicker ng-model=\"endTime\" hour-step=\"hstep\" minute-step=\"mstep\" show-meridian=\"false\"></timepicker></div></div></div></div><div class=\"form-group\"><label class=\"control-label col-sm-2\" for=\"numberOfPersons\">Number of participants</label><div class=\"controls col-sm-5\"><input class=\"form-control\" id=\"numberOfPersons\" data-ng-model=\"numberOfPersons\" type=\"number\" value=\"0\"></div></div><div class=\"form-group\"><label class=\"control-label col-sm-2\" for=\"content\">Long description</label><div class=\"controls col-sm-10\"><textarea name=\"content\" data-ng-model=\"content\" id=\"content\" class=\"form-control\" cols=\"20\" rows=\"10\" placeholder=\"Tell more about your future event\"></textarea></div></div><div class=\"form-group\"><label class=\"control-label col-sm-2\">Location</label><div class=\"controls col-sm-5\"><select class=\"form-control\" ng-model=\"selectedLocation\" ng-options=\"location.name group by location.group for location in locations\"></select></div></div><div class=\"form-group\"><label class=\"control-label col-sm-2\" for=\"tags\">Tags</label><div class=\"controls col-sm-10\"><input class=\"form-control\" type=\"text\" name=\"tags\" id=\"tags\" data-ng-model=\"tags\" placeholder=\"Keywords of your event\"></div></div><div class=\"form-group\"><div class=\"col-sm-offset-2 col-sm-10\"><input type=\"submit\" class=\"btn btn-default\"></div></div><div data-ng-show=\"error\" class=\"text-danger\"><strong data-ng-bind=\"error\"></strong></div></fieldset></form></div></section>"
+    "<section data-ng-controller=\"EventsController\"><div class=\"page-header\"><h1>Add new event</h1></div><div class=\"col-md-12\"><form name=\"eventForm\" class=\"form-horizontal\" role=\"form\" data-ng-submit=\"create()\" novalidate=\"\"><fieldset><div data-ng-show=\"error\" class=\"text-danger\"><strong data-ng-bind=\"error\"></strong></div><div class=\"form-group\" ng-class=\"{ 'has-error': eventForm.title.$dirty && eventForm.title.$invalid }\"><label class=\"control-label col-sm-2\" for=\"title\">Title</label><div class=\"controls col-sm-10\"><input name=\"title\" type=\"text\" data-ng-model=\"title\" id=\"title\" class=\"form-control\" placeholder=\"Title of future event\" required=\"\"></div></div><div class=\"form-group\" ng-class=\"{ 'has-error': eventForm.description.$dirty && eventForm.description.$invalid }\"><label class=\"control-label col-sm-2\" for=\"description\">Short Description</label><div class=\"controls col-sm-10\"><textarea type=\"text\" name=\"description\" data-ng-model=\"description\" id=\"description\" class=\"form-control col-sm-12\" cols=\"20\" rows=\"5\" placeholder=\"Add short description here\" required=\"\"></textarea></div></div><div class=\"row\"><div class=\"col-sm-2\"></div><div class=\"form-group col-sm-5 edit-event__box2\"><div class=\"controls edit-event__checkbox\"><input type=\"checkbox\" id=\"external\" data-ng-model=\"external\"></div><label class=\"control-label edit-event__checkbox__label\" for=\"external\">External event</label></div><div class=\"form-group col-sm-5 edit-event__box2\"><label class=\"control-label\" for=\"backgroundImgUrl\">Add Background Image</label><div class=\"controls\"><input type=\"file\" id=\"backgroundImgUrl\" ng-model=\"backgroundImgUrl\" base-sixty-four-input=\"\"></div></div></div><div class=\"row\"><div class=\"col-sm-2\"></div><div class=\"form-group col-sm-5 edit-event__date\"><label class=\"control-label\">Start Date</label><div class=\"controls\"><input type=\"text\" class=\"form-control edit-event__date__input\" id=\"startDate\" is-open=\"startOpened \" ng-required=\"true\" close-text=\"Close\" max-date=\"maxDate\" min-date=\"minDate\" datepicker-options=\"dateOptions\" ng-model=\"dtStart\" datepicker-popup=\"{{format}}\"><span class=\"input-group-btn\"><button type=\"button\" class=\"btn btn-default\" ng-click=\"openStartDate($event)\"><i class=\"glyphicon glyphicon-calendar\"></i></button></span></div><div class=\"edit-event__time\"><label class=\"control-label\">Start Time</label><div class=\"controls\"><timepicker ng-model=\"startTime\" hour-step=\"hstep\" minute-step=\"mstep\" show-meridian=\"false\"></timepicker></div></div></div><div class=\"form-group col-sm-5 edit-event__date\"><label class=\"control-label\" for=\"endDate\">End Date</label><div class=\"controls\"><input type=\"text\" class=\"form-control edit-event__date__input\" id=\"endDate\" is-open=\"endOpened \" ng-required=\"true\" close-text=\"Close\" max-date=\"maxDate\" min-date=\"minDate\" datepicker-options=\"dateOptions\" ng-model=\"dtEnd\" datepicker-popup=\"{{format}}\"><span class=\"input-group-btn\"><button type=\"button\" class=\"btn btn-default\" ng-click=\"openEndDate($event)\"><i class=\"glyphicon glyphicon-calendar\"></i></button></span></div><div class=\"edit-event__time\"><label class=\"control-label\">End Time</label><div class=\"controls\"><timepicker ng-model=\"endTime\" hour-step=\"hstep\" minute-step=\"mstep\" show-meridian=\"false\"></timepicker></div></div></div></div><div class=\"form-group\"><label class=\"control-label col-sm-2\" for=\"numberOfPersons\">Number of participants</label><div class=\"controls col-sm-5\"><input class=\"form-control\" id=\"numberOfPersons\" data-ng-model=\"numberOfPersons\" type=\"number\" value=\"0\"></div></div><div class=\"form-group\"><label class=\"control-label col-sm-2\" for=\"content\">Long description</label><div class=\"controls col-sm-10\"><textarea name=\"content\" data-ng-model=\"content\" id=\"content\" class=\"form-control\" cols=\"20\" rows=\"10\" placeholder=\"Tell more about your future event\"></textarea></div></div><div class=\"form-group\"><label class=\"control-label col-sm-2\">Location</label><div class=\"controls col-sm-5\"><select class=\"form-control\" ng-model=\"selectedLocation\" ng-options=\"location.name group by location.group for location in locations\"></select></div></div><div class=\"form-group\"><label class=\"control-label col-sm-2\" for=\"tags\">Tags</label><div class=\"controls col-sm-10\"><input class=\"form-control\" type=\"text\" name=\"tags\" id=\"tags\" data-ng-model=\"tags\" placeholder=\"Keywords of your event\"></div></div><div class=\"form-group\"><div class=\"col-sm-offset-2 col-sm-10\"><input type=\"submit\" class=\"btn btn-default\"></div></div></fieldset></form></div></section>"
   );
 
   $templateCache.put("modules/events/views/edit-event.client.view.html",
-    "<section data-ng-controller=\"EventsController\" data-ng-init=\"findOne()\"><div class=\"page-header\"><h1>Edit Event</h1></div><div class=\"col-md-12\"><form name=\"eventForm\" class=\"form-horizontal\" data-ng-submit=\"update(eventForm.$valid)\" novalidate=\"\"><fieldset><div class=\"form-group\" ng-class=\"{ 'has-error' : submitted && eventForm.title.$invalid}\"><label class=\"control-label\" for=\"title\">Title</label><div class=\"controls\"><input name=\"title\" type=\"text\" data-ng-model=\"event.title\" id=\"title\" class=\"form-control\" placeholder=\"Title\" required=\"\"></div><div ng-show=\"submitted && eventForm.title.$invalid\" class=\"help-block\"><p ng-show=\"eventForm.title.$error.required\" class=\"text-danger\">Title is required</p></div></div><div class=\"form-group\" ng-class=\"{ 'has-error' : submitted && eventForm.content.$invalid}\"><label class=\"control-label\" for=\"description\">Description</label><div class=\"controls\"><textarea name=\"description\" data-ng-model=\"event.description\" id=\"description\" class=\"form-control\" cols=\"30\" rows=\"10\" placeholder=\"Description cannot be empty\" required=\"\"></textarea></div><div ng-show=\"submitted && eventForm.content.$invalid\" class=\"help-block\"><p ng-show=\"eventForm.content.$error.required\" class=\"text-danger\">Description cannot be empty</p></div></div><div class=\"form-group\"><input type=\"submit\" value=\"Update\" class=\"btn btn-default\"></div><div data-ng-show=\"error\" class=\"text-danger\"><strong data-ng-bind=\"error\"></strong></div></fieldset></form></div></section>"
+    "<section data-ng-controller=\"EventsController\" data-ng-init=\"findOne()\"><div class=\"page-header\"><h1>Edit Event</h1></div><div class=\"col-md-12\"><form name=\"eventForm\" class=\"form-horizontal\" role=\"form\" data-ng-submit=\"update(eventForm.$valid)\" novalidate=\"\" novalidate=\"\"><fieldset><div data-ng-show=\"error\" class=\"text-danger\"><strong data-ng-bind=\"error\"></strong></div><div class=\"form-group\" ng-class=\"{ 'has-error': eventForm.title.$dirty && eventForm.title.$invalid }\"><label class=\"control-label col-sm-2\" for=\"title\">Title</label><div class=\"controls col-sm-10\"><input name=\"title\" type=\"text\" data-ng-model=\"event.title\" id=\"title\" class=\"form-control\" placeholder=\"Title of future event\" required=\"\"></div></div><div class=\"form-group\" ng-class=\"{ 'has-error': eventForm.description.$dirty && eventForm.description.$invalid }\"><label class=\"control-label col-sm-2\" for=\"description\">Short Description</label><div class=\"controls col-sm-10\"><textarea type=\"text\" name=\"description\" data-ng-model=\"event.description\" id=\"description\" class=\"form-control col-sm-12\" cols=\"20\" rows=\"5\" placeholder=\"Add short description here\" required=\"\"></textarea></div></div><div class=\"row\"><div class=\"col-sm-2\"></div><div class=\"form-group col-sm-5 edit-event__box2\"><div class=\"controls edit-event__checkbox\"><input type=\"checkbox\" id=\"external\" data-ng-model=\"event.external\"></div><label class=\"control-label edit-event__checkbox__label\" for=\"external\">External event</label></div><div class=\"form-group col-sm-5 edit-event__box2\"><label class=\"control-label\" for=\"backgroundImgUrl\">Add Background Image</label><div class=\"controls\"><input type=\"file\" id=\"backgroundImgUrl\" ng-model=\"backgroundImgUrl\" base-sixty-four-input=\"\"></div></div></div><div class=\"row\"><div class=\"col-sm-2\"></div><div class=\"form-group col-sm-5 edit-event__date\"><label class=\"control-label\">Start Date</label><div class=\"controls\"><input type=\"text\" class=\"form-control edit-event__date__input\" id=\"startDate\" is-open=\"startOpened \" ng-required=\"true\" close-text=\"Close\" max-date=\"maxDate\" min-date=\"minDate\" datepicker-options=\"dateOptions\" ng-model=\"event.dtStart\" datepicker-popup=\"{{format}}\"><span class=\"input-group-btn\"><button type=\"button\" class=\"btn btn-default\" ng-click=\"openStartDate($event)\"><i class=\"glyphicon glyphicon-calendar\"></i></button></span></div><div class=\"edit-event__time\"><label class=\"control-label\">Start Time</label><div class=\"controls\"><timepicker ng-model=\"event.startTime\" hour-step=\"hstep\" minute-step=\"mstep\" show-meridian=\"false\"></timepicker></div></div></div><div class=\"form-group col-sm-5 edit-event__date\"><label class=\"control-label\" for=\"endDate\">End Date</label><div class=\"controls\"><input type=\"text\" class=\"form-control edit-event__date__input\" id=\"endDate\" is-open=\"endOpened \" ng-required=\"true\" close-text=\"Close\" max-date=\"maxDate\" min-date=\"minDate\" datepicker-options=\"dateOptions\" ng-model=\"event.dtEnd\" datepicker-popup=\"{{format}}\"><span class=\"input-group-btn\"><button type=\"button\" class=\"btn btn-default\" ng-click=\"openEndDate($event)\"><i class=\"glyphicon glyphicon-calendar\"></i></button></span></div><div class=\"edit-event__time\"><label class=\"control-label\">End Time</label><div class=\"controls\"><timepicker ng-model=\"event.endTime\" hour-step=\"hstep\" minute-step=\"mstep\" show-meridian=\"false\"></timepicker></div></div></div></div><div class=\"form-group\"><label class=\"control-label col-sm-2\" for=\"numberOfPersons\">Number of participants</label><div class=\"controls col-sm-5\"><input class=\"form-control\" id=\"numberOfPersons\" data-ng-model=\"event.numberOfPersons\" type=\"number\" value=\"0\"></div></div><div class=\"form-group\"><label class=\"control-label col-sm-2\" for=\"content\">Long description</label><div class=\"controls col-sm-10\"><textarea name=\"content\" data-ng-model=\"event.content\" id=\"content\" class=\"form-control\" cols=\"20\" rows=\"10\" placeholder=\"Tell more about your future event\"></textarea></div></div><div class=\"form-group\"><label class=\"control-label col-sm-2\">Location</label><div class=\"controls col-sm-5\"><select class=\"form-control\" ng-model=\"event.selectedLocation\" ng-options=\"location.name group by location.group for location in locations\"></select></div></div><div class=\"form-group\"><label class=\"control-label col-sm-2\" for=\"tags\">Tags</label><div class=\"controls col-sm-10\"><input class=\"form-control\" type=\"text\" name=\"tags\" id=\"tags\" data-ng-model=\"event.tags\" placeholder=\"Keywords of your event\"></div></div><div class=\"form-group\"><div class=\"col-sm-offset-2 col-sm-10\"><input type=\"submit\" class=\"btn btn-default\" value=\"Update\"></div></div></fieldset></form></div></section>"
   );
 
   $templateCache.put("modules/events/views/list-events.client.view.html",
@@ -953,6 +1078,22 @@ angular.module("app").run(["$templateCache", function($templateCache) {
 
   $templateCache.put("modules/events/views/view-event.client.view.html",
     "<section data-ng-controller=\"EventsController\" data-ng-init=\"findOne()\"><div class=\"page-header\"><div class=\"event__background\"><img ng-if=\"!!event.backgroundImgUrl.base64\" data-ng-src=\"data:image/jpg;base64,{{event.backgroundImgUrl.base64}}\"></div><h1 data-ng-bind=\"event.title\"></h1></div><div class=\"pull-right\"><a class=\"btn btn-primary\" href=\"/#!/events/{{event._id}}/edit\"><i class=\"glyphicon glyphicon-edit\"></i></a> <a class=\"btn btn-primary\" data-ng-click=\"remove();\"><i class=\"glyphicon glyphicon-trash\"></i></a></div><small><em class=\"text-muted\">Posted on <span data-ng-bind=\"event.created | date:'mediumDate'\"></span> by <span data-ng-bind=\"event.user.displayName\"></span></em></small><p></p><p class=\"lead\" data-ng-bind=\"event.description\"></p><ui-gmap-google-map center=\"map.center\" zoom=\"map.zoom\"><ui-gmap-marker coords=\"map.center\" options=\"marker.options\" idkey=\"marker.id\"></ui-gmap-marker></ui-gmap-google-map></section>"
+  );
+
+  $templateCache.put("modules/speakers/views/create-speaker.client.view.html",
+    "<section data-ng-controller=\"SpeakersController\"><div class=\"page-header\"><h1>Add new event</h1></div><div class=\"col-md-12\"><form name=\"eventForm\" class=\"form-horizontal\" role=\"form\" data-ng-submit=\"create()\" novalidate=\"\"><fieldset><div class=\"form-group\" ng-class=\"{ 'has-error': eventForm.title.$dirty && eventForm.title.$invalid }\"><label class=\"control-label col-sm-2\" for=\"title\">Title</label><div class=\"controls col-sm-10\"><input name=\"title\" type=\"text\" data-ng-model=\"title\" id=\"title\" class=\"form-control\" placeholder=\"Title of future event\" required=\"\"></div></div><div class=\"form-group\" ng-class=\"{ 'has-error': eventForm.description.$dirty && eventForm.description.$invalid }\"><label class=\"control-label col-sm-2\" for=\"description\">Short Description</label><div class=\"controls col-sm-10\"><textarea type=\"text\" name=\"description\" data-ng-model=\"description\" id=\"description\" class=\"form-control col-sm-12\" cols=\"20\" rows=\"5\" placeholder=\"Add short description here\" required=\"\"></textarea></div></div><div class=\"row\"><div class=\"form-group col-sm-10\"><div class=\"controls col-sm-2\"><input type=\"checkbox\" id=\"external\" data-ng-model=\"external\"></div><label class=\"control-label col-sm-10\" for=\"external\">External event</label></div></div><div class=\"form-group\"><label class=\"control-label\">Start Date</label><div class=\"controls\"><input type=\"text\" class=\"form-control\" id=\"startDate\" is-open=\"startOpened \" ng-required=\"true\" close-text=\"Close\" max-date=\"maxDate\" min-date=\"minDate\" datepicker-options=\"dateOptions\" ng-model=\"dtStart\" datepicker-popup=\"{{format}}\"><span class=\"input-group-btn\"><button type=\"button\" class=\"btn btn-default\" ng-click=\"openStartDate($event)\"><i class=\"glyphicon glyphicon-calendar\"></i></button></span></div><label class=\"control-label\">Start Time</label><div class=\"controls\"><timepicker ng-model=\"startTime\" hour-step=\"hstep\" minute-step=\"mstep\" show-meridian=\"false\"></timepicker></div></div><div class=\"form-group\"><label class=\"control-label\" for=\"endDate\">End Date</label><div class=\"controls\"><input type=\"text\" class=\"form-control\" id=\"endDate\" is-open=\"endOpened \" ng-required=\"true\" close-text=\"Close\" max-date=\"maxDate\" min-date=\"minDate\" datepicker-options=\"dateOptions\" ng-model=\"dtEnd\" datepicker-popup=\"{{format}}\"><span class=\"input-group-btn\"><button type=\"button\" class=\"btn btn-default\" ng-click=\"openEndDate($event)\"><i class=\"glyphicon glyphicon-calendar\"></i></button></span></div><div class=\"form-group\"><label class=\"control-label\" for=\"backgroundImgUrl\">Background Image</label><div class=\"controls\"><input type=\"file\" id=\"backgroundImgUrl\" ng-model=\"backgroundImgUrl\" base-sixty-four-input=\"\"></div></div><label class=\"control-label\">End Time</label><div class=\"controls\"><timepicker ng-model=\"endTime\" hour-step=\"hstep\" minute-step=\"mstep\" show-meridian=\"false\"></timepicker></div></div><div class=\"form-group col-sm-4\"><label class=\"control-label\" for=\"numberOfPersons\">Number of participants</label><div class=\"controls\"><input class=\"form-control\" id=\"numberOfPersons\" data-ng-model=\"numberOfPersons\" type=\"number\"></div></div></fieldset></form></div><div class=\"form-group\"><label class=\"control-label\" for=\"content\">Content</label><div class=\"controls\"><textarea name=\"content\" data-ng-model=\"content\" id=\"content\" class=\"form-control\" cols=\"20\" rows=\"10\" placeholder=\"Description cannot be blank\"></textarea></div></div><div class=\"form-group\"><label class=\"control-label col-sm-2\" for=\"tags\">Tags</label><div class=\"controls col-sm-10\"><input class=\"form-control\" type=\"text\" name=\"tags\" id=\"tags\" data-ng-model=\"tags\" placeholder=\"Keywords of your event\"></div></div><div class=\"form-group\"><input type=\"submit\" class=\"btn btn-default\"></div><div data-ng-show=\"error\" class=\"text-danger\"><strong data-ng-bind=\"error\"></strong></div></section>"
+  );
+
+  $templateCache.put("modules/speakers/views/edit-speaker.client.view.html",
+    "<section data-ng-controller=\"SpeakersController\" data-ng-init=\"findOne()\"><div class=\"page-header\"><h1>Edit Event</h1></div><div class=\"col-md-12\"><form name=\"eventForm\" class=\"form-horizontal\" data-ng-submit=\"update(eventForm.$valid)\" novalidate=\"\"><fieldset><div class=\"form-group\" ng-class=\"{ 'has-error' : submitted && eventForm.title.$invalid}\"><label class=\"control-label\" for=\"title\">Title</label><div class=\"controls\"><input name=\"title\" type=\"text\" data-ng-model=\"event.title\" id=\"title\" class=\"form-control\" placeholder=\"Title\" required=\"\"></div><div ng-show=\"submitted && eventForm.title.$invalid\" class=\"help-block\"><p ng-show=\"eventForm.title.$error.required\" class=\"text-danger\">Title is required</p></div></div><div class=\"form-group\" ng-class=\"{ 'has-error' : submitted && eventForm.content.$invalid}\"><label class=\"control-label\" for=\"description\">Description</label><div class=\"controls\"><textarea name=\"description\" data-ng-model=\"event.description\" id=\"description\" class=\"form-control\" cols=\"30\" rows=\"10\" placeholder=\"Description cannot be empty\" required=\"\"></textarea></div><div ng-show=\"submitted && eventForm.content.$invalid\" class=\"help-block\"><p ng-show=\"eventForm.content.$error.required\" class=\"text-danger\">Description cannot be empty</p></div></div><div class=\"form-group\"><input type=\"submit\" value=\"Update\" class=\"btn btn-default\"></div><div data-ng-show=\"error\" class=\"text-danger\"><strong data-ng-bind=\"error\"></strong></div></fieldset></form></div></section>"
+  );
+
+  $templateCache.put("modules/speakers/views/list-speakers.client.view.html",
+    "<section data-ng-controller=\"SpeakersController\" data-ng-init=\"find()\"><div class=\"events__header\"><md-text-float label=\"{{ 'Hall of fame' | translate}}\" ng-model=\"search\"></md-text-float></div><div class=\"list-group\"><a data-ng-repeat=\"speaker in speakers | filter:search\" data-ng-href=\"#!/speakers/{{speaker._id}}\" class=\"list-group-item speakers-list__item\" flex=\"45\" flex-order=\"{{$index % 2}}\"><h2>{{speaker.name + '&nbsp;' + speaker.surname}}</h2><h3>{{speaker.company}}</h3><h4>{{speaker.title}}</h4><p data-ng-bind-html=\"speaker.bio\"></p></a></div></section>"
+  );
+
+  $templateCache.put("modules/speakers/views/view-speakers.client.view.html",
+    "<section data-ng-controller=\"SpeakersController\" data-ng-init=\"findOne()\"><div class=\"page-header\"><h1 data-ng-bind=\"event.title\"></h1></div><div class=\"pull-right\"><a class=\"btn btn-primary\" href=\"/#!/events/{{event._id}}/edit\"><i class=\"glyphicon glyphicon-edit\"></i></a> <a class=\"btn btn-primary\" data-ng-click=\"remove();\"><i class=\"glyphicon glyphicon-trash\"></i></a></div><small><em class=\"text-muted\">Posted on <span data-ng-bind=\"event.created | date:'mediumDate'\"></span> by <span data-ng-bind=\"event.user.displayName\"></span></em></small><p><img ng-if=\"!!event.backgroundImgUrl.base64\" data-ng-src=\"data:image/jpg;base64,{{event.backgroundImgUrl.base64}}\"></p><p class=\"lead\" data-ng-bind=\"event.description\"></p></section>"
   );
 
   $templateCache.put("modules/users/views/authentication/signin.client.view.html",
