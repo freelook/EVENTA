@@ -7,7 +7,11 @@ angular.module('events').controller('EventsController', ['$scope', '$stateParams
 		$scope.create = function() {
 			var event = new Events({
 				title: this.title,
-				content: this.content
+				description: this.description,
+				external: this.external,
+				startDateTime: this.startDateTime,
+				endDateTime: this.endDateTime,
+				numberOfPersons: this.numberOfPersons
 			});
 			event.$save(function(response) {
 				$location.path('events/' + response._id);
