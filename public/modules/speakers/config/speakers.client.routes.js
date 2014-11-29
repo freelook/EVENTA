@@ -14,11 +14,11 @@ angular.module('speakers').config(['$stateProvider',
 			templateUrl: 'modules/speakers/views/create-speaker.client.view.html'
 		}).
 		state('viewSpeaker', {
-			url: '/speakers/:eventId',
+			url: '/speakers/:speakerId',
 			templateUrl: 'modules/speakers/views/view-speaker.client.view.html'
 		}).
 		state('editSpeaker', {
-			url: '/speakers/:eventId/edit',
+			url: '/speakers/:speakerId/edit',
 			templateUrl: 'modules/speakers/views/edit-speaker.client.view.html'
 		});
 	}

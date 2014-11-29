@@ -732,11 +732,11 @@ angular.module('speakers').config(['$stateProvider',
 			templateUrl: 'modules/speakers/views/create-speaker.client.view.html'
 		}).
 		state('viewSpeaker', {
-			url: '/speakers/:eventId',
+			url: '/speakers/:speakerId',
 			templateUrl: 'modules/speakers/views/view-speaker.client.view.html'
 		}).
 		state('editSpeaker', {
-			url: '/speakers/:eventId/edit',
+			url: '/speakers/:speakerId/edit',
 			templateUrl: 'modules/speakers/views/edit-speaker.client.view.html'
 		});
 	}
@@ -802,7 +802,8 @@ angular.module('speakers').controller('SpeakersController',
 		};
 
 		$scope.findOne = function() {
-			$scope.event = Speakers.get({
+            console.log($stateParams.speakerId);
+			$scope.speaker = Speakers.get({
 				speakerId: $stateParams.speakerId
 			});
 		};
@@ -826,9 +827,21 @@ angular.module('speakers').factory('Speakers', ['$resource',
 
 'use strict';
 
+
+// Configuring the Users module
+angular.module('users', ['ui.bootstrap']).run(['Menus',
+	function(Menus) {
+		// Set top bar menu items
+		Menus.addMenuItem('topbar', 'Users', 'users', 'dropdown');
+		Menus.addSubMenuItem('topbar', 'users', 'List users', 'users');
+	}
+]);
+
+
 // Config HTTP Error Handling
-angular.module('users').config(['$httpProvider',
-	function($httpProvider) {
+angular.module('users').config(
+	["$httpProvider", function($httpProvider) {
+
 		// Set the httpProvider "not authorized" interceptor
 		$httpProvider.interceptors.push(['$q', '$location', 'Authentication',
 			function($q, $location, Authentication) {
@@ -852,8 +865,8 @@ angular.module('users').config(['$httpProvider',
 				};
 			}
 		]);
-	}
-]);
+	}]);
+
 'use strict';
 
 // Setting up route
@@ -896,9 +909,14 @@ angular.module('users').config(['$stateProvider',
 		state('reset', {
 			url: '/password/reset/:token',
 			templateUrl: 'modules/users/views/password/reset-password.client.view.html'
+		}).
+		state('users', {
+			url: '/users',
+			templateUrl: 'modules/users/views/users.client.view.html'
 		});
 	}
 ]);
+
 'use strict';
 
 angular.module('users').controller('AuthenticationController', ['$scope', '$http', '$location', 'Authentication',
@@ -1051,6 +1069,65 @@ angular.module('users').controller('SettingsController', ['$scope', '$http', '$l
 
 'use strict';
 
+angular.module('users')
+    .controller('UsersController',
+    ["$scope", "$stateParams", "$location", "Authentication", "Users", function ($scope, $stateParams, $location, Authentication, Users) {
+
+        $scope.authentication = Authentication;
+
+        $scope.create = function () {
+            var user = new Users({
+
+            });
+            user.$save(function (response) {
+                $location.path('users/' + response._id);
+            }, function (errorResponse) {
+                $scope.error = errorResponse.data.message;
+            });
+        };
+
+        $scope.remove = function (user) {
+            if (user) {
+                user.$remove();
+
+                for (var i in $scope.users) {
+                    if ($scope.users[i] === user) {
+                        $scope.users.splice(i, 1);
+                    }
+                }
+            } else {
+                $scope.user.$remove(function () {
+                    $location.path('users');
+                });
+            }
+        };
+
+        $scope.update = function () {
+            var user = $scope.user;
+
+            user.$update(function () {
+                $location.path('users/' + user._id);
+            }, function (errorResponse) {
+                $scope.error = errorResponse.data.message;
+            });
+        };
+
+        $scope.find = function () {
+            $scope.users = Users.query();
+        };
+
+        $scope.findOne = function () {
+            $scope.user = Users.get({
+                userId: $stateParams.userId
+            });
+        };
+
+    }]
+);
+
+
+'use strict';
+
 // Authentication service for user variables
 angular.module('users').factory('Authentication', [
 
@@ -1068,14 +1145,17 @@ angular.module('users').factory('Authentication', [
 
 // Users service used for communicating with the users REST endpoint
 angular.module('users').factory('Users', ['$resource',
-	function($resource) {
-		return $resource('users', {}, {
-			update: {
-				method: 'PUT'
-			}
-		});
-	}
+    function ($resource) {
+        return $resource('users/:userId', {
+            eventId: '@_id'
+        }, {
+            update: {
+                method: 'PUT'
+            }
+        });
+    }
 ]);
+
 angular.module("app").run(["$templateCache", function($templateCache) {
 
   $templateCache.put("modules/core/views/header.client.view.html",
@@ -1111,11 +1191,11 @@ angular.module("app").run(["$templateCache", function($templateCache) {
   );
 
   $templateCache.put("modules/speakers/views/list-speakers.client.view.html",
-    "<section data-ng-controller=\"SpeakersController\" data-ng-init=\"find()\"><div class=\"events__header\"><md-text-float label=\"{{ 'Hall of fame' | translate}}\" ng-model=\"search\"></md-text-float></div><div class=\"list-group\"><a data-ng-repeat=\"speaker in speakers | filter:search\" data-ng-href=\"#!/speakers/{{speaker._id}}\" class=\"list-group-item speakers-list__item\" flex=\"45\" flex-order=\"{{$index % 2}}\"><img data-ng-src=\"data:image/jpg;base64,{{speaker.thumbnailUrl.base64}}\"><h2>{{speaker.name + '&nbsp;' + speaker.surname}}</h2><h3>{{speaker.company}}</h3><h4>{{speaker.title}}</h4><p data-ng-bind-html=\"speaker.bio\"></p></a></div></section>"
+    "<section data-ng-controller=\"SpeakersController\" data-ng-init=\"find()\"><div class=\"events__header\"><md-text-float label=\"{{ 'Hall of fame' | translate}}\" ng-model=\"search\"></md-text-float></div><div class=\"list-group\"><a data-ng-repeat=\"speaker in speakers | filter:search\" data-ng-href=\"#!/speakers/{{speaker._id}}\" class=\"list-group-item speakers-list__item\" flex=\"45\" flex-order=\"{{$index % 2}}\"><img data-ng-src=\"data:image/jpg;base64,{{speaker.thumbnailUrl.base64}}\"><p>{{speaker._id}}</p><h2>{{speaker.name + '&nbsp;' + speaker.surname}}</h2><h3>{{speaker.company}}</h3><h4>{{speaker.title}}</h4><p data-ng-bind-html=\"speaker.bio\"></p></a></div></section>"
   );
 
-  $templateCache.put("modules/speakers/views/view-speakers.client.view.html",
-    "<section data-ng-controller=\"SpeakersController\" data-ng-init=\"findOne()\"><div class=\"page-header\"><h1>{{speaker.name + '&nbsp;' + speaker.surname}}</h1></div><div class=\"pull-right\"><a class=\"btn btn-primary\" href=\"/#!/speakers/{{speaker._id}}/edit\"><i class=\"glyphicon glyphicon-edit\"></i></a> <a class=\"btn btn-primary\" data-ng-click=\"remove();\"><i class=\"glyphicon glyphicon-trash\"></i></a></div><small><em class=\"text-muted\">Posted on <span data-ng-bind=\"event.created | date:'mediumDate'\"></span> by <span data-ng-bind=\"event.user.displayName\"></span></em></small><p><img ng-if=\"!!speaker.thumbnailUrl.base64\" data-ng-src=\"data:image/jpg;base64,{{speaker.thumbnailUrl.base64}}\"></p><p class=\"lead\" data-ng-bind=\"speaker.bio\"></p></section>"
+  $templateCache.put("modules/speakers/views/view-speaker.client.view.html",
+    "<section data-ng-controller=\"SpeakersController\" data-ng-init=\"findOne()\"><div class=\"page-header\"><h1>{{speaker.name + '&nbsp;' + speaker.surname}}</h1></div><p>{{speakers}}</p><div class=\"pull-right\"><a class=\"btn btn-primary\" href=\"/#!/speakers/{{speaker._id}}/edit\"><i class=\"glyphicon glyphicon-edit\"></i></a> <a class=\"btn btn-primary\" data-ng-click=\"remove();\"><i class=\"glyphicon glyphicon-trash\"></i></a></div><p><img ng-if=\"!!speaker.thumbnailUrl.base64\" data-ng-src=\"data:image/jpg;base64,{{speaker.thumbnailUrl.base64}}\"></p><p class=\"lead\" data-ng-bind=\"speaker.bio\"></p></section>"
   );
 
   $templateCache.put("modules/users/views/authentication/signin.client.view.html",
@@ -1152,6 +1232,10 @@ angular.module("app").run(["$templateCache", function($templateCache) {
 
   $templateCache.put("modules/users/views/settings/social-accounts.client.view.html",
     "<section class=\"row\" data-ng-controller=\"SettingsController\"><h3 class=\"col-md-12 text-center\" data-ng-show=\"hasConnectedAdditionalSocialAccounts()\">Connected social accounts:</h3><div class=\"col-md-12 text-center\"><div data-ng-repeat=\"(providerName, providerData) in user.additionalProvidersData\" class=\"remove-account-container\"><img ng-src=\"/modules/users/img/buttons/{{providerName}}.png\"> <a class=\"btn btn-danger btn-remove-account\" data-ng-click=\"removeUserSocialAccount(providerName)\"><i class=\"glyphicon glyphicon-trash\"></i></a></div></div><h3 class=\"col-md-12 text-center\" translate=\"Connect other social accounts:\"></h3><div class=\"col-md-12 text-center\"><a href=\"/auth/facebook\" data-ng-hide=\"isConnectedSocialAccount('facebook')\" class=\"undecorated-link\"><img src=\"/modules/users/img/buttons/facebook.png\"></a> <a href=\"/auth/twitter\" data-ng-hide=\"isConnectedSocialAccount('twitter')\" class=\"undecorated-link\"><img src=\"/modules/users/img/buttons/twitter.png\"></a> <a href=\"/auth/google\" data-ng-hide=\"isConnectedSocialAccount('google')\" class=\"undecorated-link\"><img src=\"/modules/users/img/buttons/google.png\"></a> <a href=\"/auth/linkedin\" data-ng-hide=\"isConnectedSocialAccount('linkedin')\" class=\"undecorated-link\"><img src=\"/modules/users/img/buttons/linkedin.png\"></a> <a href=\"/auth/github\" data-ng-hide=\"isConnectedSocialAccount('github')\" class=\"undecorated-link\"><img src=\"/modules/users/img/buttons/github.png\"></a></div></section>"
+  );
+
+  $templateCache.put("modules/users/views/users.client.view.html",
+    "<section data-ng-controller=\"UsersController\" data-ng-init=\"find()\"><div class=\"list-group\"><a data-ng-repeat=\"user in users\" data-ng-href=\"#!/user/{{user._id}}\" class=\"list-group-item events-list__item\"><h4 class=\"list-group-item-heading event-list__item__header\" data-ng-bind=\"user.username\"></h4></a></div><div class=\"alert alert-warning text-center\" data-ng-if=\"users.$resolved && !users.length\"><label>No users yet</label></div></section>"
   );
 
 }]);
