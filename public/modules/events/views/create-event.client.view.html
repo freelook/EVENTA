@@ -12,45 +12,59 @@
 					</div>
 				</div>
 
+				<div class="form-group" ng-class="{ 'has-error': eventForm.description.$dirty && eventForm.description.$invalid }">
+					<label class="control-label" for="description">Short Description</label>
+					<div class="controls">
+						<input type="text" name="description" data-ng-model="description" id="description" class="form-control" cols="20" rows="10" placeholder="Description cannot be blank" required/>
+					</div>
+				</div>
+
 				<div class="form-group">
 					<label class="control-label" for="external">External</label>
 					<div class="controls">
 						<input type="checkbox" id="external" data-ng-model="external" />
 					</div>
 				</div>
-				<div class="row">
-					<div class="form-group col-md-4">
-						<label class="control-label" for="stardDate">Start Date</label>
-						<div class="controls">
-							<input type="date" id="stardDate" data-ng-model="startDateTime" />
-						</div>
-					</div>
-					<div class="form-group col-md-4">
-						<label class="control-label" for="endDate">End Date</label>
-						<div class="controls">
-							<input type="date" id="endDate" data-ng-model="endDateTime"/>
-						</div>
-					</div>
-					<!--<div class="form-group">-->
-						<!--<label class="control-label" for="backgroundImgUrl">Background Image</label>-->
-						<!--<div class="controls">-->
-							<!--<input type="file" id="backgroundImgUrl" />-->
-						<!--</div>-->
-					<!--</div>-->
-
-					<div class="form-group col-md-4">
-						<label class="control-label" for="numberOfPersons">Number of participants</label>
-						<div class="controls">
-							<input id="numberOfPersons" data-ng-model="numberOfPersons" type="number"/>
-						</div>
+				<div class="form-group">
+					<label class="control-label">Start Date</label>
+					<div class="controls">
+						<input type="date" id="startDateTime" />
 					</div>
 				</div>
 				<div class="form-group">
-					<label class="control-label" for="description">Description</label>
+					<label class="control-label" for="endDate">End Date</label>
 					<div class="controls">
-						<textarea name="description" data-ng-model="description" id="description" class="form-control" cols="20" rows="10" placeholder="Description cannot be blank"></textarea>
+						<input type="date" id="endDate" data-ng-model="endDateTime" required/>
 					</div>
 				</div>
+				<!--<div class="form-group">-->
+					<!--<label class="control-label" for="backgroundImgUrl">Background Image</label>-->
+					<!--<div class="controls">-->
+						<!--<input type="file" id="backgroundImgUrl" />-->
+					<!--</div>-->
+				<!--</div>-->
+
+				<div class="form-group">
+					<label class="control-label" for="numberOfPersons">Number of participants</label>
+					<div class="controls">
+						<input id="numberOfPersons" data-ng-model="numberOfPersons" type="number"/>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="control-label" for="content">Content</label>
+					<div class="controls">
+						<textarea name="content" data-ng-model="content" id="content" class="form-control" cols="20" rows="10" placeholder="Description cannot be blank"></textarea>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="control-label" for="tags">Tags</label>
+					<div class="controls">
+						<input type="text" name="tags" id="tags" data-ng-model="tags" placeholder="Content"/>
+					</div>
+				</div>
+
 				<div class="form-group">
 					<input type="submit" class="btn btn-default">
 				</div>
