@@ -7,7 +7,31 @@
 	padding: 40px 0;
 }
 
-.events__header h1 {
+.events__header md-input-group input[type="text"] {
+	display: inline-block;
+	width: 500px;
+}
+
+@media only screen and (max-width: 768px) {
+	.events__header md-input-group input[type="text"] {
+		width: 200px;
+	}
+}
+
+.events__header md-input-group.md-default-theme input {
+	color: white;
+	border-color: white;
+}
+
+.events__header md-input-group .ng-valid.ng-dirty {
+	border-color: white;
+}
+
+.events__header md-input-group label {
+	transform-origin: center;
+}
+
+.events__header md-input-group.md-default-theme label {
 	font-family: 'Roboto', Arial, sans-serif;
 	font-size: 4em;
 	font-weight: 100;
@@ -15,7 +39,7 @@
 }
 
 @media only screen and (max-width: 768px) {
-	.events__header h1 {
+	.events__header md-input-group.md-default-theme label {
 		font-size: 2em;
 	}
 }
