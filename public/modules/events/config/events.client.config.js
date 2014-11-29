@@ -1,7 +1,7 @@
 'use strict';
 
 // Configuring the Events module
-angular.module('events').run(['Menus',
+angular.module('events', ['ui.bootstrap']).run(['Menus',
 	function(Menus) {
 		// Set top bar menu items
 		Menus.addMenuItem('topbar', 'Events', 'events', 'dropdown', '/events(/create)?');
