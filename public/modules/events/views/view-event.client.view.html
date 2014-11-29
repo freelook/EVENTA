@@ -1,10 +1,10 @@
 <section data-ng-controller="EventsController" data-ng-init="findOne()">
 	<div class="page-header">
-		<div class="event__background">
-			<div class="event__filter">
+		<div class="container event__background">
+			<div class="container event__filter">
 			</div>
-			<img ng-if="!!event.backgroundImgUrl.base64" data-ng-src="data:image/jpg;base64,{{event.backgroundImgUrl.base64}}" />
-			<img ng-if="!event.backgroundImgUrl.base64" data-ng-src="/modules/core/img/header/slider-bg.jpg"/>
+			<img class="container" ng-if="!!event.backgroundImgUrl.base64" data-ng-src="data:image/jpg;base64,{{event.backgroundImgUrl.base64}}" />
+			<img class="container" ng-if="!event.backgroundImgUrl.base64" data-ng-src="/modules/core/img/header/slider-bg.jpg"/>
 		</div>
 		<h1 class="event__header" data-ng-bind="event.title"></h1>
 		<div class="event__time">
