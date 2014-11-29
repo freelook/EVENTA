@@ -6,6 +6,7 @@
 var mongoose = require('mongoose'),
 	errorHandler = require('./errors'),
 	Person = mongoose.model('Person'),
+    speakersData = require('../models/speaker.server.model').data,
 	_ = require('lodash');
 	
 /**
@@ -72,15 +73,8 @@ exports.delete = function(req, res) {
  * List of Person
  */
 exports.list = function(req, res) {
-	Person.find().exec(function(err, persons) {
-		if (err) {
-			return res.status(400).send({
-				message: errorHandler.getErrorMessage(err)
-			});
-		} else {
-			res.jsonp(persons);
-		}
-	});
+
+			res.jsonp(speakersData);
 };
 
 /**
