@@ -586,7 +586,9 @@ angular.module('events')
         };
 
         $scope.find = function () {
-            $scope.events = Events.query();
+            Events.query(function(_events){
+                $scope.events = EventSettings.parseDate(_events);
+            });
         };
 
         $scope.findOne = function () {
@@ -642,11 +644,22 @@ angular.module('events').factory('EventSettings',
                 return tag.trim();
             });
         }
+
         function getAddresses() {
             return KIEV_OFFICES_ADDRESSES;
         }
 
+        function parseDate(events){
+            events.forEach(function(event){
+               event.startDate = new Date(event.startDate);
+               event.endDate = new Date(event.endDate);
+               event.createDate = new Date(event.createDate);
+            });
+            return events;
+        }
+
         return {
+            parseDate : parseDate,
             dateFormat: getDateFormat,
             formatDate: formatDate,
             getProperDate: getProperDate,
@@ -1082,7 +1095,7 @@ angular.module("app").run(["$templateCache", function($templateCache) {
   );
 
   $templateCache.put("modules/events/views/list-events.client.view.html",
-    "<section data-ng-controller=\"EventsController\" data-ng-init=\"find()\"><div class=\"events__header\"><md-text-float label=\"{{ 'Find event for you' | translate}}\" ng-model=\"search\"></md-text-float></div><div class=\"list-group\"><a data-ng-repeat=\"event in events | filter:search\" data-ng-href=\"#!/events/{{event._id}}\" class=\"list-group-item events-list__item\"><h4 class=\"list-group-item-heading event-list__item__header\" data-ng-bind=\"event.title\"></h4><p class=\"list-group-item-text event-list__item__text\" data-ng-bind=\"event.description\"></p><p class=\"list-group-item-text event-list__item__text\"><label>Start: {{event.startDate | date:'d MMMM yyyy, hh:mm' : 'UTC' }}</label><br><label>End: {{event.endDate | date:'d MMMM yyyy, hh:mm' : 'UTC' }}</label></p></a></div><div class=\"alert alert-warning text-center\" data-ng-if=\"events.$resolved && !events.length\"><label translate=\"No events yet, why don't you \"></label><a href=\"/#!/events/create\"><label traslate=\"create one\"></label></a>?</div></section>"
+    "<section data-ng-controller=\"EventsController\" data-ng-init=\"find()\"><div class=\"events__header\"><md-text-float label=\"{{ 'Find event for you' | translate}}\" ng-model=\"search\"></md-text-float></div><div class=\"list-group\"><a data-ng-repeat=\"event in events | filter : search | orderBy: 'startDate'\" data-ng-href=\"#!/events/{{event._id}}\" class=\"list-group-item events-list__item\"><img ng-src=\"images/event_thumbnail.png\"><h4 class=\"list-group-item-heading event-list__item__header\" data-ng-bind=\"event.title\"></h4><p class=\"list-group-item-text event-list__item__text\" data-ng-bind=\"event.description\"></p><p class=\"list-group-item-text event-list__item__text\"><label>Start: {{event.startDate | date:'d MMMM yyyy, hh:mm' : 'UTC' }}</label><br><label>End: {{event.endDate | date:'d MMMM yyyy, hh:mm' : 'UTC' }}</label></p></a></div><div class=\"alert alert-warning text-center\" data-ng-if=\"events.$resolved && !events.length\"><label translate=\"No events yet, why don't you \"></label><a href=\"/#!/events/create\"><label traslate=\"create one\"></label></a>?</div></section>"
   );
 
   $templateCache.put("modules/events/views/view-event.client.view.html",
