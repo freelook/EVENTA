@@ -1,7 +1,7 @@
 .events__header {
 	text-align: center;
 	border-bottom: none;
-	background: url('/modules/core/img/header/slider-bg.jpg');
+	background-color: #2e7fab;
 	margin: 0;
 	margin-top: -20px;
 	padding: 40px 0;

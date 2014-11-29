@@ -73,30 +73,7 @@ exports.delete = function(req, res) {
  * List of Speaker
  */
 exports.list = function(req, res) {
-
-			res.jsonp(speakersData);
-};
-
-/**
- * List of Speakers
- */
-exports.speakerList = function(req, res) {
-    Speaker.find({rockstar : true}).exec(function(err, speakers) {
-        if (err) {
-            return res.status(400).send({
-                message: errorHandler.getErrorMessage(err)
-            });
-        } else {
-            res.jsonp(speakers);
-        }
-    });
-};
-
-/**
- * List of Teamplayers
- */
-exports.teamList = function(req, res) {
-    Speaker.find({team : true}).exec(function(err, speakers) {
+    Speaker.find().exec(function(err, speakers) {
         if (err) {
             return res.status(400).send({
                 message: errorHandler.getErrorMessage(err)

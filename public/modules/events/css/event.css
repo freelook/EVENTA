@@ -1,4 +1,57 @@
+.page-header {
+	border-bottom: none;
+}
+
 .event__background {
-	z-index: -200;
+	margin-top: -40px;
+	height: 250px;
+	width: 1140px;
 	overflow: hidden;
+}
+
+.event__filter {
+	background: transparent;
+	background: rgba(0,0,0,0.5);
+	z-index: 100;
+}
+
+.event__background img {
+	width: 1140px;
+	height: auto;
+}
+
+/* @media only screen and (max-width: 1200px) {
+	.event__background {
+		width: ;
+	}
+
+	.event__background img {
+		width: ;
+	}
+} */
+
+.event__header {
+	text-align: center;
+	font-family: 'Roboto', Arial, sans-serif;
+	color: white;
+	font-weight: 100;
+	font-size: 4em;
+	margin-top: -150px;
+	margin-bottom: 100px;
+}
+
+@media only screen and (max-width: 768px) {
+	.event__header {
+		font-size: 2em;
+	}
+}
+
+.event__button {
+	z-index: 1000;
+}
+
+.event__subheader {
+	font-size: 2em;
+	padding-bottom: 10px;
+	border-bottom: 1px solid #ccc;
 }
