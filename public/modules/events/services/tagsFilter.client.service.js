@@ -16,6 +16,6 @@ angular.module('events').filter('tagSearch', function(){
             }
             return false;
 
-        }
+        };
     }
 );

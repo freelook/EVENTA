@@ -603,6 +603,17 @@ angular.module('events')
         $scope.locationUpdate = function(){
             $scope.map.center = $scope.selectedLocation.coordinates;
         };
+
+        $scope.isFilterVisible = false;
+        $scope.toggleFilterVisibility = function(){
+            $scope.isFilterVisible = !$scope.isFilterVisible;
+        };
+
+        $scope.showTags = function(event){
+            return event.tags.join(', ');
+        };
+
+        $scope.tagName = '';
     }]
 );
 
@@ -703,6 +714,28 @@ angular.module('events').factory('Speakers', ['$resource',
         });
     }
 ]);
+
+'use strict';
+
+angular.module('events').filter('tagSearch', function(){
+        function eventContainsTag(event, tagName){
+            if(angular.isArray(event.tags)){
+                return event.tags.join('').indexOf(tagName) > -1;
+            }
+            return false;
+        }
+
+        return function(events, tagName){
+            if(angular.isArray(events)){
+                return events.filter(function(event){
+                    return eventContainsTag(event, tagName);
+                });
+            }
+            return false;
+
+        };
+    }
+);
 
 'use strict';
 
@@ -1175,7 +1208,7 @@ angular.module("app").run(["$templateCache", function($templateCache) {
   );
 
   $templateCache.put("modules/events/views/list-events.client.view.html",
-    "<section data-ng-controller=\"EventsController\" data-ng-init=\"find()\"><div class=\"events__header\"><md-text-float label=\"{{ 'Find event for you' | translate}}\" ng-model=\"search\"></md-text-float></div><div class=\"list-group\"><a data-ng-repeat=\"event in events | filter : search | orderBy: 'startDate'\" data-ng-href=\"#!/events/{{event._id}}\" class=\"list-group-item events-list__item\"><img ng-src=\"images/event_thumbnail.png\"><h4 class=\"list-group-item-heading event-list__item__header\" data-ng-bind=\"event.title\"></h4><p class=\"list-group-item-text event-list__item__text\" data-ng-bind=\"event.description\"></p><p class=\"list-group-item-text event-list__item__text\"><label>Start: {{event.startDate | date:'d MMMM yyyy, hh:mm' : 'UTC' }}</label><br><label>End: {{event.endDate | date:'d MMMM yyyy, hh:mm' : 'UTC' }}</label></p></a></div><div class=\"alert alert-warning text-center\" data-ng-if=\"events.$resolved && !events.length\"><label translate=\"No events yet, why don't you \"></label><a href=\"/#!/events/create\"><label traslate=\"create one\"></label></a>?</div></section>"
+    "<section data-ng-controller=\"EventsController\" data-ng-init=\"find()\"><div class=\"events__header\"><md-text-float label=\"{{ 'Find event for you' | translate}}\" ng-model=\"search\"></md-text-float></div><div><button ng-if=\"!isFilterVisible\" ng-click=\"toggleFilterVisibility()\">Show Advanced Filter</button> <button ng-if=\"isFilterVisible\" ng-click=\"toggleFilterVisibility()\">Hide Advanced Filter</button><div ng-show=\"isFilterVisible\"><div><label>Filter by Tags:<input type=\"text\" ng-model=\"tagName\"></label></div></div></div><div class=\"list-group\"><a data-ng-repeat=\"event in events | filter : search | tagSearch : tagName | orderBy: 'startDate'\" data-ng-href=\"#!/events/{{event._id}}\" class=\"list-group-item events-list__item\"><img ng-src=\"images/event_thumbnail.png\"><h4 class=\"list-group-item-heading event-list__item__header\" data-ng-bind=\"event.title\"></h4><p class=\"list-group-item-text event-list__item__text\" data-ng-bind=\"event.description\"></p><p class=\"list-group-item-text event-list__item__text\"><label>Start: {{event.startDate | date:'d MMMM yyyy, hh:mm' : 'UTC' }}</label><br><label>End: {{event.endDate | date:'d MMMM yyyy, hh:mm' : 'UTC' }}</label></p><p class=\"list-group-item-text event-list__item__text\"><label>Tags: {{showTags(event)}}</label><br></p></a></div><div class=\"alert alert-warning text-center\" data-ng-if=\"events.$resolved && !events.length\"><label translate=\"No events yet, why don't you \"></label><a href=\"/#!/events/create\"><label traslate=\"create one\"></label></a>?</div></section>"
   );
 
   $templateCache.put("modules/events/views/view-event.client.view.html",
