@@ -586,7 +586,9 @@ angular.module('events')
         };
 
         $scope.find = function () {
-            $scope.events = Events.query();
+            Events.query(function(_events){
+                $scope.events = EventSettings.parseDate(_events);
+            });
         };
 
         $scope.findOne = function () {
@@ -642,11 +644,22 @@ angular.module('events').factory('EventSettings',
                 return tag.trim();
             });
         }
+
         function getAddresses() {
             return KIEV_OFFICES_ADDRESSES;
         }
 
+        function parseDate(events){
+            events.forEach(function(event){
+               event.startDate = new Date(event.startDate);
+               event.endDate = new Date(event.endDate);
+               event.createDate = new Date(event.createDate);
+            });
+            return events;
+        }
+
         return {
+            parseDate : parseDate,
             dateFormat: getDateFormat,
             formatDate: formatDate,
             getProperDate: getProperDate,
@@ -1082,11 +1095,11 @@ angular.module("app").run(["$templateCache", function($templateCache) {
   );
 
   $templateCache.put("modules/events/views/list-events.client.view.html",
-    "<section data-ng-controller=\"EventsController\" data-ng-init=\"find()\"><div class=\"events__header\"><md-text-float label=\"{{ 'Find event for you' | translate}}\" ng-model=\"search\"></md-text-float></div><div class=\"list-group\"><a data-ng-repeat=\"event in events | filter:search\" data-ng-href=\"#!/events/{{event._id}}\" class=\"list-group-item events-list__item\"><h4 class=\"list-group-item-heading event-list__item__header\" data-ng-bind=\"event.title\"></h4><p class=\"list-group-item-text event-list__item__text\" data-ng-bind=\"event.description\"></p><p class=\"list-group-item-text event-list__item__text\"><label>Start: {{event.startDate | date:'d MMMM yyyy, hh:mm' : 'UTC' }}</label><br><label>End: {{event.endDate | date:'d MMMM yyyy, hh:mm' : 'UTC' }}</label></p></a></div><div class=\"alert alert-warning text-center\" data-ng-if=\"events.$resolved && !events.length\"><label translate=\"No events yet, why don't you \"></label><a href=\"/#!/events/create\"><label traslate=\"create one\"></label></a>?</div></section>"
+    "<section data-ng-controller=\"EventsController\" data-ng-init=\"find()\"><div class=\"events__header\"><md-text-float label=\"{{ 'Find event for you' | translate}}\" ng-model=\"search\"></md-text-float></div><div class=\"list-group\"><a data-ng-repeat=\"event in events | filter : search | orderBy: 'startDate'\" data-ng-href=\"#!/events/{{event._id}}\" class=\"list-group-item events-list__item\"><img ng-src=\"images/event_thumbnail.png\"><h4 class=\"list-group-item-heading event-list__item__header\" data-ng-bind=\"event.title\"></h4><p class=\"list-group-item-text event-list__item__text\" data-ng-bind=\"event.description\"></p><p class=\"list-group-item-text event-list__item__text\"><label>Start: {{event.startDate | date:'d MMMM yyyy, hh:mm' : 'UTC' }}</label><br><label>End: {{event.endDate | date:'d MMMM yyyy, hh:mm' : 'UTC' }}</label></p></a></div><div class=\"alert alert-warning text-center\" data-ng-if=\"events.$resolved && !events.length\"><label translate=\"No events yet, why don't you \"></label><a href=\"/#!/events/create\"><label traslate=\"create one\"></label></a>?</div></section>"
   );
 
   $templateCache.put("modules/events/views/view-event.client.view.html",
-    "<section data-ng-controller=\"EventsController\" data-ng-init=\"findOne()\"><div class=\"page-header\"><div class=\"event__background\"><div class=\"event__filter\"><img ng-if=\"!!event.backgroundImgUrl.base64\" data-ng-src=\"data:image/jpg;base64,{{event.backgroundImgUrl.base64}}\"></div></div><h1 class=\"event__header\" data-ng-bind=\"event.title\"></h1><div class=\"pull-right\"><a class=\"btn btn-primary event__button\" href=\"/#!/events/{{event._id}}/edit\"><i class=\"glyphicon glyphicon-edit\"></i></a> <a class=\"btn btn-primary event__button\" data-ng-click=\"remove();\"><i class=\"glyphicon glyphicon-trash\"></i></a></div></div><p class=\"lead\" data-ng-bind=\"event.description\"></p><h2 class=\"event__subheader\">Event location</h2><ui-gmap-google-map center=\"map.center\" zoom=\"map.zoom\"><ui-gmap-marker coords=\"map.center\" options=\"marker.options\" idkey=\"marker.id\"></ui-gmap-marker></ui-gmap-google-map></section>"
+    "<section data-ng-controller=\"EventsController\" data-ng-init=\"findOne()\"><div class=\"page-header\"><div class=\"event__background\"><div class=\"event__filter\"><img ng-if=\"!!event.backgroundImgUrl.base64\" data-ng-src=\"data:image/jpg;base64,{{event.backgroundImgUrl.base64}}\"> <img ng-if=\"!event.backgroundImgUrl.base64\" data-ng-src=\"/modules/core/img/header/slider-bg.jpg\"></div></div><h1 class=\"event__header\" data-ng-bind=\"event.title\"></h1><div><label>Start: {{event.startDate | date:'d MMMM yyyy, hh:mm' : 'UTC' }}</label><span style=\"padding-left: 5px;padding-right: 5px\">-</span><label>End: {{event.endDate | date:'d MMMM yyyy, hh:mm' : 'UTC' }}</label></div><div class=\"pull-right\"><a class=\"btn btn-primary event__button\" href=\"/#!/events/{{event._id}}/edit\"><i class=\"glyphicon glyphicon-edit\"></i></a> <a class=\"btn btn-primary event__button\" data-ng-click=\"remove();\"><i class=\"glyphicon glyphicon-trash\"></i></a></div></div><p class=\"lead\" data-ng-bind=\"event.description\"></p><h2 class=\"event__subheader\">Event location</h2><ui-gmap-google-map center=\"map.center\" zoom=\"map.zoom\"><ui-gmap-marker coords=\"map.center\" options=\"marker.options\" idkey=\"marker.id\"></ui-gmap-marker></ui-gmap-google-map><h2 class=\"event__subheader\">Event description</h2><span data-ng-bind=\"event.content\"></span><div><div class=\"pull-right\" style=\"margin-top: 10px; width: 300px\"><span class=\"control-label col-sm-2\" translate=\"Number of participants\"></span> <span data-ng-bind=\"event.numberOfPersons\"></span> <span class=\"btn btn-primary\">+1</span></div></div></section>"
   );
 
   $templateCache.put("modules/speakers/views/create-speaker.client.view.html",
