@@ -4,6 +4,8 @@ angular.module('events').controller('EventsController', ['$scope', '$stateParams
 	function($scope, $stateParams, $location, Authentication, Events) {
 		$scope.authentication = Authentication;
 
+		$scope.search = '';
+
 		$scope.create = function() {
 			var event = new Events({
 				title: this.title,
