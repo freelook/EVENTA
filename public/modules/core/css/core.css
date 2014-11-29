@@ -1,5 +1,7 @@
 /*Font for site*/
-@import url(http://fonts.googleapis.com/css?family=Roboto);
+body {
+	font-family: 'Roboto', Arial, sans-serif;
+}
 
 .content {
 	margin-top: 50px;
