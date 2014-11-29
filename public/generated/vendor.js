@@ -31715,7 +31715,7 @@ ngAriaModule.directive('ngShow', ['$aria', function($aria) {
  * Angular Material Design
  * https://github.com/angular/material
  * @license MIT
- * v0.6.0-rc3-master-98c3152
+ * v0.6.0-rc2-master-e2c50a8
  */
 angular.module('ngMaterial', ["ng","ngAnimate","ngAria","material.core","material.components.backdrop","material.components.bottomSheet","material.components.button","material.components.card","material.components.checkbox","material.components.content","material.components.dialog","material.components.divider","material.components.icon","material.components.list","material.components.progressCircular","material.components.progressLinear","material.components.radioButton","material.components.sidenav","material.components.slider","material.components.sticky","material.components.subheader","material.components.swipe","material.components.switch","material.components.tabs","material.components.textField","material.components.toast","material.components.toolbar","material.components.tooltip","material.components.whiteframe"]);
 (function() {
@@ -32229,7 +32229,7 @@ angular.element.prototype.blur = angular.element.prototype.blur || function() {
 angular.module('material.core')
   .service('$mdAria', AriaService);
 
-function AriaService($$rAF, $log, $window) {
+function AriaService($$rAF, $log) {
 
   return {
     expect: expect,
@@ -32275,10 +32275,11 @@ function AriaService($$rAF, $log, $window) {
 
   function childHasAttribute(node, attrName) {
     var hasChildren = node.hasChildNodes(),
-        hasAttr = false;
+        childHasAttribute = false;
 
     function isHidden(el) {
-      var style = el.currentStyle ? el.currentStyle : $window.getComputedStyle(el);
+      var style = el.currentStyle ? el.currentStyle :
+                            getComputedStyle(el);
       return (style.display === 'none');
     }
 
@@ -32288,15 +32289,15 @@ function AriaService($$rAF, $log, $window) {
         var child = children[i];
         if(child.nodeType === 1 && child.hasAttribute(attrName)) {
           if(!isHidden(child)){
-            hasAttr = true;
+            childHasAttribute = true;
           }
         }
       }
     }
-    return hasAttr;
+    return childHasAttribute;
   }
 }
-AriaService.$inject = ["$$rAF", "$log", "$window"];
+AriaService.$inject = ["$$rAF", "$log"];
 })();
 
 (function() {
@@ -33172,6 +33173,7 @@ function attrNoDirective() {
 angular.module('material.core')
   .directive('mdTheme', ThemingDirective)
   .directive('mdThemable', ThemableDirective)
+  .directive('mdThemeLevels', ThemeLevelsDirective)
   .provider('$mdTheming', ThemingProvider);
 
 /**
@@ -33266,6 +33268,41 @@ function ThemingProvider() {
     }
   }
 }
+
+function ThemeLevelsDirective($window, $mdTheming) {
+  var lookup = {},
+      dummyElement = angular.element('<div>'),
+      body = angular.element(document.body);
+
+  return function (scope, element, attr) {
+    var styles = scope.$eval(attr.mdThemeLevels),
+        themeName;
+    angular.forEach(styles, function (value, key) {
+      styles[key] = getColor(value);
+    });
+    element.css(styles);
+    $mdTheming(element);
+    themeName = element.controller('mdTheme').$mdTheme;
+    function getColor(level) {
+      //-- get or create theme
+      var theme = lookup[themeName],
+          color;
+      if (!theme) theme = lookup[themeName] = {};
+      //-- attempt to get color
+      color = theme[level];
+      //-- if color has been found already, return it
+      if (color) return color;
+      //-- otherwise, use the dummy DOM element to find it
+      element.append(dummyElement);
+      $mdTheming(dummyElement);
+      dummyElement.attr('md-color-level', level);
+      theme[level] = color = $window.getComputedStyle(dummyElement[0]).color;
+      dummyElement.remove();
+      return color;
+    }
+  };
+}
+ThemeLevelsDirective.$inject = ["$window", "$mdTheming"];
 
 function ThemingDirective($interpolate) {
   return {
@@ -34367,16 +34404,16 @@ function MdDialogProvider($$interimElementProvider) {
       if (clickElement) {
         var clickRect = clickElement[0].getBoundingClientRect();
         startPos = 'translate3d(' +
-          (clickRect.left - element[0].offsetWidth / 2) + 'px,' +
-          (clickRect.top - element[0].offsetHeight / 2) + 'px,' +
+          (clickRect.left - element[0].offsetWidth) + 'px,' +
+          (clickRect.top - element[0].offsetHeight) + 'px,' +
           '0) scale(0.2)';
       } else {
         startPos = 'translate3d(0,100%,0) scale(0.5)';
       }
 
       element
-        .css($mdConstant.CSS.TRANSFORM, startPos)
-        .css('opacity', 0);
+      .css($mdConstant.CSS.TRANSFORM, startPos)
+      .css('opacity', 0);
 
       $$rAF(function() {
         $$rAF(function() {
@@ -37340,7 +37377,7 @@ function MdTabInkDirective($mdConstant, $window, $$rAF, $timeout) {
       var selected = tabsCtrl.selected();
 
       var hideInkBar = !selected || tabsCtrl.count() < 2 ||
-        (scope.pagination || {}).itemsPerPage === 1;
+        (scope.pagination && scope.pagination.itemsPerPage === 1);
       element.css('display', hideInkBar ? 'none' : 'block');
 
       if (!hideInkBar) {
@@ -48449,16 +48486,17 @@ angular.module('ui.bootstrap.dropdown', [])
     }
   };
 
-  var closeDropdown = function( evt ) {
-    var toggleElement = openScope.getToggleElement();
-    if ( evt && toggleElement && toggleElement[0].contains(evt.target) ) {
-        return;
-    }
-
-    openScope.$apply(function() {
-      openScope.isOpen = false;
-    });
-  };
+      var closeDropdown = function (evt) {
+        var toggleElement = openScope && openScope.getToggleElement();
+        if (evt && toggleElement && toggleElement[0].contains(evt.target)) {
+          return;
+        }
+        if (openScope) {
+          openScope.$apply(function () {
+            openScope.isOpen = false;
+          });
+        }
+      };
 
   var escapeKeyBind = function( evt ) {
     if ( evt.which === 27 ) {
@@ -50967,50 +51005,6 @@ angular.module("template/typeahead/typeahead-popup.html", []).run(["$templateCac
     "    </li>\n" +
     "</ul>\n" +
     "");
-}]);
-
-/*! angular-base64-upload - v0.0.3 - 2014-11-18
-* https://github.com/adonespitogo/angular-base64-upload
-* Copyright (c) Adones Pitogo <pitogo.adones@gmail.com> 2014; Licensed  */
-angular.module('naif.base64', [])
-.directive('baseSixtyFourInput', ['$window', function ($window) {
-  return {
-    restrict: 'A',
-    require: 'ngModel',
-    link: function (scope, elem, attrs, ngModel) {
-      var fileObject = {};
-
-      scope.readerOnload = function(e){
-        var base64 = _arrayBufferToBase64(e.target.result);
-        fileObject.base64 = base64;
-        scope.$apply(function(){
-          ngModel.$setViewValue(fileObject);
-        });
-      };
-
-      var reader = new FileReader();
-      reader.onload = scope.readerOnload;
-
-      elem.on('change', function() {
-        var file = elem[0].files[0];
-        fileObject.filetype = file.type;
-        fileObject.filename = file.name;
-        fileObject.filesize = file.size;
-        reader.readAsArrayBuffer(file);
-      });
-
-      //http://stackoverflow.com/questions/9267899/arraybuffer-to-base64-encoded-string
-      function _arrayBufferToBase64( buffer ) {
-        var binary = '';
-        var bytes = new Uint8Array( buffer );
-        var len = bytes.byteLength;
-        for (var i = 0; i < len; i++) {
-            binary += String.fromCharCode( bytes[ i ] );
-        }
-        return $window.btoa( binary );
-      }
-    }
-  };
 }]);
 
 /*
