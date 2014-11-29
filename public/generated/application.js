@@ -1,25 +1,35 @@
 'use strict';
 
 // Init the application configuration module for AngularJS application
-var ApplicationConfiguration = (function() {
-	// Init module configuration options
-	var applicationModuleName = 'app';
-	var applicationModuleVendorDependencies = ['ngResource', 'ngCookies',  'ngAnimate',  'ngTouch',  'ngSanitize',  'ui.router', 'ui.bootstrap', 'ui.utils'];
+var ApplicationConfiguration = (function () {
+    // Init module configuration options
+    var applicationModuleName = 'app';
+    var applicationModuleVendorDependencies = [
+        'ngResource',
+        'ngCookies',
+        'ngAnimate',
+        'ngTouch',
+        'ngSanitize',
+        'pascalprecht.translate',
+        'ui.router',
+        'ui.bootstrap',
+        'ui.utils'
+    ];
 
-	// Add a new vertical module
-	var registerModule = function(moduleName, dependencies) {
-		// Create angular module
-		angular.module(moduleName, dependencies || []);
+    // Add a new vertical module
+    var registerModule = function (moduleName, dependencies) {
+        // Create angular module
+        angular.module(moduleName, dependencies || []);
 
-		// Add the module to the AngularJS configuration file
-		angular.module(applicationModuleName).requires.push(moduleName);
-	};
+        // Add the module to the AngularJS configuration file
+        angular.module(applicationModuleName).requires.push(moduleName);
+    };
 
-	return {
-		applicationModuleName: applicationModuleName,
-		applicationModuleVendorDependencies: applicationModuleVendorDependencies,
-		registerModule: registerModule
-	};
+    return {
+        applicationModuleName: applicationModuleName,
+        applicationModuleVendorDependencies: applicationModuleVendorDependencies,
+        registerModule: registerModule
+    };
 })();
 
 'use strict';
@@ -28,11 +38,19 @@ var ApplicationConfiguration = (function() {
 angular.module(ApplicationConfiguration.applicationModuleName, ApplicationConfiguration.applicationModuleVendorDependencies);
 
 // Setting HTML5 Location Mode
-angular.module(ApplicationConfiguration.applicationModuleName).config(['$locationProvider',
-	function($locationProvider) {
+angular.module(ApplicationConfiguration.applicationModuleName)
+	.config(
+	["$locationProvider", "$translateProvider", function($locationProvider, $translateProvider) {
 		$locationProvider.hashPrefix('!');
-	}
-]);
+		$translateProvider.useStaticFilesLoader({
+			prefix: '/i18n/resources-locale_',
+			suffix: '.json'
+		});
+
+		$translateProvider.useLocalStorage();
+		$translateProvider.preferredLanguage('en');
+	}]
+);
 
 //Then define the init function for starting up the application
 angular.element(document).ready(function() {
@@ -42,6 +60,7 @@ angular.element(document).ready(function() {
 	//Then init the app
 	angular.bootstrap(document, [ApplicationConfiguration.applicationModuleName]);
 });
+
 'use strict';
 
 // Use Applicaion configuration module to register a new module
@@ -57,21 +76,41 @@ ApplicationConfiguration.registerModule('events');
 ApplicationConfiguration.registerModule('users');
 
 'use strict';
+angular
+    .module('core')
+    .run(
+    ["$translate", "LocalStorage", function ($translate,  LocalStorage) {
+
+        // Init data
+        $translate.use(LocalStorage.getLocale());
+    }]);
+
+'use strict';
 
 // Setting up route
-angular.module('core').config(['$stateProvider', '$urlRouterProvider',
-	function($stateProvider, $urlRouterProvider) {
-		// Redirect to home view when route not found
-		$urlRouterProvider.otherwise('/events');
+angular.module('core').config(
+    ["$stateProvider", "$urlRouterProvider", function ($stateProvider, $urlRouterProvider) {
+        // Redirect to home view when route not found
+        $urlRouterProvider.otherwise('/events');
 
-		// Home state routing
-		$stateProvider.
-		state('home', {
-			url: '/home',
-			templateUrl: 'modules/core/views/home.client.view.html'
-		});
-	}
-]);
+        // Home state routing
+        $stateProvider.
+            state('home', {
+                url: '/home',
+                templateUrl: 'modules/core/views/home.client.view.html'
+            });
+    }]);
+
+'use strict';
+angular
+    .module('core')
+    .controller('LangController', ["$scope", "$translate", function ($scope, $translate) {
+
+        $scope.lang = $translate.use();
+        $scope.setLang = function () {
+            $translate.use($scope.lang);
+        };
+    }]);
 
 'use strict';
 
@@ -159,6 +198,60 @@ angular.module('core')
             }];
     }]);
 
+'use strict';
+angular
+    .module('core')
+    .factory('LocalStorage',
+    ["$window", function ($window) {
+        var LOCALE_KEY = 'NG_TRANSLATE_LANG_KEY';
+
+        function _getItem(key, defaultValue, noParse) {
+            var localStorageValue = noParse ?
+                $window.localStorage.getItem(key) :
+                JSON.parse($window.localStorage.getItem(key));
+
+            if (!defaultValue) {
+                defaultValue = null;
+            }
+
+            return (localStorageValue) ? localStorageValue : defaultValue;
+        }
+
+        function _setItem(key, value, noParse) {
+            var localStorageValue = noParse ?
+                value :
+                JSON.stringify(value);
+            $window.localStorage.setItem(key, localStorageValue);
+        }
+
+        function getLocale() {
+            var lang = ($window.navigator.userLanguage || $window.navigator.language || 'EN_US').toLowerCase().split('-')[0];
+            if (lang && lang !== 'ru') {
+                lang = 'en';
+            }
+
+            return _getItem(LOCALE_KEY, lang, true);
+        }
+
+        function setLocale(lang) {
+            _setItem(LOCALE_KEY, lang, true);
+        }
+
+        function getUser(socialName) {
+            return _getItem(socialName);
+        }
+
+        function setUser(socialName, user) {
+            _setItem(socialName, user);
+        }
+
+        return {
+            getLocale: getLocale,
+            setLocale: setLocale,
+            getUser: getUser,
+            setUser: setUser
+        };
+    }]);
 'use strict';
 
 //Menu service used for managing  menus
@@ -372,7 +465,11 @@ angular.module('events').controller('EventsController', ['$scope', '$stateParams
 		$scope.create = function() {
 			var event = new Events({
 				title: this.title,
-				content: this.content
+				description: this.description,
+				external: this.external,
+				startDateTime: this.startDateTime,
+				endDateTime: this.endDateTime,
+				numberOfPersons: this.numberOfPersons
 			});
 			event.$save(function(response) {
 				$location.path('events/' + response._id);
@@ -692,7 +789,7 @@ angular.module('users').factory('Users', ['$resource',
 angular.module("app").run(["$templateCache", function($templateCache) {
 
   $templateCache.put("modules/core/views/header.client.view.html",
-    "<div class=\"container\" data-ng-controller=\"HeaderController\"><div class=\"navbar-header\"><button class=\"navbar-toggle\" type=\"button\" data-ng-click=\"toggleCollapsibleMenu()\"><span class=\"sr-only\">Toggle navigation</span> <span class=\"icon-bar\"></span> <span class=\"icon-bar\"></span> <span class=\"icon-bar\"></span></button> <a href=\"/#!/\" class=\"navbar-brand\">EVENTA</a></div><nav class=\"collapse navbar-collapse\" collapse=\"!isCollapsed\" role=\"navigation\"><ul class=\"nav navbar-nav\" data-ng-if=\"menu.shouldRender(authentication.user);\"><li data-ng-repeat=\"item in menu.items | orderBy: 'position'\" data-ng-if=\"item.shouldRender(authentication.user);\" ng-switch=\"item.menuItemType\" ui-route=\"{{item.uiRoute}}\" class=\"{{item.menuItemClass}}\" ng-class=\"{active: ($uiRoute)}\" dropdown=\"item.menuItemType === 'dropdown'\"><a ng-switch-when=\"dropdown\" class=\"dropdown-toggle\"><span data-ng-bind=\"item.title\"></span> <b class=\"caret\"></b></a><ul ng-switch-when=\"dropdown\" class=\"dropdown-menu\"><li data-ng-repeat=\"subitem in item.items | orderBy: 'position'\" data-ng-if=\"subitem.shouldRender(authentication.user);\" ui-route=\"{{subitem.uiRoute}}\" ng-class=\"{active: $uiRoute}\"><a href=\"/#!/{{subitem.link}}\" data-ng-bind=\"subitem.title\"></a></li></ul><a ng-switch-default=\"\" href=\"/#!/{{item.link}}\" data-ng-bind=\"item.title\"></a></li></ul><ul class=\"nav navbar-nav navbar-right\" data-ng-hide=\"authentication.user\"><li ui-route=\"/signup\" ng-class=\"{active: $uiRoute}\"><a href=\"/#!/signup\">Sign Up</a></li><li class=\"divider-vertical\"></li><li ui-route=\"/signin\" ng-class=\"{active: $uiRoute}\"><a href=\"/#!/signin\">Sign In</a></li></ul><ul class=\"nav navbar-nav navbar-right\" data-ng-show=\"authentication.user\"><li class=\"dropdown\"><a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\"><span data-ng-bind=\"authentication.user.displayName\"></span> <b class=\"caret\"></b></a><ul class=\"dropdown-menu\"><li><a href=\"/#!/settings/profile\">Edit Profile</a></li><li><a href=\"/#!/settings/accounts\">Manage Social Accounts</a></li><li data-ng-show=\"authentication.user.provider === 'local'\"><a href=\"/#!/settings/password\">Change Password</a></li><li class=\"divider\"></li><li><a href=\"/auth/signout\">Signout</a></li></ul></li></ul></nav></div>"
+    "<div class=\"container\" data-ng-controller=\"HeaderController\"><div class=\"navbar-header\"><button class=\"navbar-toggle\" type=\"button\" data-ng-click=\"toggleCollapsibleMenu()\"><span class=\"sr-only\">Toggle navigation</span> <span class=\"icon-bar\"></span> <span class=\"icon-bar\"></span> <span class=\"icon-bar\"></span></button> <a href=\"/#!/\" class=\"navbar-brand\">EVENTA</a></div><nav class=\"collapse navbar-collapse\" collapse=\"!isCollapsed\" role=\"navigation\"><ul class=\"nav navbar-nav\" data-ng-if=\"menu.shouldRender(authentication.user);\"><li data-ng-repeat=\"item in menu.items | orderBy: 'position'\" data-ng-if=\"item.shouldRender(authentication.user);\" ng-switch=\"item.menuItemType\" ui-route=\"{{item.uiRoute}}\" class=\"{{item.menuItemClass}}\" ng-class=\"{active: ($uiRoute)}\" dropdown=\"item.menuItemType === 'dropdown'\"><a ng-switch-when=\"dropdown\" class=\"dropdown-toggle\"><span data-ng-bind=\"item.title\"></span> <b class=\"caret\"></b></a><ul ng-switch-when=\"dropdown\" class=\"dropdown-menu\"><li data-ng-repeat=\"subitem in item.items | orderBy: 'position'\" data-ng-if=\"subitem.shouldRender(authentication.user);\" ui-route=\"{{subitem.uiRoute}}\" ng-class=\"{active: $uiRoute}\"><a href=\"/#!/{{subitem.link}}\" data-ng-bind=\"subitem.title\"></a></li></ul><a ng-switch-default=\"\" href=\"/#!/{{item.link}}\" data-ng-bind=\"item.title\"></a></li></ul><ul class=\"nav navbar-nav navbar-right\" data-ng-hide=\"authentication.user\"><li ui-route=\"/signup\" ng-class=\"{active: $uiRoute}\"><a href=\"/#!/signup\" translate=\"Sign Up\"></a></li><li class=\"divider-vertical\"></li><li ui-route=\"/signin\" ng-class=\"{active: $uiRoute}\"><a href=\"/#!/signin\">Sign In</a></li><li class=\"divider-vertical\"></li><li><select ng-controller=\"LangController\" data-ng-model=\"lang\" ng-change=\"setLang()\" style=\"margin-top: 13px;margin-left: 10px\"><option ng-selected=\"lang === 'ru'\">ru</option><option ng-selected=\"lang === 'en'\">en</option></select></li></ul><ul class=\"nav navbar-nav navbar-right\" data-ng-show=\"authentication.user\"><li class=\"dropdown\"><a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\"><span data-ng-bind=\"authentication.user.displayName\"></span> <b class=\"caret\"></b></a><ul class=\"dropdown-menu\"><li><a href=\"/#!/settings/profile\">Edit Profile</a></li><li><a href=\"/#!/settings/accounts\">Manage Social Accounts</a></li><li data-ng-show=\"authentication.user.provider === 'local'\"><a href=\"/#!/settings/password\">Change Password</a></li><li class=\"divider\"></li><li><a href=\"/auth/signout\">Signout</a></li></ul></li></ul></nav></div>"
   );
 
   $templateCache.put("modules/core/views/home.client.view.html",
@@ -700,7 +797,7 @@ angular.module("app").run(["$templateCache", function($templateCache) {
   );
 
   $templateCache.put("modules/events/views/create-event.client.view.html",
-    "<section data-ng-controller=\"EventsController\"><div class=\"page-header\"><h1>New Event</h1></div><div class=\"col-md-12\"><form name=\"eventForm\" class=\"form-horizontal\" data-ng-submit=\"create()\" novalidate=\"\"><fieldset><div class=\"form-group\" ng-class=\"{ 'has-error': eventForm.title.$dirty && eventForm.title.$invalid }\"><label class=\"control-label\" for=\"title\">Title</label><div class=\"controls\"><input name=\"title\" type=\"text\" data-ng-model=\"title\" id=\"title\" class=\"form-control\" placeholder=\"Title\" required=\"\"></div></div><div class=\"form-group\"><label class=\"control-label\" for=\"content\">Content</label><div class=\"controls\"><textarea name=\"content\" data-ng-model=\"content\" id=\"content\" class=\"form-control\" cols=\"30\" rows=\"10\" placeholder=\"Content\"></textarea></div></div><div class=\"form-group\"><input type=\"submit\" class=\"btn btn-default\"></div><div data-ng-show=\"error\" class=\"text-danger\"><strong data-ng-bind=\"error\"></strong></div></fieldset></form></div></section>"
+    "<section data-ng-controller=\"EventsController\"><div class=\"page-header\"><h1>New Event</h1></div><div class=\"col-md-12\"><form name=\"eventForm\" class=\"form-horizontal\" data-ng-submit=\"create()\" novalidate=\"\"><fieldset><div class=\"form-group\" ng-class=\"{ 'has-error': eventForm.title.$dirty && eventForm.title.$invalid }\"><label class=\"control-label\" for=\"title\">Title</label><div class=\"controls\"><input name=\"title\" type=\"text\" data-ng-model=\"title\" id=\"title\" class=\"form-control\" placeholder=\"Title\" required=\"\"></div></div><div class=\"form-group\"><label class=\"control-label\" for=\"external\">External</label><div class=\"controls\"><input type=\"checkbox\" id=\"external\" data-ng-model=\"external\"></div></div><div class=\"form-group\"><label class=\"control-label\" for=\"stardDate\">Start Date</label><div class=\"controls\"><input type=\"date\" id=\"stardDate\" data-ng-model=\"startDateTime\"></div></div><div class=\"form-group\"><label class=\"control-label\" for=\"endDate\">End Date</label><div class=\"controls\"><input type=\"date\" id=\"endDate\" data-ng-model=\"endDateTime\"></div></div><div class=\"form-group\"><label class=\"control-label\" for=\"numberOfPersons\">Number of participants</label><div class=\"controls\"><input id=\"numberOfPersons\" data-ng-model=\"numberOfPersons\" type=\"number\"></div></div><div class=\"form-group\"><label class=\"control-label\" for=\"description\">Description</label><div class=\"controls\"><textarea name=\"description\" data-ng-model=\"description\" id=\"description\" class=\"form-control\" cols=\"20\" rows=\"10\" placeholder=\"Description cannot be blank\"></textarea></div></div><div class=\"form-group\"><input type=\"submit\" class=\"btn btn-default\"></div><div data-ng-show=\"error\" class=\"text-danger\"><strong data-ng-bind=\"error\"></strong></div></fieldset></form></div></section>"
   );
 
   $templateCache.put("modules/events/views/edit-event.client.view.html",
@@ -708,7 +805,7 @@ angular.module("app").run(["$templateCache", function($templateCache) {
   );
 
   $templateCache.put("modules/events/views/list-events.client.view.html",
-    "<section data-ng-controller=\"EventsController\" data-ng-init=\"find()\"><div class=\"page-header\"><h1>Events</h1></div><div class=\"list-group\"><a data-ng-repeat=\"event in events\" data-ng-href=\"#!/events/{{event._id}}\" class=\"list-group-item\"><small class=\"list-group-item-text\">Posted on <span data-ng-bind=\"event.created | date:'mediumDate'\"></span> by <span data-ng-bind=\"event.user.displayName\"></span></small><h4 class=\"list-group-item-heading\" data-ng-bind=\"event.title\"></h4><p class=\"list-group-item-text\" data-ng-bind=\"event.content\"></p></a></div><div class=\"alert alert-warning text-center\" data-ng-if=\"events.$resolved && !events.length\">No events yet, why don't you <a href=\"/#!/events/create\">create one</a>?</div></section>"
+    "<section data-ng-controller=\"EventsController\" data-ng-init=\"find()\"><div class=\"page-header events__header\"><h1 translate=\"Find event for you\"></h1></div><div class=\"list-group\"><a data-ng-repeat=\"event in events\" data-ng-href=\"#!/events/{{event._id}}\" class=\"list-group-item\"><small class=\"list-group-item-text\">Posted on <span data-ng-bind=\"event.created | date:'mediumDate'\"></span> by <span data-ng-bind=\"event.user.displayName\"></span></small><h4 class=\"list-group-item-heading\" data-ng-bind=\"event.title\"></h4><p class=\"list-group-item-text\" data-ng-bind=\"event.content\"></p></a></div><div class=\"alert alert-warning text-center\" data-ng-if=\"events.$resolved && !events.length\">No events yet, why don't you <a href=\"/#!/events/create\">create one</a>?</div></section>"
   );
 
   $templateCache.put("modules/events/views/view-event.client.view.html",
