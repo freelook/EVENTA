@@ -39034,24 +39034,12 @@ function AriaService($$rAF, $log, $window) {
 
     if (!node.hasAttribute(attrName) && !childHasAttribute(node, attrName)) {
 
-<<<<<<< HEAD
-/*!
- * Angular Material Design
- * https://github.com/angular/material
- * @license MIT
- * v0.6.0-rc3-master-98c3152
- */
-angular.module('ngMaterial', ["ng","ngAnimate","ngAria","material.core","material.components.backdrop","material.components.bottomSheet","material.components.button","material.components.card","material.components.checkbox","material.components.content","material.components.dialog","material.components.divider","material.components.icon","material.components.list","material.components.progressCircular","material.components.progressLinear","material.components.radioButton","material.components.sidenav","material.components.slider","material.components.sticky","material.components.subheader","material.components.swipe","material.components.switch","material.components.tabs","material.components.textField","material.components.toast","material.components.toolbar","material.components.tooltip","material.components.whiteframe"]);
-(function() {
-'use strict';
-=======
       defaultValue = angular.isString(defaultValue) && defaultValue.trim() || '';
       if (defaultValue.length) {
         element.attr(attrName, defaultValue);
       } else {
         $log.warn('ARIA: Attribute "', attrName, '", required for accessibility, is missing on node:', node);
       }
->>>>>>> 6bc2cb75d926f127cb25beef3ca789d77998e006
 
     }
   }
@@ -39980,9 +39968,6 @@ angular.module('material.core')
  * @description Provider to configure the `$mdTheming` service.
  */
 
-<<<<<<< HEAD
-function AriaService($$rAF, $log, $window) {
-=======
 /**
  * @ngdoc method
  * @name $mdThemingProvider#setDefaultTheme
@@ -39995,7 +39980,6 @@ function AriaService($$rAF, $log, $window) {
  * @param {boolean} watch Whether or not to always watch themes for changes and re-apply
  * classes when they change. Default is `false`. Enabling can reduce performance.
  */
->>>>>>> 6bc2cb75d926f127cb25beef3ca789d77998e006
 
 function ThemingProvider() {
   var defaultTheme = 'default';
@@ -40045,44 +40029,6 @@ function ThemingProvider() {
         changeTheme(theme);
       }
 
-<<<<<<< HEAD
-    }
-  }
-
-  function expectAsync(element, attrName, defaultValueGetter) {
-    // Problem: when retrieving the element's contents synchronously to find the label,
-    // the text may not be defined yet in the case of a binding.
-    // There is a higher chance that a binding will be defined if we wait one frame.
-    $$rAF(function() {
-      expect(element, attrName, defaultValueGetter());
-    });
-  }
-
-  function expectWithText(element, attrName) {
-    expectAsync(element, attrName, function() {
-      return element.text().trim();
-    });
-  }
-
-  function childHasAttribute(node, attrName) {
-    var hasChildren = node.hasChildNodes(),
-        hasAttr = false;
-
-    function isHidden(el) {
-      var style = el.currentStyle ? el.currentStyle : $window.getComputedStyle(el);
-      return (style.display === 'none');
-    }
-
-    if(hasChildren) {
-      var children = node.childNodes;
-      for(var i=0; i<children.length; i++){
-        var child = children[i];
-        if(child.nodeType === 1 && child.hasAttribute(attrName)) {
-          if(!isHidden(child)){
-            hasAttr = true;
-          }
-        }
-=======
       function changeTheme(theme) {
         var oldTheme = el.data('$mdThemeName');
         if (oldTheme) el.removeClass('md-' + oldTheme +'-theme');
@@ -40101,97 +40047,11 @@ function ThemingProvider() {
       }
       if (scope === undefined) {
         scope = $rootScope;
->>>>>>> 6bc2cb75d926f127cb25beef3ca789d77998e006
       }
       applyTheme.inherit(el, el);
     }
-<<<<<<< HEAD
-    return hasAttr;
   }
 }
-AriaService.$inject = ["$$rAF", "$log", "$window"];
-})();
-
-(function() {
-'use strict';
-
-angular.module('material.core')
-  .service('$mdCompiler', mdCompilerService);
-
-function mdCompilerService($q, $http, $injector, $compile, $controller, $templateCache) {
-
-  /*
-   * @ngdoc service
-   * @name $mdCompiler
-   * @module material.core
-   * @description
-   * The $mdCompiler service is an abstraction of angular's compiler, that allows the developer
-   * to easily compile an element with a templateUrl, controller, and locals.
-   *
-   * @usage
-   * <hljs lang="js">
-   * $mdCompiler.compile({
-   *   templateUrl: 'modal.html',
-   *   controller: 'ModalCtrl',
-   *   locals: {
-   *     modal: myModalInstance;
-   *   }
-   * }).then(function(compileData) {
-   *   compileData.element; // modal.html's template in an element
-   *   compileData.link(myScope); //attach controller & scope to element
-   * });
-   * </hljs>
-   */
-
-   /*
-    * @ngdoc method
-    * @name $mdCompiler#compile
-    * @description A helper to compile an HTML template/templateUrl with a given controller,
-    * locals, and scope.
-    * @param {object} options An options object, with the following properties:
-    *
-    *    - `controller` - `{(string=|function()=}` Controller fn that should be associated with
-    *      newly created scope or the name of a registered controller if passed as a string.
-    *    - `controllerAs` - `{string=}` A controller alias name. If present the controller will be
-    *      published to scope under the `controllerAs` name.
-    *    - `template` - `{string=}` An html template as a string.
-    *    - `templateUrl` - `{string=}` A path to an html template.
-    *    - `transformTemplate` - `{function(template)=}` A function which transforms the template after
-    *      it is loaded. It will be given the template string as a parameter, and should
-    *      return a a new string representing the transformed template.
-    *    - `resolve` - `{Object.<string, function>=}` - An optional map of dependencies which should
-    *      be injected into the controller. If any of these dependencies are promises, the compiler
-    *      will wait for them all to be resolved, or if one is rejected before the controller is
-    *      instantiated `compile()` will fail..
-    *      * `key` - `{string}`: a name of a dependency to be injected into the controller.
-    *      * `factory` - `{string|function}`: If `string` then it is an alias for a service.
-    *        Otherwise if function, then it is injected and the return value is treated as the
-    *        dependency. If the result is a promise, it is resolved before its value is 
-    *        injected into the controller.
-    *
-    * @returns {object=} promise A promise, which will be resolved with a `compileData` object.
-    * `compileData` has the following properties: 
-    *
-    *   - `element` - `{element}`: an uncompiled element matching the provided template.
-    *   - `link` - `{function(scope)}`: A link function, which, when called, will compile
-    *     the element and instantiate the provided controller (if given).
-    *   - `locals` - `{object}`: The locals which will be passed into the controller once `link` is
-    *     called. If `bindToController` is true, they will be coppied to the ctrl instead
-    *   - `bindToController` - `bool`: bind the locals to the controller, instead of passing them in
-    */
-  this.compile = function(options) {
-    var templateUrl = options.templateUrl;
-    var template = options.template || '';
-    var controller = options.controller;
-    var controllerAs = options.controllerAs;
-    var resolve = options.resolve || {};
-    var locals = options.locals || {};
-    var transformTemplate = options.transformTemplate || angular.identity;
-    var bindToController = options.bindToController;
-=======
-  }
-}
->>>>>>> 6bc2cb75d926f127cb25beef3ca789d77998e006
 
 function ThemingDirective($interpolate) {
   return {
@@ -40883,12 +40743,6 @@ angular.module('material.components.dialog', [
   .directive('mdDialog', MdDialogDirective)
   .provider('$mdDialog', MdDialogProvider);
 
-<<<<<<< HEAD
-angular.module('material.core')
-  .directive('mdTheme', ThemingDirective)
-  .directive('mdThemable', ThemableDirective)
-  .provider('$mdTheming', ThemingProvider);
-=======
 function MdDialogDirective($$rAF, $mdTheming) {
   return {
     restrict: 'E',
@@ -40904,7 +40758,6 @@ function MdDialogDirective($$rAF, $mdTheming) {
   };
 }
 MdDialogDirective.$inject = ["$$rAF", "$mdTheming"];
->>>>>>> 6bc2cb75d926f127cb25beef3ca789d77998e006
 
 /**
  * @ngdoc service
@@ -41273,21 +41126,6 @@ function MdDialogProvider($$interimElementProvider) {
 
     }
 
-<<<<<<< HEAD
-function ThemingDirective($interpolate) {
-  return {
-    priority: 100,
-    link: {
-      pre: function(scope, el, attrs) {
-        var ctrl = {
-          $setTheme: function(theme) {
-            ctrl.$mdTheme = theme;
-          }
-        };
-        el.data('$mdThemeController', ctrl);
-        ctrl.$setTheme($interpolate(attrs.mdTheme)(scope));
-        attrs.$observe('mdTheme', ctrl.$setTheme);
-=======
     /**
      * Inject ARIA-specific attributes appropriate for Dialogs
      */
@@ -41342,7 +41180,6 @@ function ThemingDirective($interpolate) {
           element.off($mdConstant.CSS.TRANSITIONEND, finished);
           deferred.resolve();
         }
->>>>>>> 6bc2cb75d926f127cb25beef3ca789d77998e006
       }
 
       return deferred.promise;
@@ -42714,22 +42551,6 @@ function SliderController($scope, $element, $attrs, $$rAF, $window, $mdAria, $md
       // While panning discrete, update only the
       // visual positioning but not the model value.
 
-<<<<<<< HEAD
-      var startPos;
-      if (clickElement) {
-        var clickRect = clickElement[0].getBoundingClientRect();
-        startPos = 'translate3d(' +
-          (clickRect.left - element[0].offsetWidth / 2) + 'px,' +
-          (clickRect.top - element[0].offsetHeight / 2) + 'px,' +
-          '0) scale(0.2)';
-      } else {
-        startPos = 'translate3d(0,100%,0) scale(0.5)';
-      }
-
-      element
-        .css($mdConstant.CSS.TRANSFORM, startPos)
-        .css('opacity', 0);
-=======
       if ( isDiscrete ) adjustThumbPosition( ev.center.x );
       else              doSlide( ev.center.x );
 
@@ -42741,7 +42562,6 @@ function SliderController($scope, $element, $attrs, $$rAF, $window, $mdAria, $md
       if ( isDiscrete && !$element[0].hasAttribute('disabled') ) {
         // Convert exact to closest discrete value.
         // Slide animate the thumb... and then update the model value.
->>>>>>> 6bc2cb75d926f127cb25beef3ca789d77998e006
 
         var exactVal = percentToValue( positionToPercent( ev.center.x ));
         var closestVal = minMaxValidator( stepValidator(exactVal) );
@@ -45205,11 +45025,6 @@ ngTouch.factory('$swipe', [function() {
     };
   }
 
-<<<<<<< HEAD
-      var hideInkBar = !selected || tabsCtrl.count() < 2 ||
-        (scope.pagination || {}).itemsPerPage === 1;
-      element.css('display', hideInkBar ? 'none' : 'block');
-=======
   function getEvents(pointerTypes, eventType) {
     var res = [];
     angular.forEach(pointerTypes, function(pointerType) {
@@ -45220,7 +45035,6 @@ ngTouch.factory('$swipe', [function() {
     });
     return res.join(' ');
   }
->>>>>>> 6bc2cb75d926f127cb25beef3ca789d77998e006
 
   return {
     /**
@@ -61272,18 +61086,6 @@ InfoBox.prototype.panBox_ = function (disablePan) {
 
       bounds = map.getBounds();
 
-<<<<<<< HEAD
-  var closeDropdown = function( evt ) {
-    var toggleElement = openScope.getToggleElement();
-    if ( evt && toggleElement && toggleElement[0].contains(evt.target) ) {
-        return;
-    }
-
-    openScope.$apply(function() {
-      openScope.isOpen = false;
-    });
-  };
-=======
       var mapDiv = map.getDiv();
       var mapWidth = mapDiv.offsetWidth;
       var mapHeight = mapDiv.offsetHeight;
@@ -61313,7 +61115,6 @@ InfoBox.prototype.panBox_ = function (disablePan) {
           yOffset = pixPosition.y + iwHeight + iwOffsetY + padY - mapHeight;
         }
       }
->>>>>>> 6bc2cb75d926f127cb25beef3ca789d77998e006
 
       if (!(xOffset === 0 && yOffset === 0)) {
 
