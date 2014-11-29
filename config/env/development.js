@@ -2,6 +2,7 @@
 
 module.exports = {
 	db: 'mongodb://localhost/eventa-dev',
+	baseURL: 'localhost:' + process.env.PORT || 3000 + '/',
 	app: {
 		title: 'EVENTA - Development Environment'
 	},
