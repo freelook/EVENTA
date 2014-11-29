@@ -121,7 +121,9 @@ angular.module('events')
         };
 
         $scope.find = function () {
-            $scope.events = Events.query();
+            Events.query(function(_events){
+                $scope.events = EventSettings.parseDate(_events);
+            });
         };
 
         $scope.findOne = function () {
