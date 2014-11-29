@@ -1,11 +1,13 @@
 'use strict';
 
 angular.module('events').controller('EventsController',
-	function($scope, $stateParams, $location, $filter, Authentication, Events) {
-
+	function($scope, $stateParams, $location, $filter, Authentication, Events, EventSettings) {
 		var DAFAULT_LOCATION = {latitude: 50.4020355, longitude: 30.5326905};
-
 		$scope.authentication = Authentication;
+
+		$scope.startDate = EventSettings.formatDate(new Date());
+		$scope.endDate = EventSettings.formatDate(new Date());
+		$scope.format = EventSettings.dateFormat;
 		$scope.tags = '';
 		$scope.search = '';
 		$scope.startDate = $filter('date')(new Date(), 'yyyy/MM/dd');
@@ -23,7 +25,10 @@ angular.module('events').controller('EventsController',
 		$scope.hstep= 1;
 		$scope.mstep= 15;
 
+		$scope.numberOfPersons = 0;
+		$scope.tags = '';
 		$scope.external = false;
+		$scope.search = '';
 
 		$scope.map = {
 			zoom: 12
@@ -69,10 +74,10 @@ angular.module('events').controller('EventsController',
 				description: this.description,
 				content: this.content,
 				external: this.external,
-				startDate: getProperDate(this.startDate, this.startTime),
-				endDate: getProperDate(this.endDate, this.endTime),
+				startDate: EventSettings.getProperDate(this.startDate, this.startTime),
+				endDate: EventSettings.getProperDate(this.endDate, this.endTime),
 				numberOfPersons: this.numberOfPersons,
-				tags: trimSplitTags($scope.tags),
+				tags: EventSettings.trimSplitTags($scope.tags),
                 backgroundImgUrl: this.backgroundImgUrl
 			});
 			event.$save(function(response) {
@@ -119,8 +124,6 @@ angular.module('events').controller('EventsController',
 			$scope.event = Events.get({
 				eventId: $stateParams.eventId
 			});
-			if($scope.event && $scope.event.location) {
-				$scope.map.center = $scope.event.location;
-			}
 		};
-	});
+	}
+);
