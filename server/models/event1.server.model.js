@@ -51,17 +51,17 @@ var Event1Schema = new Schema({
     },
 
     speakers: {
-        type: [{type: Schema.Types.ObjectId, ref: "SpeakerModel"}],
+        type: [{type: Schema.Types.ObjectId, ref: 'SpeakerModel'}],
         required: true
     },
 
     partners: {
-        type: [{type: Schema.Types.ObjectId, ref: "PartnerModel"}],
+        type: [{type: Schema.Types.ObjectId, ref: 'PartnerModel'}],
         required: true
     },
 
     organizers: {
-        type: [{type: Schema.Types.ObjectId, ref: "UserModel"}],
+        type: [{type: Schema.Types.ObjectId, ref: 'UserModel'}],
         required: true
     },
 
@@ -71,7 +71,7 @@ var Event1Schema = new Schema({
     },
 
     attendants: {
-        type: [{type: Schema.Types.ObjectId, ref: "UserModel"}],
+        type: [{type: Schema.Types.ObjectId, ref: 'UserModel'}],
         required: true
     },
 
@@ -108,7 +108,7 @@ var Event1Schema = new Schema({
                                     required: 'Description cannot be blank'
                                 },
                                 speakers: {
-                                    type: [{type: Schema.Types.ObjectId, ref: "SpeakerModel"}],
+                                    type: [{type: Schema.Types.ObjectId, ref: 'SpeakerModel'}],
                                     required: true
                                 }
 							}
@@ -118,7 +118,7 @@ var Event1Schema = new Schema({
 	}],
 
     location: {
-        type: [{type: Schema.Types.ObjectId, ref: "LocationModel"}],
+        type: [{type: Schema.Types.ObjectId, ref: 'LocationModel'}],
         required: true
     }
 
