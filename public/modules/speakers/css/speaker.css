@@ -1,0 +1,11 @@
+.speaker__photo {
+	float: left;
+}
+
+.speaker__info {
+	display: inline-block;
+}
+
+.speaker__bio {
+	padding-left: 15px;
+}
