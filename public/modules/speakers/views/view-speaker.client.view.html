@@ -1,8 +1,10 @@
 <section data-ng-controller="SpeakersController" data-ng-init="findOne()">
 	<div class="page-header">
 		<h1>{{speaker.name + '&nbsp;' + speaker.surname}}</h1>
+        <h2>{{speaker.title}}</h2>
+        <h3>{{speaker.company}}</h3>
 	</div>
-    <p>{{speakers}}</p>
+
 	<div class="pull-right">
 		<a class="btn btn-primary" href="/#!/speakers/{{speaker._id}}/edit">
 			<i class="glyphicon glyphicon-edit"></i>
@@ -12,9 +14,8 @@
 		</a>
 	</div>
 
-    <p>
-    <img ng-if="!!speaker.thumbnailUrl.base64" data-ng-src="data:image/jpg;base64,{{speaker.thumbnailUrl.base64}}" />
 
+    <img ng-if="!!speaker.thumbnailUrl.base64" data-ng-src="data:image/jpg;base64,{{speaker.thumbnailUrl.base64}}" />
 
 	<p class="lead" data-ng-bind="speaker.bio"></p>
 </section>
