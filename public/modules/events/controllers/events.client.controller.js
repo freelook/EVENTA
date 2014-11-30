@@ -143,6 +143,7 @@ angular.module('events')
 
         $scope.locationUpdate = function(){
             $scope.map.center = $scope.selectedLocation.coordinates;
+            $scope.marker.coordinates = angular.copy($scope.map.center);
         };
 
         $scope.isFilterVisible = false;
