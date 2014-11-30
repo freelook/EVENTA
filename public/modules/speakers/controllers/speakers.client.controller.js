@@ -18,7 +18,7 @@ angular.module('speakers').controller('SpeakersController',
 			});
 
             speaker.$save(function(response) {
-				$location.path('speaker/' + response._id);
+				$location.path('speakers/'  + speaker._id);
 
 				$scope.name = '';
 				$scope.speakers = '';
@@ -38,7 +38,7 @@ angular.module('speakers').controller('SpeakersController',
 				}
 			} else {
 				$scope.speaker.$remove(function() {
-					$location.path('speaker');
+					$location.path('speakers');
 				});
 			}
 		};
@@ -47,7 +47,7 @@ angular.module('speakers').controller('SpeakersController',
 			var speaker = $scope.speaker;
 
             speaker.$update(function() {
-				$location.path('speaker/' + speaker._id);
+				$location.path('speakers/' + speaker._id);
 			}, function(errorResponse) {
 				$scope.error = errorResponse.data.message;
 			});
@@ -58,7 +58,6 @@ angular.module('speakers').controller('SpeakersController',
 		};
 
 		$scope.findOne = function() {
-            console.log($stateParams.speakerId);
 			$scope.speaker = Speakers.get({
 				speakerId: $stateParams.speakerId
 			});
