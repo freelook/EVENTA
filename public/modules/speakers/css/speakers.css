@@ -48,22 +48,21 @@
 	width: 50%;
 	box-sizing: border-box;
 	float: left;
+	border: none;
 }
 
-.speakers-list__item:last-child {
-	border-bottom: none;
+.speakers-list__item__photo {
+	float: left;
+	margin: 10px;
+	border-radius: 5px;
+	overflow: hidden;
 }
 
-/* a.list-group-item .event-list__item__header {
-	font-family: 'Roboto', Arial, sans-serif;
+.speakers-list__item__info {
 	font-weight: 700;
-	font-size: 2em;
-	color: #317eac;
 }
 
-.event-list__item__text {
-	font-family: 'Roboto', Arial, sans-serif;
-	font-weight: 300px;
-	color: black;
-} */
+.speakers-list__item__bio {
+	font-weight: 300;
+}
 
