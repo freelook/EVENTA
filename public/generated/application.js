@@ -1256,7 +1256,7 @@ angular.module("app").run(["$templateCache", function($templateCache) {
   );
 
   $templateCache.put("modules/speakers/views/view-speaker.client.view.html",
-    "<section data-ng-controller=\"SpeakersController\" data-ng-init=\"findOne()\"><div class=\"page-header\"><h1>{{speaker.name + '&nbsp;' + speaker.surname}}</h1><h2>{{speaker.title}}</h2><h3>{{speaker.company}}</h3></div><div class=\"pull-right\"><a class=\"btn btn-primary\" href=\"/#!/speakers/{{speaker._id}}/edit\"><i class=\"glyphicon glyphicon-edit\"></i></a> <a class=\"btn btn-primary\" data-ng-click=\"remove();\"><i class=\"glyphicon glyphicon-trash\"></i></a></div><img ng-if=\"!!speaker.thumbnailUrl.base64\" data-ng-src=\"data:image/jpg;base64,{{speaker.thumbnailUrl.base64}}\"><p class=\"lead\" data-ng-bind=\"speaker.bio\"></p></section>"
+    "<section class=\"container\" data-ng-controller=\"SpeakersController\" data-ng-init=\"findOne()\"><div class=\"pull-right clearfix\"><a class=\"btn btn-primary\" href=\"/#!/speakers/{{speaker._id}}/edit\"><i class=\"glyphicon glyphicon-edit\"></i></a> <a class=\"btn btn-primary\" data-ng-click=\"remove();\"><i class=\"glyphicon glyphicon-trash\"></i></a></div><div class=\"container speaker__header\"><img class=\"speaker__photo clearfix\" ng-if=\"!!speaker.thumbnailUrl.base64\" data-ng-src=\"data:image/jpg;base64,{{speaker.thumbnailUrl.base64}}\"><div class=\"speaker__info\"><h1>{{speaker.name + '&nbsp;' + speaker.surname}}</h1><div>{{speaker.title}}</div><div>{{speaker.company}}</div></div></div><p class=\"container lead speaker__bio\" data-ng-bind=\"speaker.bio\"></p></section>"
   );
 
   $templateCache.put("modules/users/views/authentication/signin.client.view.html",
