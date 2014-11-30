@@ -12,16 +12,13 @@ module.exports = function(app) {
     app.route('/speakers')
         .get(speakers.list);
 
-    app.route('/speakers/:speakerId')
-        .get(speakers.read)
-        .put(speakers.update)
-        .delete(speakers.delete);
+    app.route('/speakers')
+        .post(speakers.create);
 
     app.route('/speakers/:speakerId')
         .get(speakers.read)
         .put(speakers.update)
         .delete(speakers.delete);
-
 
     // Finish by binding the speaker middleware
     app.param('speakerId', speakers.speakerByID);
