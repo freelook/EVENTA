@@ -115,6 +115,14 @@
                 </div>
 
                 <div class="form-group">
+                    <label class="control-label col-sm-2" for="numberOfPersons" translate="Speakers"></label>
+
+                    <div class="controls col-sm-5">
+                        <select ng-model="selectedSpeaker" ng-options="s.speakerId as (s.name + ' ' + s.surname) for s in speakers"></select>
+                    </div>
+                </div>
+
+                <div class="form-group">
                     <label class="control-label col-sm-2" for="numberOfPersons" translate="Number of participants"></label>
 
                     <div class="controls col-sm-5">

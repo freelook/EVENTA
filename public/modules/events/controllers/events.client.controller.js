@@ -2,7 +2,7 @@
 
 angular.module('events')
     .controller('EventsController',
-    function ($scope, $stateParams, $location, $filter, Authentication, Events, EventSettings) {
+    function ($scope, $stateParams, $location, $filter, Authentication, Events, EventSettings, Speakers) {
 
         var DAFAULT_LOCATION = {latitude: 50.4020355, longitude: 30.5326905};
         $scope.authentication = Authentication;
@@ -154,5 +154,7 @@ angular.module('events')
         };
 
         $scope.tagName = '';
+
+        $scope.speakers = Speakers.query();
 
     });
