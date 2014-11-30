@@ -156,7 +156,7 @@ angular.module('events')
 
         $scope.tagName = '';
 
-        $scope.selectedSpeaker = "unselected";
+        $scope.selectedSpeaker = 'unselected';
         $scope.selectedSpeakers = [];
 
         $scope.addSpeaker = function(){
@@ -169,7 +169,7 @@ angular.module('events')
                 }
             }
 
-            $scope.selectedSpeaker = "unselected";
+            $scope.selectedSpeaker = 'unselected';
         };
 
         $scope.speakers = Speakers.query();
