@@ -690,7 +690,7 @@ angular.module('events').factory('EventSettings',
 //Events service used for communicating with the events REST endpoints
 angular.module('events').factory('Events', ['$resource',
     function($resource) {
-        return $resource('events/:eventId', {
+        return $resource(window.baseURL + 'events/:eventId', {
             eventId: '@_id'
         }, {
             update: {

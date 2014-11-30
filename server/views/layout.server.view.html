@@ -54,6 +54,7 @@
 	<!--Embedding The User Object-->
 	<script type="text/javascript">
 		var user = {{ user | json | safe }};
+		var baseURL = '';
 	</script>
 	<script src='//maps.googleapis.com/maps/api/js?sensor=false'></script>
 	<!--Application JavaScript Files-->
