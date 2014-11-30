@@ -75,5 +75,6 @@
     "Keywords of your event": "Ключевые слова для вашего события",
     "Posted on":"Опубликовано ",
     "by":"",
-    "Speakers" : "Докладчики"
+    "Speakers" : "Докладчики",
+    "SelectSpeaker" : "Выберите докладчика"
 }

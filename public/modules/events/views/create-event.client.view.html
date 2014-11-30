@@ -115,10 +115,18 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="control-label col-sm-2" for="numberOfPersons" translate="Speakers"></label>
+                    <label class="control-label col-sm-2" translate="Speakers"></label>
 
                     <div class="controls col-sm-5">
-                        <select ng-model="selectedSpeaker" ng-options="s.speakerId as (s.name + ' ' + s.surname) for s in speakers"></select>
+                        <select data-ng-model="selectedSpeaker" >
+                            <option disabled selected value="unselected" translate="SelectSpeaker"></option>
+                            <option ng-repeat="speaker in speakers"
+                                    value="{{speaker._id}}">
+                                {{speaker.name + ' ' + speaker.surname}}
+                            </option>
+                        </select>
+                        <button ng-disabled="selectedSpeaker === 'unselected'"
+                                ng-click="addSpeaker()">Add</button>
                     </div>
                 </div>
 
