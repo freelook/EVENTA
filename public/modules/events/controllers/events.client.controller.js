@@ -44,7 +44,7 @@ angular.module('events')
                 labelAnchor: '100 0',
                 labelClass: 'marker-labels'
             },
-            coordinates: DAFAULT_LOCATION
+            coordinates: angular.copy(DAFAULT_LOCATION)
         };
 
 
