@@ -101,9 +101,9 @@ exports.eventByID = function(req, res, next, id) {
  * event authorization middleware
  */
 exports.hasAuthorization = function(req, res, next) {
-	if (!~req.user.roles.indexOf('user')) {
+	if (!~req.user.roles.indexOf('admin')) {
 		return res.status(403).send({
-			message: 'User is not authorized'
+			message: 'User is not authorized for event'
 		});
 	}
 	next();

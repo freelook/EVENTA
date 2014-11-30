@@ -46,7 +46,7 @@ exports.hasAuthorization = function(roles) {
 				return next();
 			} else {
 				return res.status(403).send({
-					message: 'User is not authorized'
+					message: 'User is not authorized roles'
 				});
 			}
 		});
