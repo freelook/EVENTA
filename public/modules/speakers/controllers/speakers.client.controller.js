@@ -18,7 +18,7 @@ angular.module('speakers').controller('SpeakersController',
 			});
 
             speaker.$save(function(response) {
-				$location.path('speakers/'  + speaker._id);
+				$location.path('speakers/' + response._id);
 
 				$scope.name = '';
 				$scope.speakers = '';
