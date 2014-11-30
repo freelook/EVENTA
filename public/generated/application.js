@@ -1252,7 +1252,7 @@ angular.module("app").run(["$templateCache", function($templateCache) {
   );
 
   $templateCache.put("modules/speakers/views/list-speakers.client.view.html",
-    "<section data-ng-controller=\"SpeakersController\" data-ng-init=\"find()\"><div class=\"events__header\"><md-text-float label=\"{{ 'Hall of fame' | translate}}\" ng-model=\"search\"></md-text-float></div><div class=\"list-group\"><a data-ng-repeat=\"speaker in speakers | filter:search\" data-ng-href=\"#!/speakers/{{speaker._id}}\" class=\"list-group-item speakers-list__item\" flex=\"45\" flex-order=\"{{$index % 2}}\"><img data-ng-src=\"data:image/jpg;base64,{{speaker.thumbnailUrl.base64}}\"><h2>{{speaker.name + '&nbsp;' + speaker.surname}}</h2><h3>{{speaker.company}}</h3><h4>{{speaker.title}}</h4><p data-ng-bind-html=\"speaker.bio\"></p></a></div></section>"
+    "<section data-ng-controller=\"SpeakersController\" data-ng-init=\"find()\"><div class=\"events__header\"><md-text-float label=\"{{ 'Hall of fame' | translate}}\" ng-model=\"search\"></md-text-float></div><div class=\"list-group\"><a data-ng-repeat=\"speaker in speakers | filter:search\" data-ng-href=\"#!/speakers/{{speaker._id}}\" class=\"list-group-item speakers-list__item\"><img class=\"speakers-list__item__photo clearfix\" data-ng-src=\"data:image/jpg;base64,{{speaker.thumbnailUrl.base64}}\"><div class=\"speakers-list__item__info\"><h2>{{speaker.name + '&nbsp;' + speaker.surname}}</h2><div>{{speaker.company}}</div><div>{{speaker.title}}</div><p class=\"speakers-list__item__bio\" data-ng-bind-html=\"speaker.bio\"></p></div></a></div></section>"
   );
 
   $templateCache.put("modules/speakers/views/view-speaker.client.view.html",
