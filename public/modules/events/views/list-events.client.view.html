@@ -13,19 +13,19 @@
 	</div>
 
 	<div class="list-group">
-		<a data-ng-repeat="event in events | filter : search | tagSearch : tagName | orderBy: 'startDate'" data-ng-href="#!/events/{{event._id}}" class="list-group-item events-list__item">
-			<div class="container events-list__item__image clearfix">
+		<a data-ng-repeat="event in events | filter : search | tagSearch : tagName | orderBy: 'startDate'" data-ng-href="#!/events/{{event._id}}" class="container list-group-item events-list__item">
+			<div class="events-list__item__image clearfix">
 				<img ng-src="images/event_thumbnail.png"/>
 			</div>
-			<div class="container events-list__item__content">
+			<div class="events-list__item__content">
 				<h4 class="list-group-item-heading event-list__item__header" data-ng-bind="event.title"></h4>
 				<p class="list-group-item-text event-list__item__text" data-ng-bind="event.description"></p>
 				<p class="list-group-item-text event-list__item__text" >
 					<label>Start: {{event.startDate | date:'d MMMM yyyy, hh:mm' : 'UTC' }}</label><br/>
 					<label>End: {{event.endDate | date:'d MMMM yyyy, hh:mm' : 'UTC' }}</label>
 				</p>
-				<p class="list-group-item-text event-list__item__text event-list__item__tags" >
-					<label>Tags: {{showTags(event)}}</label><br/>
+				<p class="list-group-item-text event-list__item__text" >
+					<label class="event-list__item__tags">Tags: {{showTags(event)}}</label><br/>
 				</p>
 			</div>
 		</a>

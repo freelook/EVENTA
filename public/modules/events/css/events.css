@@ -114,7 +114,7 @@ a.list-group-item .event-list__item__header {
 }
 
 .event-list__item__tags {
-	font-weight: 100;
+	font-weight: 300;
 }
 
 .angular-google-map-container { height: 400px; }
