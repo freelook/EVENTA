@@ -823,7 +823,7 @@ angular.module('speakers').controller('SpeakersController',
 			});
 
             speaker.$save(function(response) {
-				$location.path('speaker/' + response._id);
+				$location.path('speakers/' + response._id);
 
 				$scope.name = '';
 				$scope.speakers = '';
@@ -843,7 +843,7 @@ angular.module('speakers').controller('SpeakersController',
 				}
 			} else {
 				$scope.speaker.$remove(function() {
-					$location.path('speaker');
+					$location.path('speakers');
 				});
 			}
 		};
@@ -852,7 +852,7 @@ angular.module('speakers').controller('SpeakersController',
 			var speaker = $scope.speaker;
 
             speaker.$update(function() {
-				$location.path('speaker/' + speaker._id);
+				$location.path('speakers/' + speaker._id);
 			}, function(errorResponse) {
 				$scope.error = errorResponse.data.message;
 			});
@@ -863,7 +863,6 @@ angular.module('speakers').controller('SpeakersController',
 		};
 
 		$scope.findOne = function() {
-
 			$scope.speaker = Speakers.get({
 				speakerId: $stateParams.speakerId
 			});
@@ -1241,7 +1240,7 @@ angular.module("app").run(["$templateCache", function($templateCache) {
   );
 
   $templateCache.put("modules/events/views/view-event.client.view.html",
-    "<section data-ng-controller=\"EventsController\" data-ng-init=\"findOne()\"><div class=\"container page-header\"><div class=\"event__background\"><div class=\"container event__filter\"></div><img class=\"event__background__image\" ng-if=\"!!event.backgroundImgUrl.base64\" data-ng-src=\"data:image/jpg;base64,{{event.backgroundImgUrl.base64}}\"> <img class=\"event__background__image\" ng-if=\"!event.backgroundImgUrl.base64\" data-ng-src=\"/modules/core/img/header/slider-bg.jpg\"></div><h1 class=\"event__header\" data-ng-bind=\"event.title\"></h1><div class=\"event__time\"><label>Start: {{event.startDate | date:'d MMMM yyyy, hh:mm' : 'UTC' }}</label><span style=\"padding-left: 5px;padding-right: 5px\">-</span><label>End: {{event.endDate | date:'d MMMM yyyy, hh:mm' : 'UTC' }}</label></div><button role=\"button\" class=\"btn btn-primary\">+ I will atend this event</button><div class=\"pull-right\" ng-if=\"isAdmin()\"><a class=\"btn btn-primary event__button\" href=\"/#!/events/{{event._id}}/edit\"><i class=\"glyphicon glyphicon-edit\"></i></a> <a class=\"btn btn-primary event__button\" data-ng-click=\"remove();\"><i class=\"glyphicon glyphicon-trash\"></i></a></div></div><p class=\"lead\" data-ng-bind=\"event.description\"></p><h2 class=\"event__subheader\">Event location</h2><ui-gmap-google-map center=\"map.center\" zoom=\"map.zoom\" options=\"options\"><ui-gmap-marker coords=\"marker.coordinates\" options=\"marker.options\" idkey=\"marker.id\"></ui-gmap-marker></ui-gmap-google-map><h2 class=\"event__subheader\">More about event</h2><span data-ng-bind=\"event.content\"></span><div><div class=\"container event-participants\"><div lclass=\"\"><span class=\"control-label\" translate=\"Number of participants\"></span> - <span class=\"event__number\" data-ng-bind=\"event.numberOfPersons\"></span></div><button role=\"button\" class=\"btn btn-primary\">+ I will attend this event</button></div></div></section>"
+    "<section data-ng-controller=\"EventsController\" data-ng-init=\"findOne()\"><div class=\"container page-header\"><div class=\"event__background\"><div class=\"container event__filter\"></div><img class=\"event__background__image\" ng-if=\"!!event.backgroundImgUrl.base64\" data-ng-src=\"data:image/jpg;base64,{{event.backgroundImgUrl.base64}}\"> <img class=\"event__background__image\" ng-if=\"!event.backgroundImgUrl.base64\" data-ng-src=\"/modules/core/img/header/slider-bg.jpg\"></div><h1 class=\"event__header\" data-ng-bind=\"event.title\"></h1><div class=\"event__time\"><label>Start: {{event.startDate | date:'d MMMM yyyy, hh:mm' : 'UTC' }}</label><span style=\"padding-left: 5px;padding-right: 5px\">-</span><label>End: {{event.endDate | date:'d MMMM yyyy, hh:mm' : 'UTC' }}</label></div><button role=\"button\" class=\"btn btn-primary\">Attend</button><div class=\"pull-right\" ng-if=\"isAdmin()\"><a class=\"btn btn-primary event__button\" href=\"/#!/events/{{event._id}}/edit\"><i class=\"glyphicon glyphicon-edit\"></i></a> <a class=\"btn btn-primary event__button\" data-ng-click=\"remove();\"><i class=\"glyphicon glyphicon-trash\"></i></a></div></div><p class=\"lead\" data-ng-bind=\"event.description\"></p><h2 class=\"event__subheader\">Event location</h2><ui-gmap-google-map center=\"map.center\" zoom=\"map.zoom\" options=\"options\"><ui-gmap-marker coords=\"marker.coordinates\" options=\"marker.options\" idkey=\"marker.id\"></ui-gmap-marker></ui-gmap-google-map><h2 class=\"event__subheader\">More about event</h2><span data-ng-bind=\"event.content\"></span><div><div class=\"container event-participants\"><div lclass=\"\"><span class=\"control-label\" translate=\"Number of participants\"></span> - <span class=\"event__number\" data-ng-bind=\"event.numberOfPersons\"></span></div><button role=\"button\" class=\"btn btn-primary\">Attend</button></div></div></section>"
   );
 
   $templateCache.put("modules/speakers/views/create-speaker.client.view.html",
