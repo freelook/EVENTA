@@ -6,7 +6,7 @@
 			<span class="icon-bar"></span>
 			<span class="icon-bar"></span>
 		</button>
-		<a data-ng-href="/#!/" class="navbar-brand">EVENTA</a>
+		<a data-ng-href="#!/" class="navbar-brand">EVENTA</a>
 	</div>
 	<nav class="collapse navbar-collapse" collapse="!isCollapsed" role="navigation">
 		<ul class="nav navbar-nav" data-ng-if="menu.shouldRender(authentication.user);">
@@ -17,19 +17,19 @@
 				</a>
 				<ul ng-switch-when="dropdown" class="dropdown-menu">
 					<li data-ng-repeat="subitem in item.items | orderBy: 'position'" data-ng-if="subitem.shouldRender(authentication.user);" ui-route="{{subitem.uiRoute}}" ng-class="{active: $uiRoute}">
-						<a data-ng-href="/#!/{{subitem.link}}" translate="{{subitem.title}}"></a>
+						<a data-ng-href="#!/{{subitem.link}}" translate="{{subitem.title}}"></a>
 					</li>
 				</ul>
-				<a ng-switch-default data-ng-href="/#!/{{item.link}}" translate="{{item.title}}"></a>
+				<a ng-switch-default data-ng-href="#!/{{item.link}}" translate="{{item.title}}"></a>
 			</li>
 		</ul>
 		<ul class="nav navbar-nav navbar-right" data-ng-hide="authentication.user">
 			<li ui-route="/signup" ng-class="{active: $uiRoute}">
-				<a data-ng-href="/#!/signup" translate="Sign Up"></a>
+				<a data-ng-href="#!/signup" translate="Sign Up"></a>
 			</li>
 			<li class="divider-vertical"></li>
 			<li ui-route="/signin" ng-class="{active: $uiRoute}">
-				<a data-ng-href="/#!/signin" translate="Sign In"></a>
+				<a data-ng-href="#!/signin" translate="Sign In"></a>
 			</li>
 			<li class="divider-vertical"></li>
 			<li>
@@ -46,13 +46,13 @@
 				</a>
 				<ul class="dropdown-menu">
 					<li>
-						<a data-ng-href="/#!/settings/profile" translate="Edit Profile"></a>
+						<a data-ng-href="#!/settings/profile" translate="Edit Profile"></a>
 					</li>
 					<li>
-						<a data-ng-href="/#!/settings/accounts" translate="Manage Social Accounts"></a>
+						<a data-ng-href="#!/settings/accounts" translate="Manage Social Accounts"></a>
 					</li>
 					<li data-ng-show="authentication.user.provider === 'local'">
-						<a href="/#!/settings/password" translate="Change Password"></a>
+						<a data-ng-href="#!/settings/password" translate="Change Password"></a>
 					</li>
 					<li class="divider"></li>
 					<li>
