@@ -55,9 +55,8 @@
 	color: white;
 	font-family: 'Roboto', Arial, sans-serif;
 	font-weight: 300;
-	background-color: #2e7fab;
+	background-image: linear-gradient(#54b4eb, #2fa4e7 60%, #1d9ce5);
 	padding: 10px 0;
-	box-shadow: inset 0 0 10px 1px white;
 }
 
 .events__filter__input {
