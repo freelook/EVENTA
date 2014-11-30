@@ -15,7 +15,7 @@
 	<div class="list-group">
 		<a data-ng-repeat="event in events | filter : search | tagSearch : tagName | orderBy: 'startDate'" data-ng-href="#!/events/{{event._id}}" class="list-group-item events-list__item">
 			<div class="container events-list__item__image clearfix">
-				<img ng-src="images/event_thumbnail.png"/>
+				<img ng-src="/images/event_thumbnail.png"/>
 			</div>
 			<div class="container events-list__item__content">
 				<h4 class="list-group-item-heading event-list__item__header" data-ng-bind="event.title"></h4>
