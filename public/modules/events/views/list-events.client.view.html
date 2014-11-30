@@ -13,8 +13,8 @@
 	</div>
 
 	<div class="list-group">
-		<a data-ng-repeat="event in events | filter : search | tagSearch : tagName | orderBy: 'startDate'" data-ng-href="#!/events/{{event._id}}" class="container list-group-item events-list__item">
-			<div class="events-list__item__image clearfix">
+		<a data-ng-repeat="event in events | filter : search | tagSearch : tagName | orderBy: 'startDate'" data-ng-href="#!/events/{{event._id}}" class="list-group-item events-list__item clearfix">
+			<div class="events-list__item__image">
 				<img ng-src="/images/event_thumbnail.png"/>
 			</div>
 			<div class="events-list__item__content">
