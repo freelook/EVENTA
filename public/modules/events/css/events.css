@@ -80,9 +80,11 @@
 }
 
 .events-list__item {
+	display: block;
 	border-left: none;
 	border-right: none;
 	border-top: none;
+	border-bottom: 2px solid #dddddd;
 }
 
 .events-list__item:last-child {
@@ -91,12 +93,29 @@
 
 .events-list__item__image {
 	float: left;
-	width: 150px;
+	width: 97px;
 }
 
 .events-list__item__content {
 	float: right;
 	width: 80%;
+}
+
+@media only screen and (max-width: 710px) {
+	.events-list__item__content {
+		width: 70%;
+	}
+}
+
+@media only screen and (max-width: 505px) {
+	.events-list__item__content {
+		float: none;
+		width: 100%;
+	}
+	.events-list__item__image {
+		float: none;
+		margin: 0 auto;
+	}
 }
 
 a.list-group-item .event-list__item__header {
