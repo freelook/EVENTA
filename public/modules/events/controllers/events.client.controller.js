@@ -2,7 +2,7 @@
 
 angular.module('events')
     .controller('EventsController',
-    function ($scope, $stateParams, $location, $filter, Authentication, Events, EventSettings) {
+    function ($scope, $window, $stateParams, $location, $filter, Authentication, Events, EventSettings, Speakers) {
 
         var DAFAULT_LOCATION = {latitude: 50.4020355, longitude: 30.5326905};
         $scope.authentication = Authentication;
@@ -84,7 +84,8 @@ angular.module('events')
                 numberOfPersons: this.numberOfPersons,
                 tags: EventSettings.trimSplitTags($scope.tags),
                 backgroundImgUrl: this.backgroundImgUrl,
-                location: this.selectedLocation
+                location: this.selectedLocation,
+                speakers: this.selectedSpeakers
             });
             event.$save(function (response) {
                 $location.path('events/' + response._id);
@@ -154,5 +155,27 @@ angular.module('events')
         };
 
         $scope.tagName = '';
+
+        $scope.isAdmin = function() {
+            return $window.user && $window.user.roles[0] === 'admin';
+        };
+
+        $scope.selectedSpeaker = 'unselected';
+        $scope.selectedSpeakers = [];
+
+        $scope.addSpeaker = function(){
+            var id = $scope.selectedSpeaker;
+            $scope.selectedSpeakers.push(id);
+
+            for (var i in $scope.speakers) {
+                if ($scope.speakers[i]._id === id) {
+                    $scope.speakers.splice(i, 1);
+                }
+            }
+
+            $scope.selectedSpeaker = 'unselected';
+        };
+
+        $scope.speakers = Speakers.query();
 
     });
