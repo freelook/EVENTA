@@ -13,7 +13,7 @@
 			<label >End: {{event.endDate | date:'d MMMM yyyy, hh:mm' : 'UTC' }}</label>
 		</div>
 		<button role="button" class="btn btn-primary">+ I will atend this event</button>
-		<div class="pull-right">
+		<div class="pull-right" ng-if="isAdmin()">
 			<a class="btn btn-primary event__button" href="/#!/events/{{event._id}}/edit">
 				<i class="glyphicon glyphicon-edit"></i>
 			</a>

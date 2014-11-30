@@ -2,7 +2,7 @@
 
 angular.module('events')
     .controller('EventsController',
-    function ($scope, $stateParams, $location, $filter, Authentication, Events, EventSettings) {
+    function ($scope, $window, $stateParams, $location, $filter, Authentication, Events, EventSettings) {
 
         var DAFAULT_LOCATION = {latitude: 50.4020355, longitude: 30.5326905};
         $scope.authentication = Authentication;
@@ -154,5 +154,9 @@ angular.module('events')
         };
 
         $scope.tagName = '';
+
+        $scope.isAdmin = function() {
+            return $window.user && $window.user.roles[0] === 'admin';
+        };
 
     });
