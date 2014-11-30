@@ -8,7 +8,6 @@ services:
 before_install:
   - npm i -g grunt-cli
 script:
-  - grunt coverage
   - grunt build
 deploy:
   provider: heroku
