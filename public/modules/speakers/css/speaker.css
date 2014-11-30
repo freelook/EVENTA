@@ -1,5 +1,6 @@
 .speaker__photo {
 	float: left;
+	margin: 20px 20px 20px 0;
 }
 
 .speaker__info {
