@@ -1,10 +1,10 @@
 <section data-ng-controller="EventsController" data-ng-init="findOne()">
-	<div class="page-header">
-		<div class="container event__background">
+	<div class="container page-header">
+		<div class="event__background">
 			<div class="container event__filter">
 			</div>
-			<img class="container" ng-if="!!event.backgroundImgUrl.base64" data-ng-src="data:image/jpg;base64,{{event.backgroundImgUrl.base64}}" />
-			<img class="container" ng-if="!event.backgroundImgUrl.base64" data-ng-src="/modules/core/img/header/slider-bg.jpg"/>
+			<img class="event__background__image" ng-if="!!event.backgroundImgUrl.base64" data-ng-src="data:image/jpg;base64,{{event.backgroundImgUrl.base64}}" />
+			<img class="event__background__image" ng-if="!event.backgroundImgUrl.base64" data-ng-src="/modules/core/img/header/slider-bg.jpg"/>
 		</div>
 		<h1 class="event__header" data-ng-bind="event.title"></h1>
 		<div class="event__time">
@@ -12,7 +12,7 @@
 			<span style="padding-left: 5px;padding-right: 5px;">  -  </span>
 			<label >End: {{event.endDate | date:'d MMMM yyyy, hh:mm' : 'UTC' }}</label>
 		</div>
-		<button role="button" class="btn btn-primary">+ I will atend this event</button>
+		<button role="button" class="btn btn-primary">+ I will attend this event</button>
 		<div class="pull-right">
 			<a class="btn btn-primary event__button" href="/#!/events/{{event._id}}/edit">
 				<i class="glyphicon glyphicon-edit"></i>
@@ -36,7 +36,7 @@
 			<div lclass="">
 				<span class="control-label" translate="Number of participants"></span> - <span class="event__number" data-ng-bind="event.numberOfPersons"></span>
 			</div>
-			<button role="button" class="btn btn-primary">+ I will atend this event</button>
+			<button role="button" class="btn btn-primary">+ I will attend this event</button>
 		</div>
 	</div>
 
