@@ -467,7 +467,7 @@ angular.module('events').config(['$stateProvider',
 
 angular.module('events')
     .controller('EventsController',
-    ["$scope", "$stateParams", "$location", "$filter", "Authentication", "Events", "EventSettings", "Speakers", function ($scope, $stateParams, $location, $filter, Authentication, Events, EventSettings, Speakers) {
+    ["$scope", "$window", "$stateParams", "$location", "$filter", "Authentication", "Events", "EventSettings", "Speakers", function ($scope, $window, $stateParams, $location, $filter, Authentication, Events, EventSettings, Speakers) {
 
         var DAFAULT_LOCATION = {latitude: 50.4020355, longitude: 30.5326905};
         $scope.authentication = Authentication;
@@ -620,6 +620,10 @@ angular.module('events')
         };
 
         $scope.tagName = '';
+
+        $scope.isAdmin = function() {
+            return $window.user && $window.user.roles[0] === 'admin';
+        };
 
         $scope.selectedSpeaker = 'unselected';
         $scope.selectedSpeakers = [];
@@ -976,8 +980,8 @@ angular.module('users').config(['$stateProvider',
 
 'use strict';
 
-angular.module('users').controller('AuthenticationController', ['$scope', '$http', '$location', 'Authentication',
-	function($scope, $http, $location, Authentication) {
+angular.module('users').controller('AuthenticationController', ['$scope', '$window', '$http', '$location', 'Authentication',
+	function($scope, $window, $http, $location, Authentication) {
 		$scope.authentication = Authentication;
 
 		// If user is signed in then redirect back home
@@ -987,7 +991,7 @@ angular.module('users').controller('AuthenticationController', ['$scope', '$http
 			$http.post('/auth/signup', $scope.credentials).success(function(response) {
 				// If successful we assign the response to the global user model
 				$scope.authentication.user = response;
-
+				$window.user = response;
 				// And redirect to the index page
 				$location.path('/');
 			}).error(function(response) {
@@ -999,7 +1003,7 @@ angular.module('users').controller('AuthenticationController', ['$scope', '$http
 			$http.post('/auth/signin', $scope.credentials).success(function(response) {
 				// If successful we assign the response to the global user model
 				$scope.authentication.user = response;
-
+				$window.user = response;
 				// And redirect to the index page
 				$location.path('/');
 			}).error(function(response) {
@@ -1008,6 +1012,7 @@ angular.module('users').controller('AuthenticationController', ['$scope', '$http
 		};
 	}
 ]);
+
 'use strict';
 
 angular.module('users').controller('PasswordController', ['$scope', '$stateParams', '$http', '$location', 'Authentication',
@@ -1216,7 +1221,7 @@ angular.module('users').factory('Users', ['$resource',
 angular.module("app").run(["$templateCache", function($templateCache) {
 
   $templateCache.put("modules/core/views/header.client.view.html",
-    "<div class=\"container\" data-ng-controller=\"HeaderController\"><div class=\"navbar-header\"><button class=\"navbar-toggle\" type=\"button\" data-ng-click=\"toggleCollapsibleMenu()\"><span class=\"sr-only\">Toggle navigation</span> <span class=\"icon-bar\"></span> <span class=\"icon-bar\"></span> <span class=\"icon-bar\"></span></button> <a data-ng-href=\"#!/\" class=\"navbar-brand\">EVENTA</a></div><nav class=\"collapse navbar-collapse\" collapse=\"!isCollapsed\" role=\"navigation\"><ul class=\"nav navbar-nav\" data-ng-if=\"menu.shouldRender(authentication.user);\"><li data-ng-repeat=\"item in menu.items | orderBy: 'position'\" data-ng-if=\"item.shouldRender(authentication.user);\" ng-switch=\"item.menuItemType\" ui-route=\"{{item.uiRoute}}\" class=\"{{item.menuItemClass}}\" ng-class=\"{active: ($uiRoute)}\" dropdown=\"item.menuItemType === 'dropdown'\"><a ng-switch-when=\"dropdown\" class=\"dropdown-toggle\"><span translate=\"{{item.title}}\"></span> <b class=\"caret\"></b></a><ul ng-switch-when=\"dropdown\" class=\"dropdown-menu\"><li data-ng-repeat=\"subitem in item.items | orderBy: 'position'\" data-ng-if=\"subitem.shouldRender(authentication.user);\" ui-route=\"{{subitem.uiRoute}}\" ng-class=\"{active: $uiRoute}\"><a data-ng-href=\"#!/{{subitem.link}}\" translate=\"{{subitem.title}}\"></a></li></ul><a ng-switch-default=\"\" data-ng-href=\"#!/{{item.link}}\" translate=\"{{item.title}}\"></a></li></ul><ul class=\"nav navbar-nav navbar-right\" data-ng-hide=\"authentication.user\"><li ui-route=\"/signup\" ng-class=\"{active: $uiRoute}\"><a data-ng-href=\"#!/signup\" translate=\"Sign Up\"></a></li><li class=\"divider-vertical\"></li><li ui-route=\"/signin\" ng-class=\"{active: $uiRoute}\"><a data-ng-href=\"#!/signin\" translate=\"Sign In\"></a></li><li class=\"divider-vertical\"></li><li ng-if=\"!window.baseURL\"><a data-ng-href=\"https://build.phonegap.com/apps/1201806/share\">Mobile app</a></li><li class=\"divider-vertical\"></li><li><select ng-controller=\"LangController\" data-ng-model=\"lang\" ng-change=\"setLang()\" style=\"margin-top: 13px;margin-left: 10px\"><option ng-selected=\"lang === 'ru'\">RU</option><option ng-selected=\"lang === 'en'\">EN</option></select></li></ul><ul class=\"nav navbar-nav navbar-right\" data-ng-show=\"authentication.user\"><li class=\"dropdown\"><a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\"><span data-ng-bind=\"authentication.user.displayName\"></span> <b class=\"caret\"></b></a><ul class=\"dropdown-menu\"><li><a data-ng-href=\"#!/settings/profile\" translate=\"Edit Profile\"></a></li><li><a data-ng-href=\"#!/settings/accounts\" translate=\"Manage Social Accounts\"></a></li><li data-ng-show=\"authentication.user.provider === 'local'\"><a data-ng-href=\"#!/settings/password\" translate=\"Change Password\"></a></li><li class=\"divider\"></li><li><a data-ng-href=\"/auth/signout\" translate=\"Signout\"></a></li></ul></li><li ng-if=\"!window.baseURL\"><a data-ng-href=\"https://build.phonegap.com/apps/1201806/share\">Mobile app</a></li><li class=\"dropdown\"><select ng-controller=\"LangController\" data-ng-model=\"lang\" ng-change=\"setLang()\" class=\"form-control header__language\"><option ng-selected=\"lang === 'ru'\">RU</option><option ng-selected=\"lang === 'en'\">EN</option></select></li></ul></nav></div>"
+    "<div class=\"container\" data-ng-controller=\"HeaderController\"><div class=\"navbar-header\"><button class=\"navbar-toggle\" type=\"button\" data-ng-click=\"toggleCollapsibleMenu()\"><span class=\"sr-only\">Toggle navigation</span> <span class=\"icon-bar\"></span> <span class=\"icon-bar\"></span> <span class=\"icon-bar\"></span></button> <a data-ng-href=\"#!/\" class=\"navbar-brand\">EVENTA</a></div><nav class=\"collapse navbar-collapse\" collapse=\"!isCollapsed\" role=\"navigation\"><ul class=\"nav navbar-nav\" data-ng-if=\"menu.shouldRender(authentication.user);\"><li data-ng-repeat=\"item in menu.items | orderBy: 'position'\" data-ng-if=\"item.shouldRender(authentication.user);\" ng-switch=\"item.menuItemType\" ui-route=\"{{item.uiRoute}}\" class=\"{{item.menuItemClass}}\" ng-class=\"{active: ($uiRoute)}\" dropdown=\"item.menuItemType === 'dropdown'\"><a ng-switch-when=\"dropdown\" class=\"dropdown-toggle\"><span translate=\"{{item.title}}\"></span> <b class=\"caret\"></b></a><ul ng-switch-when=\"dropdown\" class=\"dropdown-menu\"><li data-ng-repeat=\"subitem in item.items | orderBy: 'position'\" data-ng-if=\"subitem.shouldRender(authentication.user);\" ui-route=\"{{subitem.uiRoute}}\" ng-class=\"{active: $uiRoute}\"><a data-ng-href=\"#!/{{subitem.link}}\" translate=\"{{subitem.title}}\"></a></li></ul><a ng-switch-default=\"\" data-ng-href=\"#!/{{item.link}}\" translate=\"{{item.title}}\"></a></li></ul><ul class=\"nav navbar-nav navbar-right\" data-ng-hide=\"authentication.user\"><li><a data-ng-href=\"#!/events\" translate=\"Events\"></a></li><li><a data-ng-href=\"#!/events\" translate=\"Speakers\"></a></li><li ui-route=\"/signup\" ng-class=\"{active: $uiRoute}\"><a data-ng-href=\"#!/signup\" translate=\"Sign Up\"></a></li><li class=\"divider-vertical\"></li><li ui-route=\"/signin\" ng-class=\"{active: $uiRoute}\"><a data-ng-href=\"#!/signin\" translate=\"Sign In\"></a></li><li class=\"divider-vertical\"></li><li ng-if=\"!window.baseURL\"><a data-ng-href=\"https://build.phonegap.com/apps/1201806/share\">Mobile app</a></li><li class=\"divider-vertical\"></li><li><select ng-controller=\"LangController\" data-ng-model=\"lang\" ng-change=\"setLang()\" style=\"margin-top: 13px;margin-left: 10px\"><option ng-selected=\"lang === 'ru'\">RU</option><option ng-selected=\"lang === 'en'\">EN</option></select></li></ul><ul class=\"nav navbar-nav navbar-right\" data-ng-show=\"authentication.user\"><li class=\"dropdown\"><a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\"><span data-ng-bind=\"authentication.user.displayName\"></span> <b class=\"caret\"></b></a><ul class=\"dropdown-menu\"><li><a data-ng-href=\"#!/settings/profile\" translate=\"Edit Profile\"></a></li><li><a data-ng-href=\"#!/settings/accounts\" translate=\"Manage Social Accounts\"></a></li><li data-ng-show=\"authentication.user.provider === 'local'\"><a data-ng-href=\"#!/settings/password\" translate=\"Change Password\"></a></li><li class=\"divider\"></li><li><a data-ng-href=\"/auth/signout\" translate=\"Signout\"></a></li></ul></li><li ng-if=\"!window.baseURL\"><a data-ng-href=\"https://build.phonegap.com/apps/1201806/share\">Mobile app</a></li><li class=\"dropdown\"><select ng-controller=\"LangController\" data-ng-model=\"lang\" ng-change=\"setLang()\" class=\"form-control header__language\"><option ng-selected=\"lang === 'ru'\">RU</option><option ng-selected=\"lang === 'en'\">EN</option></select></li></ul></nav></div>"
   );
 
   $templateCache.put("modules/core/views/home.client.view.html",
@@ -1236,7 +1241,7 @@ angular.module("app").run(["$templateCache", function($templateCache) {
   );
 
   $templateCache.put("modules/events/views/view-event.client.view.html",
-    "<section data-ng-controller=\"EventsController\" data-ng-init=\"findOne()\"><div class=\"page-header\"><div class=\"container event__background\"><div class=\"container event__filter\"></div><img class=\"container\" ng-if=\"!!event.backgroundImgUrl.base64\" data-ng-src=\"data:image/jpg;base64,{{event.backgroundImgUrl.base64}}\"> <img class=\"container\" ng-if=\"!event.backgroundImgUrl.base64\" data-ng-src=\"/modules/core/img/header/slider-bg.jpg\"></div><h1 class=\"event__header\" data-ng-bind=\"event.title\"></h1><div class=\"event__time\"><label>Start: {{event.startDate | date:'d MMMM yyyy, hh:mm' : 'UTC' }}</label><span style=\"padding-left: 5px;padding-right: 5px\">-</span><label>End: {{event.endDate | date:'d MMMM yyyy, hh:mm' : 'UTC' }}</label></div><button role=\"button\" class=\"btn btn-primary\">+ I will atend this event</button><div class=\"pull-right\"><a class=\"btn btn-primary event__button\" href=\"/#!/events/{{event._id}}/edit\"><i class=\"glyphicon glyphicon-edit\"></i></a> <a class=\"btn btn-primary event__button\" data-ng-click=\"remove();\"><i class=\"glyphicon glyphicon-trash\"></i></a></div></div><p class=\"lead\" data-ng-bind=\"event.description\"></p><h2 class=\"event__subheader\">Event location</h2><ui-gmap-google-map center=\"map.center\" zoom=\"map.zoom\" options=\"options\"><ui-gmap-marker coords=\"marker.coordinates\" options=\"marker.options\" idkey=\"marker.id\"></ui-gmap-marker></ui-gmap-google-map><h2 class=\"event__subheader\">More about event</h2><span data-ng-bind=\"event.content\"></span><div><div class=\"container event-participants\"><div lclass=\"\"><span class=\"control-label\" translate=\"Number of participants\"></span> - <span class=\"event__number\" data-ng-bind=\"event.numberOfPersons\"></span></div><button role=\"button\" class=\"btn btn-primary\">+ I will atend this event</button></div></div></section>"
+    "<section data-ng-controller=\"EventsController\" data-ng-init=\"findOne()\"><div class=\"page-header\"><div class=\"container event__background\"><div class=\"container event__filter\"></div><img class=\"container\" ng-if=\"!!event.backgroundImgUrl.base64\" data-ng-src=\"data:image/jpg;base64,{{event.backgroundImgUrl.base64}}\"> <img class=\"container\" ng-if=\"!event.backgroundImgUrl.base64\" data-ng-src=\"/modules/core/img/header/slider-bg.jpg\"></div><h1 class=\"event__header\" data-ng-bind=\"event.title\"></h1><div class=\"event__time\"><label>Start: {{event.startDate | date:'d MMMM yyyy, hh:mm' : 'UTC' }}</label><span style=\"padding-left: 5px;padding-right: 5px\">-</span><label>End: {{event.endDate | date:'d MMMM yyyy, hh:mm' : 'UTC' }}</label></div><button role=\"button\" class=\"btn btn-primary\">+ I will atend this event</button><div class=\"pull-right\" ng-if=\"isAdmin()\"><a class=\"btn btn-primary event__button\" href=\"/#!/events/{{event._id}}/edit\"><i class=\"glyphicon glyphicon-edit\"></i></a> <a class=\"btn btn-primary event__button\" data-ng-click=\"remove();\"><i class=\"glyphicon glyphicon-trash\"></i></a></div></div><p class=\"lead\" data-ng-bind=\"event.description\"></p><h2 class=\"event__subheader\">Event location</h2><ui-gmap-google-map center=\"map.center\" zoom=\"map.zoom\" options=\"options\"><ui-gmap-marker coords=\"marker.coordinates\" options=\"marker.options\" idkey=\"marker.id\"></ui-gmap-marker></ui-gmap-google-map><h2 class=\"event__subheader\">More about event</h2><span data-ng-bind=\"event.content\"></span><div><div class=\"container event-participants\"><div lclass=\"\"><span class=\"control-label\" translate=\"Number of participants\"></span> - <span class=\"event__number\" data-ng-bind=\"event.numberOfPersons\"></span></div><button role=\"button\" class=\"btn btn-primary\">+ I will atend this event</button></div></div></section>"
   );
 
   $templateCache.put("modules/speakers/views/create-speaker.client.view.html",
