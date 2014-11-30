@@ -32,6 +32,10 @@
 				<a data-ng-href="#!/signin" translate="Sign In"></a>
 			</li>
 			<li class="divider-vertical"></li>
+			<li ng-if="!window.baseURL">
+				<a data-ng-href="https://build.phonegap.com/apps/1201806/share">Mobile app</a>
+			</li>
+			<li class="divider-vertical"></li>
 			<li>
 				<select ng-controller="LangController" data-ng-model="lang" ng-change="setLang()" style="margin-top: 13px;margin-left: 10px;">
 					<option ng-selected="lang === 'ru'">RU</option>
@@ -59,6 +63,9 @@
 						<a data-ng-href="/auth/signout" translate="Signout"></a>
 					</li>
 				</ul>
+			</li>
+			<li ng-if="!window.baseURL">
+				<a data-ng-href="https://build.phonegap.com/apps/1201806/share">Mobile app</a>
 			</li>
 			<li class="dropdown">
 				<select ng-controller="LangController" data-ng-model="lang" ng-change="setLang()" class="form-control header__language">
