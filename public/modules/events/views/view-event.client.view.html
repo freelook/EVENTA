@@ -24,8 +24,8 @@
 	</div>
 	<p class="lead" data-ng-bind="event.description"></p>
 	<h2 class="event__subheader">Event location</h2>
-	<ui-gmap-google-map center='map.center' zoom='map.zoom'>
-		<ui-gmap-marker coords="map.center" options="marker.options" idkey="marker.id"></ui-gmap-marker>
+	<ui-gmap-google-map center='map.center' zoom='map.zoom' options="options">
+		<ui-gmap-marker coords="marker.coordinates" options="marker.options" idkey="marker.id"></ui-gmap-marker>
 	</ui-gmap-google-map>
 
 	<h2 class="event__subheader">More about event</h2>
