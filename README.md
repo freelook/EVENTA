@@ -1,5 +1,7 @@
 [![EVENTA Logo](http://www.theeventagroup.com/images/logo.png)](http://epam-eventa.herokuapp.com)
 
+#UA WIDE Hackathon
+
 * Build Status: https://travis-ci.org/freelook/EVENTA
 * Demo: http://eventa.herokuapp.com/
 * Mobile: https://build.phonegap.com/apps/1201806/share
