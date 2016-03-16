@@ -5,7 +5,7 @@
   "author": "Dima Kostrub",
   "engines": {
     "node": "0.10.x",
-    "npm": "1.4.x"
+    "npm": "2.14.x"
   },
   "scripts": {
     "start": "grunt",
